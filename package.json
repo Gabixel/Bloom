@@ -1,7 +1,12 @@
 {
-  "name": "my-app",
+  "name": "bloom",
+  "author": {
+    "email": "gabriel.gabixel@outlook.com",
+    "name": "Gabixel"
+  },
+  "license": "MIT",
   "private": true,
-  "version": "0.0.1",
+  "version": "2026.709.0",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
