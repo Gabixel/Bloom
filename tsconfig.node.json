@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": [
+      "ESNext"
+    ],
+    "strict": true,
+    /// see https://stackoverflow.com/a/77369498/16804863
+    "emitDeclarationOnly": true,
+    //"noEmit": true
+    ///
+  },
+  "include": [
+    "vite.config.ts"
+  ]
+}
