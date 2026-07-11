@@ -86,6 +86,112 @@
 			});
 		}
 	});
+
+	//#region mca
+	// https://webapi.streaming.dolby.com/v0_9/help_files/topics/checking_immersive_capability.html
+	async function Mca() {
+		let mediaConfig: any = {
+			type: "media-source",
+			audio: {
+				contentType: "audio/mp4;codecs=ec-3",
+				channels: 16,
+				spatialRendering: true,
+			},
+		};
+
+		let mediacap: any = {
+			results: null,
+			message: "n/a",
+		};
+
+		if ("mediaCapabilities" in navigator) {
+			mediacap.results =
+				await navigator.mediaCapabilities.decodingInfo(mediaConfig);
+			mediacap.message = (mediacap.results.supported ? "" : "not ") + "supported";
+		}
+
+		return mediacap;
+	}
+
+	let pMediaCapResult = $state("");
+
+	Mca().then((value) => (pMediaCapResult = value.message));
+	//#endregion
+
+	//#region custom logger
+	// Custom logger
+	let logs: string[] = $state([]);
+	setupCustomLogger();
+
+	function setupCustomLogger() {
+		let consoleDebug = console.debug;
+		let consoleLog = console.log;
+		let consoleError = console.error;
+		let consoleWarn = console.warn;
+		let consoleTrace = console.trace;
+
+		let execDebug = (console.debug = doLog(consoleDebug));
+		let execLog = (console.log = doLog(consoleLog));
+		let execError = (console.error = doLog(consoleError));
+		let execWarn = (console.warn = doLog(consoleWarn));
+		let execTrace = (console.trace = doLog(consoleTrace));
+
+		initUncaughtExceptionsHandler();
+
+		function doLog(func: Function) {
+			return function (...data: any[]) {
+				let firstText = "[LUDAGIUM]";
+
+				if (logs.length > 100) logs.length = 0;
+
+				logs.unshift(...data.toReversed());
+
+				if (typeof data?.[0] === "string") {
+					firstText += " " + data.splice(0, 1);
+				}
+
+				func(firstText, ...data);
+			};
+		}
+
+		function initUncaughtExceptionsHandler() {
+			window.onerror = (
+				event: Event | string,
+				source?: string,
+				lineNo?: number,
+				colNo?: number,
+				error?: Error,
+			): void => {
+				error?.message && logs.push(error?.message);
+
+				execError(
+					"An unexpected error has occurred.\n",
+					event,
+					"\n",
+					`Source: ${source}\n`,
+					`At line ${lineNo}, column ${colNo}\n`,
+					`Type: ${error?.name}\n`,
+					`Message: "${error?.message}"`,
+				);
+			};
+
+			window.onunhandledrejection = (e) => {
+				// // Don't print default error
+				// e.preventDefault();
+
+				logs.push(e.reason?.stack ?? e.reason);
+
+				execError(
+					"An unexpected (in promise) error has occurred.\n",
+					`'${e.reason?.stack ?? e.reason}'\n`,
+					e,
+				);
+			};
+
+			execDebug("Exception handler is running...");
+		}
+	}
+	//#endregion
 </script>
 
 <svelte:head>
@@ -99,6 +205,12 @@
 	<a href="#/album">Albums</a>
 	<a href="#/about">About</a>
 	<a href="#/settings">Settings</a>
+	<button
+		type="button"
+		onclick={() => {
+			document.getElementById("js-console")?.classList.toggle("hidden");
+		}}>Toggle console</button
+	>
 </nav>
 
 <p>
@@ -106,7 +218,8 @@
 	location hash: "{_location.hash}"<br />
 	page state: "{JSON.stringify(page.state)}"<br />
 	page route id: "{page.route.id}"<br />
-	isLoggedIn: {String(authData.isLoggedIn())}
+	isLoggedIn: {String(authData.isLoggedIn())}<br />
+	dolbySupportStatus: {pMediaCapResult}
 </p>
 
 {#if authData.isLoggedIn()}
@@ -119,3 +232,31 @@
 {:else}
 	<LoginLayout></LoginLayout>
 {/if}
+
+<div id="js-console" class="hidden" style="">
+	{#each logs as log}
+		<p>{JSON.stringify(log)}</p>
+	{/each}
+</div>
+
+<style>
+	#js-console {
+		position: fixed;
+		z-index: 999;
+		color: #fff;
+		overflow-y: scroll;
+		font-family: monospace, monospace;
+		font-size: 0.75rem;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.95;
+		background-color: #00000070;
+		pointer-events: none;
+		user-select: none;
+	}
+	#js-console.hidden {
+		display: none;
+	}
+</style>

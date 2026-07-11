@@ -3,6 +3,7 @@
 	import type { PageProps } from "./$types.d.ts";
 	import { authFetch, navidromeData } from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
+	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 
 	let { data }: PageProps = $props();
 
@@ -46,14 +47,29 @@
 			songCount: number;
 			created: string;
 		})}
-			<div>
-				<p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p>
+			<div
+				role="link"
+				class="album-element"
+				tabindex="0"
+				onclick={() => {
+					goto(`${_location.hash}/${album.id}`, {});
+				}}
+				onkeydown={() => {
+					// TODO: check for enter key specifically
+					goto(`${_location.hash}/${album.id}`, {});
+				}}
+			>
 				<img
-					width="150"
-					height="150"
+					draggable="false"
+					alt={`Album cover di \"${album.name}\"`}
+					width="70"
+					height="70"
+					style="object-fit: contain;background-color:#00000010"
 					src={`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
-						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=300&square=true`}
+						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`}
 				/>
+				<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
+				<span>{album.name}</span>
 			</div>
 		{/snippet}
 
@@ -66,8 +82,21 @@
 		{/if}
 	{/await}
 {/await}
-<!-- 
-<form onsubmit={onSubmit}>
-	<input type="text" bind:value={albumId} placeholder="enter an album id" />
-	<button>get</button>
-</form> -->
+
+<style>
+	.album-element {
+		cursor: pointer;
+		background-color: #00000020;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: center;
+		gap: 2ch;
+	}
+	.album-element:nth-child(odd) {
+		background-color: #00000040;
+	}
+	.album-element:hover {
+		background-color: #00000060;
+	}
+</style>

@@ -61,13 +61,15 @@
 	<!-- TODO: paginate or something -->
 	{#each albumData.song as songEntry}
 		<p>
-			<a
-				href="javascript:void(0)"
+			<button
+				type="button"
 				onclick={() => {
 					playAudio(songEntry.id);
-				}}>[Play]</a
-			>&nbsp;
-			{songEntry.title}
+				}}>[Play]</button
+			>
+			<span>
+				{songEntry.title}
+			</span>
 		</p>
 	{/each}
 {/if}
