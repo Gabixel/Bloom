@@ -4,6 +4,7 @@
 	import { authFetch, navidromeData } from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
+	import { cconsole } from "../../lib/logger.svelte";
 
 	let { data }: PageProps = $props();
 
@@ -19,11 +20,9 @@
 
 	let user = authData.userData();
 
-	let albumListRequest: Promise<Response> = $state.raw(
-		authFetch(
-			`/rest/getAlbumList2?type=newest&size=8&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-		),
+	let albumListRequest = authFetch(
+		`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
+			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 
 	// onMount(() => {
@@ -33,13 +32,13 @@
 	// 		`/rest/getAlbumList2?type=newest&size=8&u=${user.username}&v=1.16.1&c=bloom-gabigroup`
 	// 		+ `&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`);
 	// 	// .then(async (res) => {
-	// 	// 	console.log(await res.json());
+	// 	// 	cconsole.log(await res.json());
 	// 	// });
 	// });
 </script>
 
 {#await albumListRequest then result}
-	{#await result.json() then albumListResponse}
+	{#await result.data then albumListResponse}
 		{#snippet renderAlbum(album: {
 			id: string;
 			name: string;

@@ -8,6 +8,7 @@
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { getAudioPlayer } from "../../../lib/audio-player.svelte";
+	import { cconsole } from "../../../lib/logger.svelte";
 
 	let { data }: PageProps = $props();
 
@@ -20,20 +21,20 @@
 	}
 
 	let albumData: any = $state(null)!;
-	let albumRequest: Promise<Response> = authFetch(
+	let albumRequest = authFetch(
 		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 	albumRequest.then(async (data) => {
-		let response = (await data.json())["subsonic-response"];
+		let response = (await data.data)["subsonic-response"];
 		albumData = response["album"];
-		console.log(response);
+		cconsole.log(response);
 	});
 
 	function playAudio(audioId: string) {
 		let player = getAudioPlayer();
 
-		console.log(player);
+		cconsole.log(player);
 
 		const params = new URLSearchParams({
 			id: audioId,

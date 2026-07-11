@@ -6,22 +6,23 @@
 	import { onMount, untrack, type Snippet } from "svelte";
 	import { goto, replaceState } from "$app/navigation";
 
-	// "[...] and you have to make sure that the links in your app all start with `#/`"
-
-	let { data, children }: { data: LayoutData; children: Snippet } = $props();
-
-	console.log("Hello from layout.svelte");
-
-	let _location = $state(location);
-
-	let audioElement: HTMLAudioElement = $state()!;
-
 	import { jwtTranslate, storeUser } from "$lib/auth.svelte";
 	import { setNavidromeUrl } from "../lib/navidrome.svelte.ts";
 	import {
 		deleteAudioPlayer,
 		storeAudioPlayer,
 	} from "../lib/audio-player.svelte";
+	import { cconsole } from "../lib/logger.svelte";
+
+	// "[...] and you have to make sure that the links in your app all start with `#/`"
+
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
+
+	cconsole.log("Hello from layout.svelte");
+
+	let _location = $state(location);
+
+	let audioElement: HTMLAudioElement = $state()!;
 
 	onMount(() => {
 		const navidromeToken = localStorage.getItem("nd_token");
@@ -117,81 +118,6 @@
 
 	Mca().then((value) => (pMediaCapResult = value.message));
 	//#endregion
-
-	//#region custom logger
-	// Custom logger
-	let logs: string[] = $state([]);
-	setupCustomLogger();
-
-	function setupCustomLogger() {
-		let consoleDebug = console.debug;
-		let consoleLog = console.log;
-		let consoleError = console.error;
-		let consoleWarn = console.warn;
-		let consoleTrace = console.trace;
-
-		let execDebug = (console.debug = doLog(consoleDebug));
-		let execLog = (console.log = doLog(consoleLog));
-		let execError = (console.error = doLog(consoleError));
-		let execWarn = (console.warn = doLog(consoleWarn));
-		let execTrace = (console.trace = doLog(consoleTrace));
-
-		initUncaughtExceptionsHandler();
-
-		function doLog(func: Function) {
-			return function (...data: any[]) {
-				let firstText = "[LUDAGIUM]";
-
-				if (logs.length > 100) logs.length = 0;
-
-				logs.unshift(...data.toReversed());
-
-				if (typeof data?.[0] === "string") {
-					firstText += " " + data.splice(0, 1);
-				}
-
-				func(firstText, ...data);
-			};
-		}
-
-		function initUncaughtExceptionsHandler() {
-			window.onerror = (
-				event: Event | string,
-				source?: string,
-				lineNo?: number,
-				colNo?: number,
-				error?: Error,
-			): void => {
-				error?.message && logs.push(error?.message);
-
-				execError(
-					"An unexpected error has occurred.\n",
-					event,
-					"\n",
-					`Source: ${source}\n`,
-					`At line ${lineNo}, column ${colNo}\n`,
-					`Type: ${error?.name}\n`,
-					`Message: "${error?.message}"`,
-				);
-			};
-
-			window.onunhandledrejection = (e) => {
-				// // Don't print default error
-				// e.preventDefault();
-
-				logs.push(e.reason?.stack ?? e.reason);
-
-				execError(
-					"An unexpected (in promise) error has occurred.\n",
-					`'${e.reason?.stack ?? e.reason}'\n`,
-					e,
-				);
-			};
-
-			execDebug("Exception handler is running...");
-		}
-	}
-	//#endregion
 </script>
 
 <svelte:head>
@@ -234,7 +160,7 @@
 {/if}
 
 <div id="js-console" class="hidden" style="">
-	{#each logs as log}
+	{#each cconsole.logList() as log}
 		<p>{JSON.stringify(log)}</p>
 	{/each}
 </div>

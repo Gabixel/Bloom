@@ -1,2 +1,3 @@
+import { cconsole } from "../lib/logger.svelte";
 
-console.log("Hello from layout.ts");
+cconsole.log("Hello from layout.ts");

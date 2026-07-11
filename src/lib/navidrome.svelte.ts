@@ -1,4 +1,5 @@
-import * as IDB from "../../static/idb-keyval-6-esm.js"
+import * as IDB from "../../static/idb-keyval-6-esm.js";
+import { CapacitorHttp } from "@capacitor/core";
 
 export type LoginResult =
 	| {
@@ -29,19 +30,20 @@ export async function login(
 	password: string,
 ): Promise<LoginResult> {
 	try {
-		const res = await fetch(`${navidrome_base}/auth/login`, {
+		const res = await CapacitorHttp.request({
+			url: `${navidrome_base}/auth/login`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ username, password }),
+			data: JSON.stringify({ username, password }),
 			// credentials: 'include' // abilita se Navidrome usa cookie-based sessions
 		});
 
-		if (!res.ok) {
-			const text = await res.text();
+		if (res.status < 200 || res.status > 299) {
+			const text = res.data;
 			return { error: `HTTP ${res.status}: ${text}` };
 		}
 
-		const data = await res.json();
+		const data = await res.data;
 
 		if (data?.token != null) {
 			return data;
@@ -53,13 +55,21 @@ export async function login(
 	}
 }
 
-export function authFetch(input: RequestInfo, init: RequestInit = {}) {
+export function authFetch(input: RequestInfo) {
 	input = getSubsonicApiPath(input);
 
 	const token = localStorage.getItem("nd_token");
-	const headers = new Headers(init.headers ?? {});
-	if (token) headers.set("X-ND-Authorization", `Bearer ${token}`);
-	return fetch(input, { ...init, headers });
+	// const headers = new Headers(init.headers ?? {});
+	let headers: { [key: string]: string } = {};
+
+	if (token) headers["X-ND-Authorization"] = `Bearer ${token}`;
+
+	return CapacitorHttp.request({
+		url: input,
+		// ...init,
+		method: "GET",
+		headers
+	});
 }
 
 export function getSubsonicApiPath(input: RequestInfo) {

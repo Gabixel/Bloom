@@ -1,9 +1,14 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.gabigroup.bloom',
-  appName: 'Bloom',
-  webDir: 'www'
+	appId: "com.gabigroup.bloom",
+	appName: "Bloom",
+	webDir: "www",
+	plugins: {
+		CapacitorHttp: {
+			enabled: true,
+		},
+	},
 };
 
 export default config;

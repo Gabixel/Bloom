@@ -1,17 +1,23 @@
 <script lang="ts">
 	import { navigating, page, updated } from "$app/state";
-	import { onMount } from "svelte";
+	import { onMount, untrack } from "svelte";
 	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
 	import { authFetch } from "../lib/navidrome.svelte.ts";
+	import { cconsole } from "../lib/logger.svelte";
 
-	console.log("Hello from page.svelte");
+	cconsole.log("Hello from page.svelte");
+
+	let userData = authData.userData();
 
 	onMount(() => {
-		console.log("page.svelte mounted!");
+		cconsole.log("page.svelte mounted!");
 	});
 
 	$effect(() => {
-		console.log(authData.userData());
+		let userData = authData.userData();
+		untrack(() => {
+			cconsole.log(authData.userData());
+		});
 	});
 
 	let divOutput: HTMLDivElement = $state()!;
@@ -46,52 +52,53 @@
 			);
 			const parser = new DOMParser();
 
-			console.log(parser.parseFromString(await res.text(), "application/xml"));
-			// console.log(await res.text())
+			cconsole.log(parser.parseFromString(await res.data, "application/xml"));
+			// cconsole.log(await res.text())
 		}}>ping</button
 	>
 	<button
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user/" + authData.userData().id);
-			let json = await res.json();
-			divOutput.innerText = JSON.stringify(json, null, 2);
+			let json = res.data;
+			cconsole.log(json);
 		}}>user (me)</button
 	>
 	<button
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user");
-			let json = await res.json();
-			divOutput.innerText = JSON.stringify(json, null, 2);
+			let json = res.data;
+			cconsole.log(json);
 		}}>user list</button
 	>
 	<button
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/player/");
-			let json = await res.json();
-			divOutput.innerText = JSON.stringify(json, null, 2);
+			let json = res.data;
+			cconsole.log(json);
 		}}>players list</button
 	>
 	<button
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/transcoding/");
-			let json = await res.json();
-			divOutput.innerText = JSON.stringify(json, null, 2);
+			let json = res.data;
+			cconsole.log(json);
 		}}>transcoding list</button
 	>
 	<button
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/share/");
-			if (res.status === 200 || res.ok === true) {
-				console.log(await res.json());
+			if (res.status === 200) {
+				cconsole.log(await res.data);
 			}
 		}}>share</button
 	>
-	<div bind:this={divOutput} style="font-family:monospace,monospace;white-space:pre-line">
-
-	</div>
+	<div
+		bind:this={divOutput}
+		style="font-family:monospace,monospace;white-space:pre-line"
+	></div>
 </div>
