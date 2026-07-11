@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest.json",
+  "name": "Bloom",
+  "description": "A music player web app interface",
+  "id": "/",
+  "start_url": "/",
+  "theme_color": "#ffe06a",
+  "background_color": "#2e2e2e",
+  "display": "standalone",
+  "scope": "/",
+  "categories": ["music", "utilities", "navigation", "lifestyle"],
+  "icons": [],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "navigate-existing", "auto"]
+  }
+}
