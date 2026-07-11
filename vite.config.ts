@@ -11,7 +11,7 @@ const config = {
 			process.env.NODE_ENV === "production"
 				? '"production"'
 				: '"development"',
-	},
+	}
 } satisfies UserConfig;
 
 export default config;

@@ -32,14 +32,15 @@ const config = {
 			},
 		),
 		serviceWorker: {
-			register: true,
-			options: {
-				type:
-					process.env.NODE_ENV === "production"
-						? "classic"
-						: "module",
-				scope: "/",
-			},
+			// TODO: only web version
+			register: false,
+			// options: {
+			// 	type:
+			// 		process.env.NODE_ENV === "production"
+			// 			? "classic"
+			// 			: "module",
+			// 	scope: "/",
+			// },
 		},
 		router: {
 			type: "hash",
