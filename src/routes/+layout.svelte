@@ -13,12 +13,24 @@
 		storeAudioPlayer,
 	} from "../lib/audio-player.svelte";
 	import { cconsole } from "../lib/logger.svelte";
+	import { Capacitor } from "@capacitor/core";
+
+	import { App as CapacitorApp } from "@capacitor/app";
+	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+		if (!canGoBack) {
+			CapacitorApp.exitApp();
+		} else {
+			window.history.back();
+		}
+	});
 
 	// "[...] and you have to make sure that the links in your app all start with `#/`"
 
 	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
 	cconsole.log("Hello from layout.svelte");
+
+	let jsConsoleDiv: HTMLDivElement = $state()!;
 
 	let _location = $state(location);
 
@@ -65,6 +77,10 @@
 			});
 		} else {
 			destroyUserData();
+		}
+
+		if (Capacitor.isNativePlatform()) {
+			jsConsoleDiv.classList.add("native");
 		}
 	});
 
@@ -134,7 +150,7 @@
 	<button
 		type="button"
 		onclick={() => {
-			document.getElementById("js-console")?.classList.toggle("hidden");
+			jsConsoleDiv.classList.toggle("hidden");
 		}}>Toggle console</button
 	>
 </nav>
@@ -159,7 +175,7 @@
 	<LoginLayout></LoginLayout>
 {/if}
 
-<div id="js-console" class="hidden" style="">
+<div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">
 	{#each cconsole.logList() as log}
 		<p>{JSON.stringify(log)}</p>
 	{/each}
@@ -181,6 +197,10 @@
 		background-color: #00000070;
 		pointer-events: none;
 		user-select: none;
+	}
+	#js-console.native {
+		width: 100vw;
+		height: 100vh;
 	}
 	#js-console.hidden {
 		display: none;
