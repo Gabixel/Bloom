@@ -15,7 +15,8 @@
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "generate-debug-apk": "npx cap sync && cd ./android && ./gradlew assembleDebug"
+    "compile-debug": "npm run build && npx cap sync && cd ./android && ./gradlew assembleDebug",
+    "build-debug-gradle": "npx cap sync && cd ./android && ./gradlew assembleDebug"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
@@ -29,10 +30,12 @@
     "vite": "^8.0.16"
   },
   "dependencies": {
+    "@babylonjs/lite": "^1.10.0",
     "@capacitor/android": "^8.4.1",
     "@capacitor/app": "^8.1.0",
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
+    "@capacitor/dialog": "^8.0.1",
     "@capacitor/ios": "^8.4.1"
   }
 }

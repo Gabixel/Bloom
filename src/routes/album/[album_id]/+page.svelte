@@ -7,8 +7,16 @@
 		navidromeData,
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
-	import { getAudioPlayer } from "../../../lib/audio-player.svelte";
-	import { cconsole } from "../../../lib/logger.svelte";
+	import { playMusic } from "$lib/audio-player.svelte";
+	import { cconsole } from "$lib/logger.svelte";
+	import { Dialog } from "@capacitor/dialog";
+
+	const showAlert = async (str: string) => {
+		await Dialog.alert({
+			title: "Message",
+			message: str,
+		});
+	};
 
 	let { data }: PageProps = $props();
 
@@ -31,10 +39,10 @@
 		cconsole.log(response);
 	});
 
-	function playAudio(audioId: string) {
-		let player = getAudioPlayer();
+	async function playAudio(audioId: string) {
+		/*let player = getAudioPlayer();*/
 
-		cconsole.log(player);
+		// cconsole.log(player);
 
 		const params = new URLSearchParams({
 			id: audioId,
@@ -48,10 +56,35 @@
 
 		let url = getSubsonicApiPath(`/rest/stream.view?${params.toString()}`);
 
-		player.preload = "metadata";
+		// await showAlert(`playing music: "${url}"`);
+
+		const res = await fetch(url);
+
+		// showAlert(JSON.stringify(res.status));
+		// showAlert(JSON.stringify(res.headers.get("content-type")));
+
+		// const blob = await res.blob();
+
+		// showAlert(blob.type + " " + blob.size);
+
+		const arrayBuffer = await res.arrayBuffer();
+
+		playMusic(arrayBuffer)
+			// .then(() => {
+			// 	showAlert(`music started`);
+			// })
+			.catch((e) => {
+				console.error(e);
+				showAlert(`error playing music: ${e} / ${JSON.stringify(e)}`);
+			});
+		// .finally(() => {
+		// 	showAlert("final music logic");
+		// });
+
+		/*player.preload = "metadata";
 		player.src = url;
 
-		player.play();
+		player.play();*/
 	}
 </script>
 

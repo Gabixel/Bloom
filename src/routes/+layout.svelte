@@ -8,10 +8,10 @@
 
 	import { jwtTranslate, storeUser } from "$lib/auth.svelte";
 	import { setNavidromeUrl } from "../lib/navidrome.svelte.ts";
-	import {
-		deleteAudioPlayer,
-		storeAudioPlayer,
-	} from "../lib/audio-player.svelte";
+	// import {
+	// 	deleteAudioPlayer,
+	// 	storeAudioPlayer,
+	// } from "../lib/audio-player.svelte";
 	import { cconsole } from "../lib/logger.svelte";
 	import { Capacitor } from "@capacitor/core";
 
@@ -35,7 +35,6 @@
 	let _location = $state(location);
 
 	let audioElement: HTMLAudioElement = $state()!;
-
 	onMount(() => {
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
@@ -84,13 +83,13 @@
 		}
 	});
 
-	$effect(() => {
+	/*$effect(() => {
 		if (authData.isLoggedIn()) {
 			storeAudioPlayer(audioElement);
 		} else {
 			deleteAudioPlayer();
 		}
-	});
+	});*/
 
 	$effect(() => {
 		if (navigating && !authData.isLoggedIn() && page.route.id != "/") {
@@ -167,10 +166,10 @@
 {#if authData.isLoggedIn()}
 	{@render children()}
 
-	<div style="background-color:#00000010">
+	<!--<div style="background-color:#00000010">
 		Music player<br />
 		<audio bind:this={audioElement} controls></audio>
-	</div>
+	</div>-->
 {:else}
 	<LoginLayout></LoginLayout>
 {/if}
