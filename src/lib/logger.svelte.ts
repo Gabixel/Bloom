@@ -34,11 +34,20 @@ function doLog(func: Function, ...data: any[]) {
 
 	if (logList.length > 100) logList.length = 0;
 
-	logList.unshift(...data.toReversed());
+	logList.unshift(
+		data.reduce((prev, curr) => {
+			if(prev.length > 0) prev += " ";
 
-	if (typeof data?.[0] === "string") {
-		firstText += " " + data.splice(0, 1);
-	}
+			if (typeof curr != "string") prev += JSON.stringify(curr);
+			else prev += curr;
+
+			return prev;
+		}, ""),
+	);
+
+	// if (typeof data?.[0] === "string") {
+	// 	firstText += " " + data.splice(0, 1);
+	// }
 
 	func(firstText, ...data);
 }

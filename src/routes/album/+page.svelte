@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import type { PageProps } from "./$types.d.ts";
-	import { authFetch, navidromeData } from "$lib/navidrome.svelte";
+	import {
+		authFetch,
+		CLIENT_NAME_URL,
+		navidromeData,
+	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
@@ -21,15 +25,17 @@
 	let user = authData.userData();
 
 	let albumListRequest = authFetch(
-		`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
+		`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
+
+	let errorCount = 0;
 
 	// onMount(() => {
 	// 	let user = authData.userData();
 
 	// 	albumListRequest = authFetch(
-	// 		`/rest/getAlbumList2?type=newest&size=8&u=${user.username}&v=1.16.1&c=bloom-gabigroup`
+	// 		`/rest/getAlbumList2?type=newest&size=8&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}`
 	// 		+ `&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`);
 	// 	// .then(async (res) => {
 	// 	// 	cconsole.log(await res.json());
@@ -37,6 +43,15 @@
 	// });
 </script>
 
+<img
+	src="https://github.com/Gabixel/Gabixel/assets/43073074/9c11cd7a-20ed-4442-ba81-41aa70257999"
+	onload={(e) => {
+		cconsole.log("image loaded", e);
+	}}
+	onerror={(e) => {
+		cconsole.error("image error", e);
+	}}
+/>
 {#await albumListRequest then result}
 	{#await result.data then albumListResponse}
 		{#snippet renderAlbum(album: {
@@ -59,13 +74,65 @@
 				}}
 			>
 				<img
+					data-album-id={album.id}
 					draggable="false"
 					alt={`Album cover di \"${album.name}\"`}
 					width="70"
 					height="70"
 					style="object-fit: contain;background-color:#00000010"
-					src={`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
+					src={`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`}
+					onload={(e) => {
+						cconsole.log("image loaded", e);
+					}}
+					onerror={(e) => {
+						cconsole.error("image error", e);
+
+						if (errorCount > 0) {
+							return;
+						}
+
+						fetch(
+							`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+								`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`,
+						)
+							.then((r) => {
+								cconsole.log("HTTP status:", r.status);
+								cconsole.log("Content-Type:", r.headers.get("content-type"));
+								cconsole.log("URL finale:", r.url);
+
+								if (!r.ok) {
+									return;
+								}
+
+								return r.blob();
+							})
+							.then((blob) => {
+								if (blob == null) {
+									cconsole.log("blob is", typeof blob);
+									return;
+								}
+
+								console.log("blob", blob.type, blob.size);
+
+								const blobUrl = URL.createObjectURL(blob);
+
+								const img: HTMLImageElement = document.querySelector(`img[data-album-id='${album.id}']`)!;
+
+								img.src = blobUrl;
+
+								img.onload = () => {
+									cconsole.log("blob image loaded");
+								};
+
+								img.onerror = (e) => {
+									cconsole.error("error in blob", e);
+								};
+							})
+							.catch((err) => cconsole.error("fetch fallito:", err));
+
+						errorCount++;
+					}}
 				/>
 				<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
 				<span>{album.name}</span>

@@ -1,6 +1,19 @@
 import * as IDB from "../../static/idb-keyval-6-esm.js";
 import { CapacitorHttp } from "@capacitor/core";
 
+/*
+ * u = username
+ * p = password
+ * t = auth token
+ * s = salt for the token
+ * v = version
+ * c = client name
+ * f = response format (xml, json)
+ */
+
+export const CLIENT_NAME = "Bloom (Gabi Group)"
+export const CLIENT_NAME_URL = encodeURI(CLIENT_NAME);
+
 export type LoginResult =
 	| {
 			avatar: string;

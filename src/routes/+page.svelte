@@ -2,7 +2,7 @@
 	import { navigating, page, updated } from "$app/state";
 	import { onMount, untrack } from "svelte";
 	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
-	import { authFetch } from "../lib/navidrome.svelte.ts";
+	import { authFetch, CLIENT_NAME_URL } from "../lib/navidrome.svelte.ts";
 	import { cconsole } from "../lib/logger.svelte";
 
 	cconsole.log("Hello from page.svelte");
@@ -48,7 +48,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch(
-				"/rest/getLicense?u=gabixel&v=1.16.1&c=bloom-gabigroup&t=",
+				"/rest/getLicense?u=gabixel&v=1.16.1&c=" + CLIENT_NAME_URL + "&t=",
 			);
 			const parser = new DOMParser();
 

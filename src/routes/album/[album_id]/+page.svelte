@@ -3,6 +3,7 @@
 	import type { PageProps } from "./$types.ts";
 	import {
 		authFetch,
+		CLIENT_NAME_URL,
 		getSubsonicApiPath,
 		navidromeData,
 	} from "$lib/navidrome.svelte";
@@ -30,7 +31,7 @@
 
 	let albumData: any = $state(null)!;
 	let albumRequest = authFetch(
-		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=bloom-gabigroup` +
+		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 	albumRequest.then(async (data) => {
@@ -50,7 +51,7 @@
 			t: authData.navidromeSubsonicToken(),
 			s: authData.navidromeSubsonicSalt(),
 			v: "1.16.1",
-			c: "bloom-gabigroup",
+			c: CLIENT_NAME_URL,
 			f: "json",
 		});
 
