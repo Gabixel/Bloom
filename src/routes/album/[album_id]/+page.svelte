@@ -7,7 +7,7 @@
 		navidromeData,
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
-	import { playMusic } from "$lib/audio-player.svelte";
+	import { createAudioPlayer } from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
 	import { Dialog } from "@capacitor/dialog";
 
@@ -39,7 +39,7 @@
 		cconsole.log(response);
 	});
 
-	async function playAudio(audioId: string) {
+	async function playAudio(audioId: string, format: "mp3" | "flac") {
 		/*let player = getAudioPlayer();*/
 
 		// cconsole.log(player);
@@ -58,7 +58,7 @@
 
 		// await showAlert(`playing music: "${url}"`);
 
-		const res = await fetch(url);
+		// // const res = await fetch(url);
 
 		// showAlert(JSON.stringify(res.status));
 		// showAlert(JSON.stringify(res.headers.get("content-type")));
@@ -67,16 +67,16 @@
 
 		// showAlert(blob.type + " " + blob.size);
 
-		const arrayBuffer = await res.arrayBuffer();
+		// // const arrayBuffer = await res.arrayBuffer();
 
-		playMusic(arrayBuffer)
-			// .then(() => {
-			// 	showAlert(`music started`);
-			// })
-			.catch((e) => {
-				console.error(e);
-				showAlert(`error playing music: ${e} / ${JSON.stringify(e)}`);
-			});
+		createAudioPlayer(url);
+		// .then(() => {
+		// 	showAlert(`music started`);
+		// })
+		// .catch((e) => {
+		// 	console.error(e);
+		// 	showAlert(`error playing music: ${e} / ${JSON.stringify(e)}`);
+		// });
 		// .finally(() => {
 		// 	showAlert("final music logic");
 		// });
@@ -98,7 +98,7 @@
 			<button
 				type="button"
 				onclick={() => {
-					playAudio(songEntry.id);
+					playAudio(songEntry.id, songEntry.suffix);
 				}}>[Play]</button
 			>
 			<span>

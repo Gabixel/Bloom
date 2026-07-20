@@ -7,3 +7,6 @@ project(':capacitor-app').projectDir = new File('../node_modules/@capacitor/app/
 
 include ':capacitor-dialog'
 project(':capacitor-dialog').projectDir = new File('../node_modules/@capacitor/dialog/android')
+
+include ':mediagrid-capacitor-native-audio'
+project(':mediagrid-capacitor-native-audio').projectDir = new File('../node_modules/@mediagrid/capacitor-native-audio/android')

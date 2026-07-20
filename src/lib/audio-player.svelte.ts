@@ -1,43 +1,88 @@
-import {
-	createStreamingSoundAsync,
-	createAudioEngineAsync,
-	type AudioEngine,
-	unlockAudioEngineAsync,
-	type StreamingSound,
-	disposeStreamingSound,
-	setStreamingSoundVolume,
-	createSoundAsync,
-	type StaticSound,
-	disposeSound,
-} from "@babylonjs/lite";
+import { AudioPlayer } from "@mediagrid/capacitor-native-audio";
+import { cconsole } from "./logger.svelte";
+import type { CapacitorException } from "@capacitor/core";
 
-const audioContext = new AudioContext();
-let testAudioEngine: AudioEngine = null!;
+// TODO: web player
+let audioPlayerCreated = $state(false);
 
-createAudioEngineAsync({
-	audioContext: audioContext,
-}).then(async (engine) => {
-	testAudioEngine = engine;
+let audioId = generateAudioId();
 
-	await unlockAudioEngineAsync(testAudioEngine);
-});
+export async function createAudioPlayer(url: string) {
+	if (audioPlayerCreated) {
+		// TODO: change track and all of that
+		await AudioPlayer.play({
+			audioId,
+		});
 
-let finalAudio: StaticSound | null = null;
-
-// export async function playMusic(src: string) {
-export async function playMusic(buffer: ArrayBuffer) {
-	if (finalAudio != null) {
-		disposeSound(finalAudio);
-		finalAudio = null;
+		return;
 	}
 
-	return createSoundAsync(testAudioEngine, buffer as any, {
-		autoplay: true,
-		loop: false,
-		maxInstances: 1,
-	}).then((sound) => {
-		finalAudio = sound;
+	audioPlayerCreated = true;
+
+	await AudioPlayer.create({
+		audioId,
+		audioSource: url,
+		friendlyTitle: "Test title",
+		// artistName: "test",
+		// albumTitle: "test",
+		// artworkSource // inherited
+		useForNotification: true,
+		loop: false, // TODO
+	})
+		.then(() => {
+			cconsole.log("audio player created");
+		})
+		.catch((e: CapacitorException) => {
+			cconsole.error(`audio player creation error: ${e}`);
+		});
+
+	await AudioPlayer.onAudioReady(
+		{
+			audioId,
+		},
+		() => {
+			cconsole.log("audio player ready");
+		},
+	);
+	await AudioPlayer.onAudioEnd(
+		{
+			audioId,
+		},
+		() => {
+			cconsole.log("audio player ended");
+		},
+	);
+	await AudioPlayer.onMetadataUpdate(
+		{
+			audioId,
+		},
+		() => {
+			cconsole.log("audio player ended");
+		},
+	);
+
+	await AudioPlayer.initialize({
+		audioId,
+	})
+		.then(() => {
+			cconsole.log("audio player initialized");
+		})
+		.catch((e) => {
+			cconsole.error(`audio player init error: ${e}`);
+		});
+
+	await AudioPlayer.play({
+		audioId,
 	});
 }
 
-// setStreamingSoundVolume()
+export async function changeTrack() {
+	// await AudioPlayer.onAppGainsFocus();
+	// await AudioPlayer.onAppLosesFocus();
+	// await AudioPlayer.onPlaybackStatusChange();
+	// await AudioPlayer.setVolume()
+}
+
+function generateAudioId() {
+	return Date.now().toString();
+}

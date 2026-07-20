@@ -25,7 +25,7 @@ const config: CapacitorConfig = {
 	},
 	appendUserAgent: "Bloom/1.0",
 	loggingBehavior: "none",
-	backgroundColor: "#2e2e2e",
+	// backgroundColor: "#2e2e2e",
 	zoomEnabled: false,
 	server: {
 		cleartext: true,

@@ -4,4 +4,5 @@
     <string name="title_activity_main">Bloom</string>
     <string name="package_name">com.gabigroup.bloom</string>
     <string name="custom_url_scheme">com.gabigroup.bloom</string>
+    <string name="audio_player_service_description">Allows for audio to play in the background.</string>
 </resources>
