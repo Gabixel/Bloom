@@ -77,10 +77,6 @@
 		} else {
 			destroyUserData();
 		}
-
-		if (Capacitor.isNativePlatform()) {
-			jsConsoleDiv.classList.add("native");
-		}
 	});
 
 	/*$effect(() => {
@@ -187,7 +183,7 @@
 		color: #fff;
 		overflow-y: scroll;
 		font-family: monospace, monospace;
-		font-size: 0.75rem;
+		font-size: 0.6rem;
 		top: 0;
 		left: 0;
 		width: 100%;
@@ -196,10 +192,10 @@
 		background-color: #00000070;
 		pointer-events: none;
 		user-select: none;
-	}
-	#js-console.native {
-		width: 100vw;
-		height: 100vh;
+
+		white-space: break-spaces;
+		word-break: break-all;
+		word-break: break-word;
 	}
 	#js-console.hidden {
 		display: none;
