@@ -1,7 +1,26 @@
+import { afterNavigate } from "$app/navigation";
+
 let logList = $state([] as string[]);
 
 export function setupCustomLogger() {
 	initUncaughtExceptionsHandler();
+
+	navigation.addEventListener("currententrychange", () => {
+		if (navigation.currentEntry == undefined) {
+			return;
+		}
+
+		// const data = navigation.currentEntry.getState();
+		cconsole.log("navigation entry changed");
+	});
+
+	window.addEventListener("hashchange", (event) => {
+		cconsole.log("hash change", event);
+	});
+
+	afterNavigate(() => {
+		cconsole.log("Navigated to:", document.URL);
+	});
 }
 
 let execDebug = (...data: any[]) => doLog(console.debug, ...data);
@@ -36,7 +55,7 @@ function doLog(func: Function, ...data: any[]) {
 
 	logList.unshift(
 		data.reduce((prev, curr) => {
-			if(prev.length > 0) prev += " ";
+			if (prev.length > 0) prev += " ";
 
 			if (typeof curr != "string") prev += JSON.stringify(curr);
 			else prev += curr;

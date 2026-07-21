@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { navigating, page } from "$app/state";
-	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
+	import { authData, destroyUserData } from "$lib/auth.svelte";
 	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
 	import type { LayoutData } from "./$types.d.ts";
 	import { onMount, untrack, type Snippet } from "svelte";
 	import { goto, replaceState } from "$app/navigation";
 
 	import { jwtTranslate, storeUser } from "$lib/auth.svelte";
-	import { setNavidromeUrl } from "../lib/navidrome.svelte.ts";
+	import { setNavidromeUrl } from "$lib/navidrome.svelte";
 	// import {
 	// 	deleteAudioPlayer,
 	// 	storeAudioPlayer,
 	// } from "../lib/audio-player.svelte";
-	import { cconsole } from "../lib/logger.svelte";
+	import { cconsole, setupCustomLogger } from "$lib/logger.svelte";
 	import { Capacitor } from "@capacitor/core";
 
 	import { App as CapacitorApp } from "@capacitor/app";
@@ -36,6 +36,8 @@
 
 	let audioElement: HTMLAudioElement = $state()!;
 	onMount(() => {
+		setupCustomLogger();
+
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
 		const navidromeSubsonicSalt = localStorage.getItem("s_salt");
