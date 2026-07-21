@@ -5,7 +5,7 @@
   "id": "/",
   "start_url": "/",
   "theme_color": "#ffe06a",
-  "background_color": "#efefef",
+  "background_color": "#2e2e2e",
   "display": "standalone",
   "scope": "/",
   "categories": ["music", "utilities", "navigation", "lifestyle"],
