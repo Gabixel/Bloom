@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { navigating, page } from "$app/state";
 	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
-	import LoginLayout from "$lib/layouts/LoginLayout.svelte";
+	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
 	import type { LayoutData } from "./$types.d.ts";
 	import { onMount, untrack, type Snippet } from "svelte";
 	import { goto, replaceState } from "$app/navigation";
