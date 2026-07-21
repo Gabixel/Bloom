@@ -11,7 +11,7 @@
 		setNavidromeUrl,
 		navidromeData,
 	} from "$lib/navidrome.svelte";
-	import { storeUser } from "../auth.svelte.ts";
+	import { storeUser } from "$lib/auth.svelte";
 	let navidromeUrl = $state("");
 	let user = $state(""),
 		pass = $state(""),
