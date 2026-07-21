@@ -9,6 +9,7 @@
 	import { authData } from "$lib/auth.svelte";
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
+	import AlbumImage from "../../lib/layouts/music/AlbumImage.svelte";
 
 	let { data }: PageProps = $props();
 
@@ -64,64 +65,11 @@
 					goto(`${_location.hash}/${album.id}`, {});
 				}}
 			>
-				<img
-					data-album-id={album.id}
-					draggable="false"
-					alt={`Album cover di \"${album.name}\"`}
-					width="70"
-					height="70"
-					style="object-fit: contain;background-color:#00000010"
-					src={`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`}
-					onerror={(e) => {
-						cconsole.error("image error", e);
-
-						if (errorCount > 0) {
-							return;
-						}
-
-						fetch(
-							`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-								`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`,
-						)
-							.then((r) => {
-								cconsole.log("HTTP status:", r.status);
-								cconsole.log("Content-Type:", r.headers.get("content-type"));
-								cconsole.log("URL finale:", r.url);
-
-								if (!r.ok) {
-									return;
-								}
-
-								return r.blob();
-							})
-							.then((blob) => {
-								if (blob == null) {
-									cconsole.log("blob is", typeof blob);
-									return;
-								}
-
-								console.log("blob", blob.type, blob.size);
-
-								const blobUrl = URL.createObjectURL(blob);
-
-								const img: HTMLImageElement = document.querySelector(`img[data-album-id='${album.id}']`)!;
-
-								img.src = blobUrl;
-
-								img.onload = () => {
-									cconsole.log("blob image loaded");
-								};
-
-								img.onerror = (e) => {
-									cconsole.error("error in blob", e);
-								};
-							})
-							.catch((err) => cconsole.error("fetch fallito:", err));
-
-						errorCount++;
-					}}
-				/>
+				<AlbumImage
+					albumName={album.name}
+					coverArtId={album.coverArt}
+					albumId={album.id}
+				></AlbumImage>
 				<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
 				<span>{album.name}</span>
 			</div>
