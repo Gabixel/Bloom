@@ -10,6 +10,14 @@ let audioId = generateAudioId();
 export async function createAudioPlayer(url: string) {
 	if (audioPlayerCreated) {
 		// TODO: change track and all of that
+		await AudioPlayer.changeAudioSource({
+			audioId,
+			source: url,
+		});
+		await AudioPlayer.changeMetadata({
+			audioId,
+			friendlyTitle: "Test title 2",
+		});
 		await AudioPlayer.play({
 			audioId,
 		});
@@ -27,6 +35,8 @@ export async function createAudioPlayer(url: string) {
 		// albumTitle: "test",
 		// artworkSource // inherited
 		useForNotification: true,
+		showSeekBackward: true,
+		showSeekForward: true,
 		loop: false, // TODO
 	})
 		.then(() => {
