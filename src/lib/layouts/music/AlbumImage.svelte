@@ -29,12 +29,12 @@
 	const controller = new AbortController();
 	const signal = controller.signal;
 
-	let imageSrc: string = $state("");
+	let imageSrc: string | null = $state(null);
 	let coverAltText: string = $derived.by(() => {
 		return `Covert art of album \"${albumName}\"`;
 	});
 
-	let isWeb = ["ios", "android"].includes(Capacitor.getPlatform()) === false;
+	const isWeb = ["ios", "android"].includes(Capacitor.getPlatform()) === false;
 
 	onMount(() => {
 		let url =
@@ -43,7 +43,6 @@
 
 		if (isWeb) {
 			imageSrc = url;
-			isBusy = false;
 			return;
 		}
 
@@ -79,15 +78,50 @@
 	});
 </script>
 
-<img
-	src={imageSrc}
-	alt=""
-	aria-busy={isBusy}
-	onerror={(e) => {
-		cconsole.error("image error", e);
-	}}
-	data-album-id={albumId}
-	draggable="false"
-	width="70"
-	height="70"
-/>
+<div class="album-image-wrapper">
+	<img
+		src={imageSrc}
+		alt={coverAltText}
+		aria-busy={isBusy}
+		onload={() => {
+			if (!isWeb) {
+				return;
+			}
+	
+			isBusy = false;
+		}}
+		class={[!isBusy && "loaded"]}
+		onerror={(e) => {
+			cconsole.error("image error", e);
+		}}
+		data-album-id={albumId}
+		draggable="false"
+		width="70"
+		height="70"
+	/>
+</div>
+
+<style>
+	img:not([src]),
+	img:not(.loaded) {
+		opacity: 0;
+	}
+
+	img {
+		transition: opacity 0.5s ease;
+		user-select: none;
+	}
+
+	img[src].loaded {
+		opacity: 1;
+	}
+
+	.album-image-wrapper {
+		min-width: 70px;
+		width: 70px;
+		min-height: 70px;
+		height: 70px;
+
+		background-color: #00000025;
+	}
+</style>
