@@ -51,7 +51,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio player ready");
+			cconsole.log("audio ready");
 		},
 	);
 	await AudioPlayer.onAudioEnd(
@@ -59,7 +59,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio player ended");
+			cconsole.log("audio ended");
 		},
 	);
 	await AudioPlayer.onMetadataUpdate(
@@ -67,7 +67,31 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio player ended");
+			cconsole.log("audio metadata updated");
+		},
+	);
+	await AudioPlayer.onAppGainsFocus(
+		{
+			audioId,
+		},
+		() => {
+			cconsole.log("app is in foreground");
+		},
+	);
+	await AudioPlayer.onAppLosesFocus(
+		{
+			audioId,
+		},
+		() => {
+			cconsole.log("app is in background");
+		},
+	);
+	await AudioPlayer.onPlaybackStatusChange(
+		{
+			audioId,
+		},
+		(result) => {
+			cconsole.log("playback status changed to:", result);
 		},
 	);
 
