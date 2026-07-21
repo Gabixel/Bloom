@@ -181,7 +181,7 @@
 		position: fixed;
 		z-index: 999;
 		color: #fff;
-		overflow-y: scroll;
+		overflow: clip;
 		font-family: monospace, monospace;
 		font-size: 0.6rem;
 		top: 0;
