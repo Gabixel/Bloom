@@ -68,6 +68,9 @@ export async function login(
 	}
 }
 
+/**
+ * Authenticated request for Navidrome endpoints.
+ */
 export function authFetch(input: RequestInfo) {
 	input = getSubsonicApiPath(input);
 
