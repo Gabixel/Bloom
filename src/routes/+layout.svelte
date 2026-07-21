@@ -16,6 +16,8 @@
 	import { Capacitor } from "@capacitor/core";
 
 	import { App as CapacitorApp } from "@capacitor/app";
+	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
+
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
 			CapacitorApp.exitApp();
@@ -162,12 +164,15 @@
 </p>
 
 {#if authData.isLoggedIn()}
-	{@render children()}
+	<div id="main-inner">
+		{@render children()}
+	</div>
 
 	<!--<div style="background-color:#00000010">
 		Music player<br />
 		<audio bind:this={audioElement} controls></audio>
 	</div>-->
+	<UIPlayer audioPlayer={null}></UIPlayer>
 {:else}
 	<LoginLayout></LoginLayout>
 {/if}
@@ -201,5 +206,33 @@
 	}
 	#js-console.hidden {
 		display: none;
+	}
+
+	:global(footer) {
+		position: sticky;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+
+	:global(:root, html, body) {
+		padding: 0;
+		margin: 0;
+		height: 100%;
+	}
+
+	:global(body, body *) {
+		box-sizing: border-box;
+	}
+
+	:global(body) {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+	}
+
+	#main-inner {
+		padding: 1rem;
 	}
 </style>

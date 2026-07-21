@@ -1,4 +1,4 @@
-import { AudioPlayer } from "@mediagrid/capacitor-native-audio";
+import { AudioPlayer as CapacitorAudio } from "@mediagrid/capacitor-native-audio";
 import { cconsole } from "./logger.svelte";
 import type { CapacitorException } from "@capacitor/core";
 
@@ -7,27 +7,36 @@ let audioPlayerCreated = $state(false);
 
 let audioId = generateAudioId();
 
+let domAudioCheckInterval: NodeJS.Timeout | undefined = undefined;
+
+let trackDuration = $state(NaN);
+let trackTime = $state(NaN);
+
 export async function createAudioPlayer(url: string) {
 	if (audioPlayerCreated) {
+		clearInterval(domAudioCheckInterval);
 		// TODO: change track and all of that
-		await AudioPlayer.changeAudioSource({
+		await CapacitorAudio.changeAudioSource({
 			audioId,
 			source: url,
 		});
-		await AudioPlayer.changeMetadata({
+		await CapacitorAudio.changeMetadata({
 			audioId,
 			friendlyTitle: "Test title 2",
 		});
-		await AudioPlayer.play({
+		await CapacitorAudio.play({
 			audioId,
 		});
+
+		await updateDuration();
+		await startTicking();
 
 		return;
 	}
 
 	audioPlayerCreated = true;
 
-	await AudioPlayer.create({
+	await CapacitorAudio.create({
 		audioId,
 		audioSource: url,
 		friendlyTitle: "Test title",
@@ -46,7 +55,7 @@ export async function createAudioPlayer(url: string) {
 			cconsole.error(`audio player creation error: ${e}`);
 		});
 
-	await AudioPlayer.onAudioReady(
+	await CapacitorAudio.onAudioReady(
 		{
 			audioId,
 		},
@@ -54,7 +63,7 @@ export async function createAudioPlayer(url: string) {
 			cconsole.log("audio ready");
 		},
 	);
-	await AudioPlayer.onAudioEnd(
+	await CapacitorAudio.onAudioEnd(
 		{
 			audioId,
 		},
@@ -62,7 +71,7 @@ export async function createAudioPlayer(url: string) {
 			cconsole.log("audio ended");
 		},
 	);
-	await AudioPlayer.onMetadataUpdate(
+	await CapacitorAudio.onMetadataUpdate(
 		{
 			audioId,
 		},
@@ -70,23 +79,25 @@ export async function createAudioPlayer(url: string) {
 			cconsole.log("audio metadata updated");
 		},
 	);
-	await AudioPlayer.onAppGainsFocus(
+	await CapacitorAudio.onAppGainsFocus(
 		{
 			audioId,
 		},
 		() => {
 			cconsole.log("app is in foreground");
+			startTicking();
 		},
 	);
-	await AudioPlayer.onAppLosesFocus(
+	await CapacitorAudio.onAppLosesFocus(
 		{
 			audioId,
 		},
 		() => {
 			cconsole.log("app is in background");
+			clearInterval(domAudioCheckInterval);
 		},
 	);
-	await AudioPlayer.onPlaybackStatusChange(
+	await CapacitorAudio.onPlaybackStatusChange(
 		{
 			audioId,
 		},
@@ -95,7 +106,7 @@ export async function createAudioPlayer(url: string) {
 		},
 	);
 
-	await AudioPlayer.initialize({
+	await CapacitorAudio.initialize({
 		audioId,
 	})
 		.then(() => {
@@ -105,18 +116,74 @@ export async function createAudioPlayer(url: string) {
 			cconsole.error(`audio player init error: ${e}`);
 		});
 
-	await AudioPlayer.play({
+	startTicking();
+
+	await CapacitorAudio.play({
 		audioId,
 	});
+
+	await updateDuration();
+}
+
+// TODO: await for track change
+async function updateDuration() {
+	trackDuration = (
+		await CapacitorAudio.getDuration({
+			audioId,
+		})
+	).duration;
+}
+
+async function startTicking() {
+	domAudioCheckInterval = setInterval(() => {
+		CapacitorAudio.getCurrentTime({
+			audioId,
+		});
+	}, 1000);
 }
 
 export async function changeTrack() {
-	// await AudioPlayer.onAppGainsFocus();
-	// await AudioPlayer.onAppLosesFocus();
-	// await AudioPlayer.onPlaybackStatusChange();
-	// await AudioPlayer.setVolume()
+	// await CapacitorAudio.onAppGainsFocus();
+	// await CapacitorAudio.onAppLosesFocus();
+	// await CapacitorAudio.onPlaybackStatusChange();
+	// await CapacitorAudio.setVolume()
 }
 
 function generateAudioId() {
 	return Date.now().toString();
+}
+
+export const trackInfo = {
+	getDuration: () => trackDuration,
+	getCurrentTime: () => trackTime,
+	pauseOrResume: async () => {
+		if (!audioPlayerCreated) {
+			return;
+		}
+
+		let isPlaying = (
+			await CapacitorAudio.isPlaying({
+				audioId,
+			})
+		).isPlaying;
+
+		if (isPlaying) {
+			CapacitorAudio.pause({
+				audioId,
+			});
+		} else {
+			CapacitorAudio.play({
+				audioId,
+			});
+		}
+	},
+};
+
+export class AudioPlayer {
+	/**
+	 *
+	 */
+	constructor() {}
+
+	public async pause() {}
 }
