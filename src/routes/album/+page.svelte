@@ -43,15 +43,6 @@
 	// });
 </script>
 
-<img
-	src="https://github.com/Gabixel/Gabixel/assets/43073074/9c11cd7a-20ed-4442-ba81-41aa70257999"
-	onload={(e) => {
-		cconsole.log("image loaded", e);
-	}}
-	onerror={(e) => {
-		cconsole.error("image error", e);
-	}}
-/>
 {#await albumListRequest then result}
 	{#await result.data then albumListResponse}
 		{#snippet renderAlbum(album: {
@@ -82,9 +73,6 @@
 					style="object-fit: contain;background-color:#00000010"
 					src={`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${album.coverArt}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`}
-					onload={(e) => {
-						cconsole.log("image loaded", e);
-					}}
 					onerror={(e) => {
 						cconsole.error("image error", e);
 
