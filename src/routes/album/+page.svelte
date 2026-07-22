@@ -45,7 +45,7 @@
 </script>
 
 {#await albumListRequest then result}
-	{#await result.data then albumListResponse}
+	{#await result.json() then albumListResponse}
 		{#snippet renderAlbum(album: {
 			id: string;
 			name: string;
