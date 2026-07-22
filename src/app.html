@@ -1,34 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="text-scale" content="scale" />
-    <meta name="color-scheme" content="dark light" />
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<meta name="color-scheme" content="dark light" />
 
-    <meta
-      http-equiv="Cache-control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache">
-    
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'" /> -->
-    <style>
-      :root,
-      html,
-      body {
-        color-scheme: normal;
-        background-color: #2e2e2e;
-        color: #f0f0f0;
-      }
-      a {
-        color: #8080fe;
-      }
-    </style>
-    %sveltekit.head%
-  </head>
-  <body data-sveltekit-preload-data="hover" data-version="%sveltekit.version%">
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+		<meta
+			http-equiv="Cache-control"
+			content="no-cache, no-store, must-revalidate"
+		/>
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+
+		<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'" /> -->
+		<style>
+			:root,
+			html,
+			body {
+				color-scheme: normal;
+				background-color: #2e2e2e;
+				color: #f0f0f0;
+			}
+			a {
+				color: #8080fe;
+			}
+		</style>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" data-version="%sveltekit.version%">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
 </html>
