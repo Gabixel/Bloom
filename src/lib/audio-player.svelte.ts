@@ -12,7 +12,15 @@ let domAudioCheckInterval: NodeJS.Timeout | undefined = undefined;
 let trackDuration = $state(NaN);
 let trackTime = $state(NaN);
 
-export async function createAudioPlayer(url: string) {
+export async function createAudioPlayer(
+	url: string,
+	trackData: {
+		title: string;
+		artist: string;
+		albumTitle: string;
+		duration: number;
+	},
+) {
 	if (audioPlayerCreated) {
 		clearInterval(domAudioCheckInterval);
 		// TODO: change track and all of that
@@ -22,13 +30,15 @@ export async function createAudioPlayer(url: string) {
 		});
 		await CapacitorAudio.changeMetadata({
 			audioId,
-			friendlyTitle: "Test title 2",
+			friendlyTitle: trackData.title,
+			artistName: trackData.artist,
+			albumTitle: trackData.albumTitle,
 		});
 		await CapacitorAudio.play({
 			audioId,
 		});
 
-		await updateDuration();
+		updateDuration(trackData.duration);
 		await startTicking();
 
 		return;
@@ -39,20 +49,22 @@ export async function createAudioPlayer(url: string) {
 	await CapacitorAudio.create({
 		audioId,
 		audioSource: url,
-		friendlyTitle: "Test title",
-		// artistName: "test",
-		// albumTitle: "test",
+		friendlyTitle: trackData.title,
+		artistName: trackData.artist,
+		albumTitle: trackData.albumTitle,
 		// artworkSource // inherited
 		useForNotification: true,
 		showSeekBackward: true,
 		showSeekForward: true,
+		seekBackwardTime: 10,
+		seekForwardTime: 10,
 		loop: false, // TODO
 	})
 		.then(() => {
-			cconsole.log("audio player created");
+			cconsole.log("audio player: player created");
 		})
 		.catch((e: CapacitorException) => {
-			cconsole.error(`audio player creation error: ${e}`);
+			cconsole.error(`audio player: player creation error: ${e}`);
 		});
 
 	await CapacitorAudio.onAudioReady(
@@ -60,7 +72,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio ready");
+			cconsole.log("audio player: audio ready");
 		},
 	);
 	await CapacitorAudio.onAudioEnd(
@@ -68,7 +80,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio ended");
+			cconsole.log("audio player: audio ended");
 		},
 	);
 	await CapacitorAudio.onMetadataUpdate(
@@ -76,7 +88,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("audio metadata updated");
+			cconsole.log("audio player: metadata updated");
 		},
 	);
 	await CapacitorAudio.onAppGainsFocus(
@@ -84,7 +96,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("app is in foreground");
+			cconsole.log("audio player: app is in foreground");
 			startTicking();
 		},
 	);
@@ -93,7 +105,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		() => {
-			cconsole.log("app is in background");
+			cconsole.log("audio player: app is in background");
 			clearInterval(domAudioCheckInterval);
 		},
 	);
@@ -102,7 +114,7 @@ export async function createAudioPlayer(url: string) {
 			audioId,
 		},
 		(result) => {
-			cconsole.log("playback status changed to:", result);
+			cconsole.log(`audio player: playback status changed to "${result.status}"`);
 		},
 	);
 
@@ -110,10 +122,10 @@ export async function createAudioPlayer(url: string) {
 		audioId,
 	})
 		.then(() => {
-			cconsole.log("audio player initialized");
+			cconsole.log("audio player: initialized");
 		})
 		.catch((e) => {
-			cconsole.error(`audio player init error: ${e}`);
+			cconsole.error(`audio player: init error.`, e);
 		});
 
 	startTicking();
@@ -122,23 +134,30 @@ export async function createAudioPlayer(url: string) {
 		audioId,
 	});
 
-	await updateDuration();
+	updateDuration(trackData.duration);
 }
 
-// TODO: await for track change
-async function updateDuration() {
-	trackDuration = (
-		await CapacitorAudio.getDuration({
-			audioId,
-		})
-	).duration;
+function updateDuration(value: number) {
+	trackDuration = value;
 }
+
+// // TODO: await for track change
+// async function updateDuration() {
+// 	trackDuration = (
+// 		await CapacitorAudio.getDuration({
+// 			audioId,
+// 		})
+// 	).duration;
+// }
 
 async function startTicking() {
-	domAudioCheckInterval = setInterval(() => {
-		CapacitorAudio.getCurrentTime({
-			audioId,
-		});
+	domAudioCheckInterval = setInterval(async () => {
+		// TODO: async guard in case we're stacking 'await's here
+		trackTime = (
+			await CapacitorAudio.getCurrentTime({
+				audioId,
+			})
+		).currentTime;
 	}, 1000);
 }
 
@@ -150,7 +169,7 @@ export async function changeTrack() {
 }
 
 function generateAudioId() {
-	return Date.now().toString();
+	return "bloom-" + Date.now().toString();
 }
 
 export const trackInfo = {

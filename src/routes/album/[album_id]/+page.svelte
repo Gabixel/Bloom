@@ -40,7 +40,17 @@
 		cconsole.log(response);
 	});
 
-	async function playAudio(audioId: string, format: "mp3" | "flac") {
+	async function playAudio(
+		audioId: string,
+		trackData: {
+			title: string;
+			artist: string;
+			albumTitle: string;
+			duration: number;
+		},
+		// TODO: future use(?)
+		format: "mp3" | "flac" | string,
+	) {
 		/*let player = getAudioPlayer();*/
 
 		// cconsole.log(player);
@@ -70,7 +80,7 @@
 
 		// // const arrayBuffer = await res.arrayBuffer();
 
-		createAudioPlayer(url);
+		createAudioPlayer(url, trackData);
 		// .then(() => {
 		// 	showAlert(`music started`);
 		// })
@@ -99,7 +109,16 @@
 			<button
 				type="button"
 				onclick={() => {
-					playAudio(songEntry.id, songEntry.suffix);
+					playAudio(
+						songEntry.id,
+						{
+							title: songEntry.title,
+							artist: songEntry.artist,
+							albumTitle: albumData.name,
+							duration: Number(songEntry.duration),
+						},
+						songEntry.suffix,
+					);
 				}}>[Play]</button
 			>
 			<span>
