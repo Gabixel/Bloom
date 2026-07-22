@@ -35,7 +35,7 @@
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 	albumRequest.then(async (data) => {
-		let response = (await data.data)["subsonic-response"];
+		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
 		cconsole.log(response);
 	});
