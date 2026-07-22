@@ -11,79 +11,124 @@
 	import { cconsole } from "../../lib/logger.svelte";
 	import AlbumImage from "../../lib/layouts/music/AlbumImage.svelte";
 
-	let { data }: PageProps = $props();
-
-	// let albumId = $state("");
+	let {}: PageProps = $props();
 
 	let _location = $state(location);
 
-	async function onSubmit(e: SubmitEvent) {
-		e.preventDefault();
-
-		// const r = await
-	}
+	let searchBar: HTMLInputElement = $state()!;
 
 	let user = authData.userData();
 
-	let albumListRequest = authFetch(
-		`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-	);
+	type AlbumItem = {
+		id: string;
+		name: string;
+		coverArt: string;
+		songCount: string;
+		/** timestamp TZ */
+		created: string;
+		duration: string;
+		artist: string;
+		artistId: string;
+	};
 
-	let errorCount = 0;
+	let albumlist: AlbumItem[] | null = $state.raw([]);
 
-	// onMount(() => {
-	// 	let user = authData.userData();
+	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
-	// 	albumListRequest = authFetch(
-	// 		`/rest/getAlbumList2?type=newest&size=8&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}`
-	// 		+ `&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`);
-	// 	// .then(async (res) => {
-	// 	// 	cconsole.log(await res.json());
-	// 	// });
-	// });
+	onMount(() => {
+		listAlbums();
+	});
+	function listAlbums() {
+		authFetch(
+			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
+		)
+			.then(async (result) => {
+				let list = (await result.json())["subsonic-response"]["albumList2"][
+					"album"
+				];
+
+				console.log(list);
+
+				if (Array.isArray(list)) {
+					albumlist = list;
+				}
+			})
+			.catch(() => {
+				albumlist = null;
+			});
+	}
+
+	onMount(() => {
+		searchBar.addEventListener("input", () => {
+			clearTimeout(searchTimeout);
+			searchTimeout = setTimeout(() => {
+				if (searchBar.value == "") {
+					// default listing
+					listAlbums();
+					return;
+				}
+
+				search(encodeURIComponent(searchBar.value));
+			}, 1100);
+		});
+	});
+
+	async function search(input: string) {
+		let request = await authFetch(
+			`/rest/search3?u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&query=${input}&artistCount=0&songCount=0`,
+		);
+
+		let searchList = (await request.json())["subsonic-response"]["searchResult3"][
+			"album"
+		];
+
+		if (Array.isArray(searchList)) {
+			albumlist = searchList;
+		}
+	}
 </script>
 
-{#await albumListRequest then result}
-	{#await result.json() then albumListResponse}
-		{#snippet renderAlbum(album: {
-			id: string;
-			name: string;
-			coverArt: string;
-			songCount: number;
-			created: string;
-		})}
-			<div
-				role="link"
-				class="album-element"
-				tabindex="0"
-				onclick={() => {
-					goto(`${_location.hash}/${album.id}`, {});
-				}}
-				onkeydown={() => {
-					// TODO: check for enter key specifically
-					goto(`${_location.hash}/${album.id}`, {});
-				}}
-			>
-				<AlbumImage
-					albumName={album.name}
-					coverArtId={album.coverArt}
-					albumId={album.id}
-				></AlbumImage>
-				<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
-				<span>{album.name}</span>
-			</div>
-		{/snippet}
+<input
+	bind:this={searchBar}
+	type="search"
+	class="album-search-bar"
+	id="album-search-bar"
+	placeholder="Search…"
+	autocomplete="off"
+/>
 
-		{#if albumListResponse?.["subsonic-response"]?.albumList2?.album != null}
-			{#each albumListResponse["subsonic-response"].albumList2.album as album}
-				{@render renderAlbum(album)}
-			{/each}
-		{:else}
-			<p>No albums!</p>
-		{/if}
-	{/await}
-{/await}
+{#if albumlist == null}
+	<p>No albums!</p>
+{:else}
+	{#each albumlist as album (album.id)}
+		{@render renderAlbum(album)}
+	{/each}
+{/if}
+
+{#snippet renderAlbum(album: AlbumItem)}
+	<div
+		role="link"
+		class="album-element"
+		tabindex="0"
+		onclick={() => {
+			goto(`${_location.hash}/${album.id}`, {});
+		}}
+		onkeydown={() => {
+			// TODO: check for enter key specifically
+			goto(`${_location.hash}/${album.id}`, {});
+		}}
+	>
+		<AlbumImage
+			albumName={album.name}
+			coverArtId={album.coverArt}
+			albumId={album.id}
+		></AlbumImage>
+		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
+		<span>{album.name}</span>
+	</div>
+{/snippet}
 
 <style>
 	.album-element {
@@ -100,5 +145,14 @@
 	}
 	.album-element:hover {
 		background-color: #00000060;
+	}
+
+	.album-search-bar {
+		appearance: none;
+		padding: 0.25rem;
+		min-width: 0;
+		max-width: none;
+		width: 100%;
+		margin-bottom: 1rem;
 	}
 </style>

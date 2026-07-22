@@ -212,6 +212,11 @@
 		font-size: 100%;
 	}
 
+	:global(input) {
+		font-size: 1rem;
+		border: none;
+	}
+
 	:global(footer) {
 		position: sticky;
 		bottom: 0;
