@@ -67,35 +67,7 @@
 
 		let url = getSubsonicApiPath(`/rest/stream.view?${params.toString()}`);
 
-		// await showAlert(`playing music: "${url}"`);
-
-		// // const res = await fetch(url);
-
-		// showAlert(JSON.stringify(res.status));
-		// showAlert(JSON.stringify(res.headers.get("content-type")));
-
-		// const blob = await res.blob();
-
-		// showAlert(blob.type + " " + blob.size);
-
-		// // const arrayBuffer = await res.arrayBuffer();
-
 		createAudioPlayer(url, trackData);
-		// .then(() => {
-		// 	showAlert(`music started`);
-		// })
-		// .catch((e) => {
-		// 	console.error(e);
-		// 	showAlert(`error playing music: ${e} / ${JSON.stringify(e)}`);
-		// });
-		// .finally(() => {
-		// 	showAlert("final music logic");
-		// });
-
-		/*player.preload = "metadata";
-		player.src = url;
-
-		player.play();*/
 	}
 </script>
 
