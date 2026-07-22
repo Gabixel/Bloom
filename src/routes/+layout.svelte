@@ -208,6 +208,10 @@
 		display: none;
 	}
 
+	:global(:root, html, body) {
+		font-size: 100%;
+	}
+
 	:global(footer) {
 		position: sticky;
 		bottom: 0;
