@@ -1,21 +1,23 @@
 <script lang="ts">
 	import { navigating, page } from "$app/state";
-	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
+	import { authData, destroyUserData } from "$lib/auth.svelte";
 	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
 	import type { LayoutData } from "./$types.d.ts";
 	import { onMount, untrack, type Snippet } from "svelte";
 	import { goto, replaceState } from "$app/navigation";
 
 	import { jwtTranslate, storeUser } from "$lib/auth.svelte";
-	import { setNavidromeUrl } from "../lib/navidrome.svelte.ts";
+	import { setNavidromeUrl } from "$lib/navidrome.svelte";
 	// import {
 	// 	deleteAudioPlayer,
 	// 	storeAudioPlayer,
 	// } from "../lib/audio-player.svelte";
-	import { cconsole } from "../lib/logger.svelte";
+	import { cconsole, setupCustomLogger } from "$lib/logger.svelte";
 	import { Capacitor } from "@capacitor/core";
 
 	import { App as CapacitorApp } from "@capacitor/app";
+	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
+
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
 			CapacitorApp.exitApp();
@@ -36,6 +38,8 @@
 
 	let audioElement: HTMLAudioElement = $state()!;
 	onMount(() => {
+		setupCustomLogger();
+
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
 		const navidromeSubsonicSalt = localStorage.getItem("s_salt");
@@ -160,12 +164,15 @@
 </p>
 
 {#if authData.isLoggedIn()}
-	{@render children()}
+	<div id="main-inner">
+		{@render children()}
+	</div>
 
 	<!--<div style="background-color:#00000010">
 		Music player<br />
 		<audio bind:this={audioElement} controls></audio>
 	</div>-->
+	<UIPlayer audioPlayer={null}></UIPlayer>
 {:else}
 	<LoginLayout></LoginLayout>
 {/if}
@@ -181,7 +188,7 @@
 		position: fixed;
 		z-index: 999;
 		color: #fff;
-		overflow-y: scroll;
+		overflow: clip;
 		font-family: monospace, monospace;
 		font-size: 0.6rem;
 		top: 0;
@@ -199,5 +206,42 @@
 	}
 	#js-console.hidden {
 		display: none;
+	}
+
+	:global(:root, html, body) {
+		font-size: 100%;
+	}
+
+	:global(input) {
+		font-size: 1rem;
+		border: none;
+	}
+
+	:global(footer) {
+		position: sticky;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+
+	:global(:root, html, body) {
+		padding: 0;
+		margin: 0;
+		height: 100%;
+	}
+
+	:global(body, body *) {
+		box-sizing: border-box;
+	}
+
+	:global(body) {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+	}
+
+	#main-inner {
+		padding: 1rem;
 	}
 </style>

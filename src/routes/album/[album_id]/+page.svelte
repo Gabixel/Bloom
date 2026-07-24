@@ -35,12 +35,22 @@
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 	albumRequest.then(async (data) => {
-		let response = (await data.data)["subsonic-response"];
+		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
 		cconsole.log(response);
 	});
 
-	async function playAudio(audioId: string, format: "mp3" | "flac") {
+	async function playAudio(
+		audioId: string,
+		trackData: {
+			title: string;
+			artist: string;
+			albumTitle: string;
+			duration: number;
+		},
+		// TODO: future use(?)
+		format: "mp3" | "flac" | string,
+	) {
 		/*let player = getAudioPlayer();*/
 
 		// cconsole.log(player);
@@ -57,35 +67,7 @@
 
 		let url = getSubsonicApiPath(`/rest/stream.view?${params.toString()}`);
 
-		// await showAlert(`playing music: "${url}"`);
-
-		// // const res = await fetch(url);
-
-		// showAlert(JSON.stringify(res.status));
-		// showAlert(JSON.stringify(res.headers.get("content-type")));
-
-		// const blob = await res.blob();
-
-		// showAlert(blob.type + " " + blob.size);
-
-		// // const arrayBuffer = await res.arrayBuffer();
-
-		createAudioPlayer(url);
-		// .then(() => {
-		// 	showAlert(`music started`);
-		// })
-		// .catch((e) => {
-		// 	console.error(e);
-		// 	showAlert(`error playing music: ${e} / ${JSON.stringify(e)}`);
-		// });
-		// .finally(() => {
-		// 	showAlert("final music logic");
-		// });
-
-		/*player.preload = "metadata";
-		player.src = url;
-
-		player.play();*/
+		createAudioPlayer(url, trackData);
 	}
 </script>
 
@@ -99,7 +81,16 @@
 			<button
 				type="button"
 				onclick={() => {
-					playAudio(songEntry.id, songEntry.suffix);
+					playAudio(
+						songEntry.id,
+						{
+							title: songEntry.title,
+							artist: songEntry.artist,
+							albumTitle: albumData.name,
+							duration: Number(songEntry.duration),
+						},
+						songEntry.suffix,
+					);
 				}}>[Play]</button
 			>
 			<span>

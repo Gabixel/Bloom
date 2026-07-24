@@ -1,5 +1,4 @@
 import * as IDB from "../../static/idb-keyval-6-esm.js";
-import { CapacitorHttp } from "@capacitor/core";
 
 /*
  * u = username
@@ -11,7 +10,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * f = response format (xml, json)
  */
 
-export const CLIENT_NAME = "Bloom (Gabi Group)"
+export const CLIENT_NAME = "Bloom (Gabi Group)";
 export const CLIENT_NAME_URL = encodeURI(CLIENT_NAME);
 
 export type LoginResult =
@@ -42,21 +41,22 @@ export async function login(
 	username: string,
 	password: string,
 ): Promise<LoginResult> {
+	const url = `${navidrome_base}/auth/login`;
+
 	try {
-		const res = await CapacitorHttp.request({
-			url: `${navidrome_base}/auth/login`,
+		const res = await fetch(url, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			data: JSON.stringify({ username, password }),
-			// credentials: 'include' // abilita se Navidrome usa cookie-based sessions
+			body: JSON.stringify({ username, password }),
+			// credentials: 'include' // TODO: enable if cookie sessions are a thing
 		});
 
-		if (res.status < 200 || res.status > 299) {
-			const text = res.data;
+		if (!res.ok) {
+			const text = res.text();
 			return { error: `HTTP ${res.status}: ${text}` };
 		}
 
-		const data = await res.data;
+		const data = await res.json();
 
 		if (data?.token != null) {
 			return data;
@@ -68,20 +68,22 @@ export async function login(
 	}
 }
 
-export function authFetch(input: RequestInfo) {
-	input = getSubsonicApiPath(input);
+/**
+ * Authenticated request for Navidrome endpoints.
+ */
+export function authFetch(inputUrl: RequestInfo, init: RequestInit = {}) {
+	inputUrl = getSubsonicApiPath(inputUrl);
 
 	const token = localStorage.getItem("nd_token");
-	// const headers = new Headers(init.headers ?? {});
-	let headers: { [key: string]: string } = {};
 
-	if (token) headers["X-ND-Authorization"] = `Bearer ${token}`;
+	const headers = new Headers(init.headers ?? {});
 
-	return CapacitorHttp.request({
-		url: input,
-		// ...init,
+	if (token) headers.set("X-ND-Authorization", `Bearer ${token}`);
+
+	return fetch(inputUrl, {
 		method: "GET",
-		headers
+		...init,
+		headers,
 	});
 }
 

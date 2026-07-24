@@ -52,7 +52,7 @@
 			);
 			const parser = new DOMParser();
 
-			cconsole.log(parser.parseFromString(await res.data, "application/xml"));
+			cconsole.log(parser.parseFromString(await res.json(), "application/xml"));
 			// cconsole.log(await res.text())
 		}}>ping</button
 	>
@@ -60,7 +60,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user/" + authData.userData().id);
-			let json = res.data;
+			let json = res.json();
 			cconsole.log(json);
 		}}>user (me)</button
 	>
@@ -68,7 +68,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user");
-			let json = res.data;
+			let json = res.json();
 			cconsole.log(json);
 		}}>user list</button
 	>
@@ -76,7 +76,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/player/");
-			let json = res.data;
+			let json = res.json();
 			cconsole.log(json);
 		}}>players list</button
 	>
@@ -84,7 +84,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/transcoding/");
-			let json = res.data;
+			let json = res.json();
 			cconsole.log(json);
 		}}>transcoding list</button
 	>
@@ -92,9 +92,8 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/share/");
-			if (res.status === 200) {
-				cconsole.log(await res.data);
-			}
+			let json = res.json();
+			cconsole.log(json);
 		}}>share</button
 	>
 	<div
