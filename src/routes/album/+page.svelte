@@ -9,7 +9,7 @@
 	import { authData } from "$lib/auth.svelte";
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
-	import AlbumImage from "../../lib/layouts/music/AlbumImage.svelte";
+	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
 
 	let {}: PageProps = $props();
 

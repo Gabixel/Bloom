@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import type { Attachment } from "svelte/attachments";
 	import {
 		authFetch,
 		CLIENT_NAME_URL,
@@ -8,11 +7,11 @@
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { cconsole } from "$lib/logger.svelte";
-	import { Capacitor } from "@capacitor/core";
 
 	// TODO: optimize
 	let user = authData.userData();
 
+	// TODO: inherit from parent
 	let {
 		coverArtId,
 		albumId,
@@ -29,52 +28,10 @@
 	const controller = new AbortController();
 	const signal = controller.signal;
 
-	let imageSrc: string | null = $state(null);
+	let imageSrc: string | null = $state(`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+	`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`);
 	let coverAltText: string = $derived.by(() => {
 		return `Covert art of album \"${albumName}\"`;
-	});
-
-	const isWeb = ["ios", "android"].includes(Capacitor.getPlatform()) === false;
-
-	onMount(() => {
-		let url =
-			`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`;
-
-		if (isWeb) {
-			imageSrc = url;
-			return;
-		}
-
-		fetch(url, {
-			method: "get",
-			signal,
-		})
-			.then((response) => {
-				if (!response.ok) {
-					return;
-				}
-
-				return response.blob();
-			})
-			// TODO: cache blob
-			.then((blob) => {
-				if (blob == null) {
-					cconsole.error("blob is", typeof blob);
-					return;
-				}
-
-				imageSrc = URL.createObjectURL(blob);
-			})
-			.catch((err) => cconsole.error("album cover fetch failed:", err))
-			.finally(() => {
-				isBusy = false;
-			});
-
-		return () => {
-			!isWeb && controller.abort();
-			isBusy = false;
-		};
 	});
 </script>
 
@@ -82,12 +39,7 @@
 	<img
 		src={imageSrc}
 		alt={coverAltText}
-		aria-busy={isBusy}
 		onload={() => {
-			if (!isWeb) {
-				return;
-			}
-	
 			isBusy = false;
 		}}
 		class={[!isBusy && "loaded"]}
@@ -102,7 +54,6 @@
 </div>
 
 <style>
-	img:not([src]),
 	img:not(.loaded) {
 		opacity: 0;
 	}
@@ -112,7 +63,7 @@
 		user-select: none;
 	}
 
-	img[src].loaded {
+	img.loaded {
 		opacity: 1;
 	}
 
