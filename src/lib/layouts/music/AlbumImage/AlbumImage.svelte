@@ -24,26 +24,5 @@
 {/if}
 
 <style>
-	img:not([src]),
-	img:not(.loaded) {
-		opacity: 0;
-	}
-
-	img {
-		transition: opacity 0.5s ease;
-		user-select: none;
-	}
-
-	img[src].loaded {
-		opacity: 1;
-	}
-
-	.album-image-wrapper {
-		min-width: 70px;
-		width: 70px;
-		min-height: 70px;
-		height: 70px;
-
-		background-color: #00000025;
-	}
+	/* TODO: style children */
 </style>
