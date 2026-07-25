@@ -23,14 +23,18 @@ export function setupCustomLogger() {
 	});
 }
 
-let execDebug = (...data: any[]) => doLog(console.debug, ...data);
-let execLog = (...data: any[]) => doLog(console.log, ...data);
-let execError = (...data: any[]) => doLog(console.error, ...data);
-let execWarn = (...data: any[]) => doLog(console.warn, ...data);
-let execTrace = (...data: any[]) => doLog(console.trace, ...data);
+let execInfo = (...data: any[]) => doLog(console.info, "info", ...data);
+let execDebug = (...data: any[]) => doLog(console.debug, "debug", ...data);
+let execLog = (...data: any[]) => doLog(console.log, "log", ...data);
+let execError = (...data: any[]) => doLog(console.error, "error", ...data);
+let execWarn = (...data: any[]) => doLog(console.warn, "warn", ...data);
+let execTrace = (...data: any[]) => doLog(console.trace, "trace", ...data);
 
 export const cconsole = $state.raw({
 	logList: () => logList,
+	info: (...data: any[]) => {
+		execInfo(...data);
+	},
 	log: (...data: any[]) => {
 		execLog(...data);
 	},
@@ -48,13 +52,13 @@ export const cconsole = $state.raw({
 	},
 });
 
-function doLog(func: Function, ...data: any[]) {
+function doLog(func: Function, cType: string, ...data: any[]) {
 	let firstText = "[BLOOM]";
 
 	if (logList.length > 100) logList.length = 0;
 
 	logList.unshift(
-		data.reduce((prev, curr) => {
+		`${cType},` + data.reduce((prev, curr) => {
 			if (prev.length > 0) prev += " ";
 
 			if (typeof curr != "string") prev += JSON.stringify(curr);

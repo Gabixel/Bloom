@@ -123,7 +123,8 @@
 		if ("mediaCapabilities" in navigator) {
 			mediacap.results =
 				await navigator.mediaCapabilities.decodingInfo(mediaConfig);
-			mediacap.message = (mediacap.results.supported ? "" : "not ") + "supported";
+			mediacap.message =
+				(mediacap.results.supported ? "" : "not ") + "supported";
 		}
 
 		return mediacap;
@@ -136,7 +137,11 @@
 </script>
 
 <svelte:head>
-	<link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
+	<link
+		rel="manifest"
+		href="/app.webmanifest"
+		crossorigin="use-credentials"
+	/>
 	<!-- <link rel="manifest" href="./app.webmanifest" /> -->
 </svelte:head>
 
@@ -179,7 +184,15 @@
 
 <div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">
 	{#each cconsole.logList() as log}
-		<p>{JSON.stringify(log)}</p>
+		<p
+			class={(() => {
+				// get piece before first comma ("log", "debug", etc.)
+				return log.match(/^[^,]*/)[0];
+			})()}
+		>
+			<span>[{log.match(/^[^,]*/)[0].toUpperCase()}]</span><br />
+			{JSON.stringify(log.replace(/^.*?,\s*/, ""))}
+		</p>
 	{/each}
 </div>
 
@@ -206,6 +219,39 @@
 	}
 	#js-console.hidden {
 		display: none;
+	}
+
+	#js-console {
+		padding: 0.25rem;
+	}
+
+	#js-console p {
+		margin: 0;
+		margin-bottom: 0.15rem;
+		border: 1px solid rgba(var(--theme) / 1);
+		background-color: rgba(var(--theme) / 0.25);
+	}
+	#js-console p span {
+		color: rgba(var(--theme) / 1);
+	}
+
+	#js-console p.info {
+		--theme: 46, 98, 219;
+	}
+	#js-console p.debug {
+		--theme: 112, 146, 181;
+	}
+	#js-console p.log {
+		--theme: 22, 178, 181;
+	}
+	#js-console p.error {
+		--theme: 235, 64, 52;
+	}
+	#js-console p.warn {
+		--theme: 191, 112, 15;
+	}
+	#js-console p.trace {
+		--theme: 191, 178, 163;
 	}
 
 	:global(:root, html, body) {
