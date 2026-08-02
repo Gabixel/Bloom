@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SplashScreen } from "@capacitor/splash-screen";
 	import { navigating, page } from "$app/state";
 	import { authData, destroyUserData } from "$lib/auth.svelte";
 	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
@@ -83,6 +84,12 @@
 		}
 	});
 
+	onMount(() => {
+		SplashScreen.hide({
+			fadeOutDuration: 200,
+		});
+	});
+
 	/*$effect(() => {
 		if (authData.isLoggedIn()) {
 			storeAudioPlayer(audioElement);
@@ -123,8 +130,7 @@
 		if ("mediaCapabilities" in navigator) {
 			mediacap.results =
 				await navigator.mediaCapabilities.decodingInfo(mediaConfig);
-			mediacap.message =
-				(mediacap.results.supported ? "" : "not ") + "supported";
+			mediacap.message = (mediacap.results.supported ? "" : "not ") + "supported";
 		}
 
 		return mediacap;
@@ -137,11 +143,7 @@
 </script>
 
 <svelte:head>
-	<link
-		rel="manifest"
-		href="/app.webmanifest"
-		crossorigin="use-credentials"
-	/>
+	<link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
 	<!-- <link rel="manifest" href="./app.webmanifest" /> -->
 </svelte:head>
 

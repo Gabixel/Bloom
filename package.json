@@ -36,6 +36,7 @@
     "@capacitor/core": "^8.5.0",
     "@capacitor/dialog": "^8.0.1",
     "@capacitor/ios": "^8.5.0",
+    "@capacitor/splash-screen": "^8.0.2",
     "@mediagrid/capacitor-native-audio": "^3.0.0"
   }
 }
