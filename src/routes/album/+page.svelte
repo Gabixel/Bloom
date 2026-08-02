@@ -161,7 +161,10 @@
 			albumId={album.id}
 		></AlbumImage>
 		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
-		<span>{album.name}</span>
+		<div>
+			<p>{album.name}</p>
+			<p class="album-artist">{album.artist}</p>
+		</div>
 	</div>
 {/snippet}
 
@@ -180,6 +183,19 @@
 	}
 	.album-element:hover {
 		background-color: #00000060;
+	}
+
+	.album-element p {
+		margin: 0;
+	}
+
+	p.album-artist {
+		color: #aaa;
+		font-size: 0.9rem;
+	}
+
+	.album-element > div {
+
 	}
 
 	.album-search-bar {
