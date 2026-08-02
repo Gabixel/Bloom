@@ -10,6 +10,7 @@
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
 	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
+	import { searchData } from "../../lib/album-search.svelte";
 
 	let {}: PageProps = $props();
 
@@ -31,13 +32,12 @@
 		artistId: string;
 	};
 
-	let albumlist: AlbumItem[] | null = $state.raw([]);
+	let albumlist: AlbumItem[] | null = $state.raw(
+		searchData.getLastSearchData().albumList,
+	);
 
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
-	onMount(() => {
-		listAlbums();
-	});
 	function listAlbums() {
 		authFetch(
 			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
@@ -63,15 +63,28 @@
 		searchBar.addEventListener("input", () => {
 			clearTimeout(searchTimeout);
 			searchTimeout = setTimeout(() => {
-				if (searchBar.value == "") {
+				let value = searchBar.value;
+
+				cconsole.log(`searching for '${value}'`);
+
+				if (value == "") {
 					// default listing
 					listAlbums();
 					return;
 				}
 
-				search(encodeURIComponent(searchBar.value));
+				search(encodeURIComponent(value)).then((searchList) => {
+					searchData.update({
+						searchInput: value,
+						albumList: searchList,
+					});
+				});
 			}, 1100);
 		});
+
+		if (searchBar.value === "") {
+			listAlbums();
+		}
 	});
 
 	async function search(input: string) {
@@ -87,12 +100,15 @@
 		if (Array.isArray(searchList)) {
 			albumlist = searchList;
 		}
+
+		return searchList;
 	}
 </script>
 
 <input
 	bind:this={searchBar}
 	type="search"
+	value={searchData.getLastSearchData().searchInput}
 	class="album-search-bar"
 	id="album-search-bar"
 	placeholder="Search…"
