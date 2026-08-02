@@ -187,10 +187,10 @@
 		<p
 			class={(() => {
 				// get piece before first comma ("log", "debug", etc.)
-				return log.match(/^[^,]*/)[0];
+				return log.match(/^[^,]*/)![0];
 			})()}
 		>
-			<span>[{log.match(/^[^,]*/)[0].toUpperCase()}]</span><br />
+			<span>[{log.match(/^[^,]*/)![0].toUpperCase()}]</span><br />
 			{JSON.stringify(log.replace(/^.*?,\s*/, ""))}
 		</p>
 	{/each}
@@ -258,8 +258,10 @@
 		font-size: 100%;
 	}
 
-	:global(input) {
+	:global(input),
+	:global(button) {
 		font-size: 1rem;
+		font-family: inherit;
 		border: none;
 	}
 
