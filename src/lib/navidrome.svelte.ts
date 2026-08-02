@@ -1,4 +1,5 @@
 import * as IDB from "../../static/idb-keyval-6-esm.js";
+import { cconsole } from "./logger.svelte";
 
 /*
  * u = username
@@ -64,6 +65,7 @@ export async function login(
 
 		return { error: "No token in response" };
 	} catch (e: any) {
+		cconsole.error("network error", e);
 		return { error: e?.message ?? "Network error" };
 	}
 }
@@ -71,7 +73,10 @@ export async function login(
 /**
  * Authenticated request for Navidrome endpoints.
  */
-export function authFetch(inputUrl: RequestInfo, init: RequestInit = {}) {
+export async function authFetch(
+	inputUrl: RequestInfo,
+	init: RequestInit = {},
+): Promise<Response | null> {
 	inputUrl = getSubsonicApiPath(inputUrl);
 
 	const token = localStorage.getItem("nd_token");
@@ -80,10 +85,22 @@ export function authFetch(inputUrl: RequestInfo, init: RequestInit = {}) {
 
 	if (token) headers.set("X-ND-Authorization", `Bearer ${token}`);
 
-	return fetch(inputUrl, {
-		method: "GET",
-		...init,
-		headers,
+	let fetchResult: Response | null = null;
+
+	return new Promise(async (resolve, reject) => {
+		try {
+			fetchResult = await fetch(inputUrl, {
+				method: "GET",
+				...init,
+				headers,
+			});
+		} catch (e: any) {
+			reject("network error");
+			cconsole.error("network error", e);
+			return null;
+		}
+
+		resolve(fetchResult);
 	});
 }
 

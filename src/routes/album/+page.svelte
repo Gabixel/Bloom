@@ -38,12 +38,18 @@
 
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
+	let albumCount = $state(-1);
+
 	async function listAlbums() {
 		await authFetch(
 			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 		)
 			.then(async (result) => {
+				if (result == null) {
+					return;
+				}
+
 				let list = (await result.json())["subsonic-response"]["albumList2"][
 					"album"
 				];
@@ -93,12 +99,16 @@
 	});
 
 	async function search(input: string) {
-		let request = await authFetch(
+		let result = await authFetch(
 			`/rest/search3?u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&query=${input}&artistCount=0&songCount=0`,
 		);
 
-		let searchList = (await request.json())["subsonic-response"]["searchResult3"][
+		if (result == null) {
+			return [];
+		}
+
+		let searchList = (await result.json())["subsonic-response"]["searchResult3"][
 			"album"
 		];
 
@@ -121,6 +131,8 @@
 	placeholder="Search…"
 	autocomplete="off"
 />
+
+<p>Total albums in DB: {albumCount >= 0 ? albumCount : "Loading..."}</p>
 
 {#if albumlist == null || albumlist.length == 0}
 	<p>No albums!</p>
