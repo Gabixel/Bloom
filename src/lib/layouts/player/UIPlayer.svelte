@@ -6,6 +6,29 @@
 	}: {
 		audioPlayer: AudioPlayer | null;
 	} = $props();
+
+	let currentTime = $derived.by(() => {
+		let time: string | number = trackInfo.getCurrentTime();
+
+		if (isNaN(time)) {
+			time = "...";
+		} else {
+			time.toFixed(0);
+		}
+
+		return time;
+	});
+	let duration = $derived.by(() => {
+		let time: string | number = trackInfo.getDuration();
+
+		if (isNaN(time)) {
+			time = "...";
+		} else {
+			time.toFixed(0);
+		}
+
+		return time;
+	});
 </script>
 
 <footer>
@@ -14,8 +37,7 @@
 	<div class="track-info">
 		<p class="track-name">Test</p>
 		<p class="track-extra">
-			Test (time: {trackInfo.getCurrentTime()?.toFixed(0) || "..."} | duration: {trackInfo.getDuration() ||
-				"..."})
+			Test (time: {currentTime} | duration: {duration})
 		</p>
 	</div>
 	<div class="actions">
@@ -23,8 +45,10 @@
 			type="button"
 			onclick={() => {
 				trackInfo.pauseOrResume();
-			}}>Play/Pause</button
+			}}
 		>
+			{trackInfo.getIsPlaying() ? "Pause" : "Play"}
+		</button>
 	</div>
 </footer>
 

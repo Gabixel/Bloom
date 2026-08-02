@@ -7,6 +7,8 @@ let audioPlayerCreated = $state(false);
 
 let audioId = generateAudioId();
 
+let isPlaying = $state(false);
+
 let domAudioCheckInterval: NodeJS.Timeout | undefined = undefined;
 
 let trackDuration = $state(NaN);
@@ -115,6 +117,8 @@ export async function createAudioPlayer(
 		},
 		(result) => {
 			cconsole.log(`audio player: playback status changed to "${result.status}"`);
+
+			isPlaying = result.status === "playing";
 		},
 	);
 
@@ -180,11 +184,11 @@ export const trackInfo = {
 			return;
 		}
 
-		let isPlaying = (
-			await CapacitorAudio.isPlaying({
-				audioId,
-			})
-		).isPlaying;
+		// let isPlaying = (
+		// 	await CapacitorAudio.isPlaying({
+		// 		audioId,
+		// 	})
+		// ).isPlaying;
 
 		if (isPlaying) {
 			CapacitorAudio.pause({
@@ -195,6 +199,9 @@ export const trackInfo = {
 				audioId,
 			});
 		}
+	},
+	getIsPlaying: () => {
+		return isPlaying;
 	},
 };
 
