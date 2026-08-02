@@ -38,8 +38,8 @@
 
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
-	function listAlbums() {
-		authFetch(
+	async function listAlbums() {
+		await authFetch(
 			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 		)
@@ -69,7 +69,12 @@
 
 				if (value == "") {
 					// default listing
-					listAlbums();
+					listAlbums().then(() => {
+						searchData.update({
+							searchInput: value,
+							albumList: [],
+						});
+					});
 					return;
 				}
 
@@ -97,9 +102,11 @@
 			"album"
 		];
 
-		if (Array.isArray(searchList)) {
-			albumlist = searchList;
+		if (!Array.isArray(searchList)) {
+			searchList = [];
 		}
+
+		albumlist = searchList;
 
 		return searchList;
 	}
@@ -115,7 +122,7 @@
 	autocomplete="off"
 />
 
-{#if albumlist == null}
+{#if albumlist == null || albumlist.length == 0}
 	<p>No albums!</p>
 {:else}
 	{#each albumlist as album (album.id)}
