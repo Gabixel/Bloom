@@ -50,6 +50,7 @@
 			const res = await authFetch(
 				"/rest/getLicense?u=gabixel&v=1.16.1&c=" + CLIENT_NAME_URL + "&t=",
 			);
+			if (res == null) return;
 			const parser = new DOMParser();
 
 			cconsole.log(parser.parseFromString(await res.json(), "application/xml"));
@@ -60,6 +61,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user/" + authData.userData().id);
+			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);
 		}}>user (me)</button
@@ -68,6 +70,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/user");
+			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);
 		}}>user list</button
@@ -76,6 +79,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/player/");
+			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);
 		}}>players list</button
@@ -84,6 +88,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/transcoding/");
+			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);
 		}}>transcoding list</button
@@ -92,6 +97,7 @@
 		type="button"
 		onclick={async () => {
 			const res = await authFetch("/api/share/");
+			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);
 		}}>share</button
