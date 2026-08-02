@@ -191,8 +191,13 @@
 				return log.match(/^[^,]*/)![0];
 			})()}
 		>
-			<span>[{log.match(/^[^,]*/)![0].toUpperCase()}]</span><br />
-			{JSON.stringify(log.replace(/^.*?,\s*/, ""))}
+			<span style="white-space: pre;"
+				>[{log.match(/^[^,]*/)![0].toUpperCase()}]
+			</span>
+			{(() => {
+				/* remove everything before first comma */
+				return JSON.stringify(log.replace(/^.*?,\s*/, ""));
+			})()}
 		</p>
 	{/each}
 </div>
@@ -210,7 +215,7 @@
 		width: 100%;
 		height: 100%;
 		opacity: 0.95;
-		background-color: #00000070;
+		background-color: #000000AA;
 		pointer-events: none;
 		user-select: none;
 
@@ -228,12 +233,14 @@
 
 	#js-console p {
 		margin: 0;
-		margin-bottom: 0.15rem;
-		border: 1px solid rgba(var(--theme) / 1);
-		background-color: rgba(var(--theme) / 0.25);
+		margin-bottom: 0.2rem;
+		padding: 0.15rem 0;
+		border: 1px solid rgba(var(--theme), 1);
+		background-color: rgba(var(--theme), 0.1);
 	}
 	#js-console p span {
-		color: rgba(var(--theme) / 1);
+		color: rgba(var(--theme), 1);
+		font-weight: bold;
 	}
 
 	#js-console p.info {
