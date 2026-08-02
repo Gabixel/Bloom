@@ -13,12 +13,18 @@
 
 	<div class="track-info">
 		<p class="track-name">Test</p>
-		<p class="track-extra">Test (time: {trackInfo.getCurrentTime() || "..."} | duration: {trackInfo.getDuration() || "..."})</p>
+		<p class="track-extra">
+			Test (time: {trackInfo.getCurrentTime()?.toFixed(0) || "..."} | duration: {trackInfo.getDuration() ||
+				"..."})
+		</p>
 	</div>
 	<div class="actions">
-		<button type="button" onclick={() => {
-			trackInfo.pauseOrResume();
-		}}>Play/Pause</button>
+		<button
+			type="button"
+			onclick={() => {
+				trackInfo.pauseOrResume();
+			}}>Play/Pause</button
+		>
 	</div>
 </footer>
 
