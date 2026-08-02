@@ -76,6 +76,7 @@ export async function login(
 export async function authFetch(
 	inputUrl: RequestInfo,
 	init: RequestInit = {},
+	requestMethod: string = "GET",
 ): Promise<Response | null> {
 	inputUrl = getSubsonicApiPath(inputUrl);
 
@@ -90,7 +91,7 @@ export async function authFetch(
 	return new Promise(async (resolve, reject) => {
 		try {
 			fetchResult = await fetch(inputUrl, {
-				method: "GET",
+				method: requestMethod,
 				...init,
 				headers,
 			});

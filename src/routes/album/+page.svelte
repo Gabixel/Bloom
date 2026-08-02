@@ -30,6 +30,7 @@
 		duration: string;
 		artist: string;
 		artistId: string;
+		year: string | null;
 	};
 
 	let albumlist: AlbumItem[] | null = $state.raw(
@@ -98,6 +99,10 @@
 		}
 	});
 
+	onMount(() => {
+		checkAlbumCount();
+	});
+
 	async function search(input: string) {
 		let result = await authFetch(
 			`/rest/search3?u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
@@ -119,6 +124,27 @@
 		albumlist = searchList;
 
 		return searchList;
+	}
+
+	async function checkAlbumCount() {
+		// TODO: actually use this somehow for the search
+		let res = await authFetch(
+			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
+				`&_order=DESC&_sort=recently_added&_start=0&_end=1`,
+		);
+
+		if (res == null) {
+			return;
+		}
+
+		let count = res.headers.get("x-total-count");
+
+		if (count == null) {
+			return;
+		}
+
+		albumCount = Number(count);
 	}
 </script>
 
@@ -163,7 +189,10 @@
 		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
 		<div>
 			<p>{album.name}</p>
-			<p class="album-artist">{album.artist}</p>
+			<p class="album-artist">
+				{album.artist}
+				{album.year != null ? "· " + album.year : ""}
+			</p>
 		</div>
 	</div>
 {/snippet}
@@ -195,7 +224,6 @@
 	}
 
 	.album-element > div {
-
 	}
 
 	.album-search-bar {
