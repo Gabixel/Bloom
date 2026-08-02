@@ -144,7 +144,6 @@
 
 <svelte:head>
 	<link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
-	<!-- <link rel="manifest" href="./app.webmanifest" /> -->
 </svelte:head>
 
 <nav>
