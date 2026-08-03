@@ -23,6 +23,10 @@
 	let divOutput: HTMLDivElement = $state()!;
 </script>
 
+<svelte:head>
+	<title>Home &#183; Bloom</title>
+</svelte:head>
+
 <div>
 	<!-- 
 		<h1>Welcome to SvelteKit</h1>

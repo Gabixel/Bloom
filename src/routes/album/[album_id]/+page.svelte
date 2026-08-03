@@ -75,6 +75,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Album "{albumData.name}" &#183; Bloom</title>
+</svelte:head>
+
 {#if albumData != null}
 	<p>{albumData.name}</p>
 	<p>{albumData.displayArtist}</p>

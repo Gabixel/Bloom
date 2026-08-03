@@ -148,6 +148,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Album list &#183; Bloom</title>
+</svelte:head>
+
 <input
 	bind:this={searchBar}
 	type="search"

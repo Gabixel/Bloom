@@ -45,4 +45,8 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Test page &#183; Bloom</title>
+</svelte:head>
+
 <h1 style="color:blue">Subpage!</h1>
