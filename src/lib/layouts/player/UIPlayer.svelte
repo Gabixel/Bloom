@@ -13,7 +13,7 @@
 		if (isNaN(time)) {
 			time = "...";
 		} else {
-			time.toFixed(0);
+			time = time.toFixed(0);
 		}
 
 		return time;
@@ -24,7 +24,7 @@
 		if (isNaN(time)) {
 			time = "...";
 		} else {
-			time.toFixed(0);
+			time = time.toFixed(0);
 		}
 
 		return time;
