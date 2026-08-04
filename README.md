@@ -12,3 +12,5 @@ Made for mobile phones thanks to [Capacitor](https://capacitorjs.com/).
 - Java 21 (e.g., for Codespaces, `sdk install java 21.0.8-ms` for the Microsoft version)
 - Android 36
 - iOS/Swift... unknown, for now
+
+When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
