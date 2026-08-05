@@ -3,16 +3,19 @@
 	import { Capacitor } from "@capacitor/core";
 	import AlbumImageAndroid from "./AlbumImageAndroid.svelte";
 	import AlbumImageWeb from "./AlbumImageWeb.svelte";
+	import { onMount } from "svelte";
 
 	// TODO: export type
 	let props: {
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
-		// TODO: pass an IntersectionObserver
+		intersectionObserver: IntersectionObserver;
 	} = $props();
 
 	const platform = Capacitor.getPlatform();
+
+	// onMount(() => {})
 </script>
 
 {#if platform === "android"}

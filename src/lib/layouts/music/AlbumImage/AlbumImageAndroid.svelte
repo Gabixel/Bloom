@@ -17,11 +17,13 @@
 		coverArtId,
 		albumId,
 		albumName,
+		intersectionObserver,
 		// TODO: pass an IntersectionObserver
 	}: {
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
+		intersectionObserver: IntersectionObserver;
 	} = $props();
 
 	let isBusy = $state(true);
@@ -35,7 +37,32 @@
 		return `Covert art of album \"${albumName}\"`;
 	});
 
+	let albumDiv: HTMLElement = $state()!;
+
 	onMount(() => {
+		intersectionObserver.observe(albumDiv);
+
+		albumDiv.addEventListener(
+			"album-visible",
+			() => {
+				if (controller.signal.aborted) {
+					return;
+				}
+
+				loadImageBlob();
+			},
+			{
+				once: true,
+			},
+		);
+
+		return () => {
+			intersectionObserver.unobserve(albumDiv);
+			controller.abort();
+		};
+	});
+
+	function loadImageBlob() {
 		let url =
 			`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`;
@@ -61,14 +88,10 @@
 				imageSrc = URL.createObjectURL(blob);
 			})
 			.catch((err) => cconsole.error("album cover fetch failed:", err));
-
-		return () => {
-			controller.abort();
-		};
-	});
+	}
 </script>
 
-<div class="album-image-wrapper">
+<div class="album-image-wrapper" bind:this={albumDiv}>
 	<img
 		src={imageSrc}
 		alt={coverAltText}

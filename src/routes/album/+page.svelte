@@ -10,7 +10,7 @@
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
 	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
-	import { searchData } from "../../lib/album-search.svelte";
+	import { AlbumIntersectionObserver, searchData } from "../../lib/album-search.svelte";
 
 	let {}: PageProps = $props();
 
@@ -219,10 +219,12 @@
 			goto(`${_location.hash}/${album.id}`, {});
 		}}
 	>
+		<!-- TODO: we need an "infinite scroller" and paginate at the same time (with some skeletons) -->
 		<AlbumImage
 			albumName={album.name}
 			coverArtId={album.id}
 			albumId={album.id}
+			intersectionObserver={AlbumIntersectionObserver}
 		></AlbumImage>
 		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
 		<div>
