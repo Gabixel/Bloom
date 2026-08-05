@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
 		CapacitorHttp: {
 			enabled: true,
 		},
+		Keyboard: {
+			resizeOnFullScreen: false,
+			resize: "none", // TODO: "body"?
+		}
 	},
 	ios: {
 		limitsNavigationsToAppBoundDomains: true,

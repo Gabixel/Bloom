@@ -24,8 +24,7 @@ public class MainActivity extends BridgeActivity {
         settings.setUseWideViewPort(true); // https://developer.android.com/reference/android/webkit/WebSettings#getUseWideViewPort()
         settings.setLoadWithOverviewMode(true);
 
-
-        settings.setLoadsImagesAutomatically(false);
+        //settings.setLoadsImagesAutomatically(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
     }
 }
