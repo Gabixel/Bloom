@@ -90,6 +90,10 @@
 			fadeOutDuration: 200,
 		});
 
+		Keyboard.getResizeMode().then((data) => {
+			cconsole.log(data);
+		});
+
 		Keyboard.addListener("keyboardWillShow", (info) => {
 			cconsole.log("keyboard will show with height:", info.keyboardHeight);
 		});

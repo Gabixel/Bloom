@@ -1,17 +1,25 @@
 import type { CapacitorConfig } from "@capacitor/cli";
+import { KeyboardResize, KeyboardResizeOptions } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
 	appId: "com.gabigroup.bloom",
 	appName: "Bloom",
 	webDir: "www",
 	plugins: {
+		// https://capacitorjs.com/docs/apis/http#configuration
 		CapacitorHttp: {
 			enabled: true,
 		},
+		// https://capacitorjs.com/docs/apis/keyboard#configuration
 		Keyboard: {
 			resizeOnFullScreen: false,
-			resize: "none", // TODO: "body"?
-		}
+			resize: KeyboardResize.None,
+		},
+		// App: {
+		// 	disableBackButtonHandler: false,
+		// },
+		// SplashScreen: { },
+		// SystemBars: { }
 	},
 	ios: {
 		limitsNavigationsToAppBoundDomains: true,
