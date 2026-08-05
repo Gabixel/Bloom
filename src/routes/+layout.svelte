@@ -17,6 +17,7 @@
 	import { Capacitor } from "@capacitor/core";
 
 	import { App as CapacitorApp } from "@capacitor/app";
+	import { Keyboard } from "@capacitor/keyboard";
 	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
@@ -87,6 +88,22 @@
 	onMount(() => {
 		SplashScreen.hide({
 			fadeOutDuration: 200,
+		});
+
+		Keyboard.addListener("keyboardWillShow", (info) => {
+			cconsole.log("keyboard will show with height:", info.keyboardHeight);
+		});
+
+		Keyboard.addListener("keyboardDidShow", (info) => {
+			cconsole.log("keyboard did show with height:", info.keyboardHeight);
+		});
+
+		Keyboard.addListener("keyboardWillHide", () => {
+			cconsole.log("keyboard will hide");
+		});
+
+		Keyboard.addListener("keyboardDidHide", () => {
+			cconsole.log("keyboard did hide");
 		});
 	});
 
@@ -215,7 +232,7 @@
 		width: 100%;
 		height: 100%;
 		opacity: 0.95;
-		background-color: #000000AA;
+		background-color: #000000aa;
 		pointer-events: none;
 		user-select: none;
 
@@ -284,6 +301,7 @@
 		padding: 0;
 		margin: 0;
 		height: 100%;
+		min-height: 100lvh;
 	}
 
 	:global(body, body *) {

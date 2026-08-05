@@ -23,14 +23,27 @@
 	type AlbumItem = {
 		id: string;
 		name: string;
-		coverArt: string;
+		//coverArt: string;
 		songCount: string;
 		/** timestamp TZ */
-		created: string;
+		//created: string;
+		createdAt: string;
 		duration: string;
-		artist: string;
-		artistId: string;
-		year: string | null;
+		//artist: string;
+		albumArtist: string;
+		albumArtistId: string;
+		date: string | null;
+		discs: any | null;
+		explicitStatus: string | null; // TODO
+		compilation: boolean;
+		maxYear: number | null;
+		minYear: number | null;
+		minOriginalYear: number | null;
+		maxOriginalYear: number | null;
+		mbzAlbumType: string | null;
+		size: number;
+		playCount: number;
+		// ...more
 	};
 
 	let albumlist: AlbumItem[] | null = $state.raw(
@@ -42,7 +55,7 @@
 	let albumCount = $state(-1);
 
 	async function listAlbums() {
-		await authFetch(
+		/*await authFetch(
 			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 		)
@@ -54,6 +67,27 @@
 				let list = (await result.json())["subsonic-response"]["albumList2"][
 					"album"
 				];
+
+				console.log(list);
+
+				if (Array.isArray(list)) {
+					albumlist = list;
+				}
+			})
+			.catch(() => {
+				albumlist = null;
+			});*/
+		await authFetch(
+			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
+				`&_order=DESC&_sort=recently_added`,
+		)
+			.then(async (result) => {
+				if (result == null) {
+					return;
+				}
+
+				let list = await result.json();
 
 				console.log(list);
 
@@ -187,15 +221,15 @@
 	>
 		<AlbumImage
 			albumName={album.name}
-			coverArtId={album.coverArt}
+			coverArtId={album.id}
 			albumId={album.id}
 		></AlbumImage>
 		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
 		<div>
 			<p>{album.name}</p>
 			<p class="album-artist">
-				{album.artist}
-				{album.year != null ? "· " + album.year : ""}
+				{album.albumArtist}
+				{album.date != null ? "· " + album.date : ""}
 			</p>
 		</div>
 	</div>
