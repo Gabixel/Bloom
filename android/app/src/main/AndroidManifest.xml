@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:appCategory="audio">
+        android:appCategory="audio"
+        android:windowSoftInputMode="adjustNothing">
 
         <!-- https://developer.android.com/guide/topics/manifest/activity-element -->
         <activity
