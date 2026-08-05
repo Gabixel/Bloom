@@ -29,15 +29,23 @@
 
 		return time;
 	});
+
+	let trackData = $derived(trackInfo.getData());
 </script>
 
 <footer>
 	<div class="track-cover"></div>
 
 	<div class="track-info">
-		<p class="track-name">Test</p>
+		<p class="track-name">
+			<span>{trackData.title}</span>
+		</p>
 		<p class="track-extra">
-			Test (time: {currentTime} | duration: {duration})
+			<span class="track-artist">{trackData.artist}</span>
+			<br />
+			<span>
+				{currentTime} | {duration}
+			</span>
 		</p>
 	</div>
 	<div class="actions">

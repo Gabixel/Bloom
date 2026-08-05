@@ -14,6 +14,12 @@ let domAudioCheckInterval: NodeJS.Timeout | undefined = undefined;
 let trackDuration = $state(NaN);
 let trackTime = $state(NaN);
 
+// used in player dock
+let mainTrackData = $state({
+	title: "...",
+	artist: "...",
+});
+
 export async function createAudioPlayer(
 	url: string,
 	trackData: {
@@ -23,6 +29,9 @@ export async function createAudioPlayer(
 		duration: number;
 	},
 ) {
+	mainTrackData.title = trackData.title;
+	mainTrackData.artist = trackData.artist;
+
 	if (audioPlayerCreated) {
 		clearInterval(domAudioCheckInterval);
 		// TODO: change track and all of that
@@ -179,6 +188,7 @@ function generateAudioId() {
 export const trackInfo = {
 	getDuration: () => trackDuration,
 	getCurrentTime: () => trackTime,
+	getData: () => mainTrackData,
 	pauseOrResume: async () => {
 		if (!audioPlayerCreated) {
 			return;
