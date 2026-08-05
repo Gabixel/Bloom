@@ -16,11 +16,12 @@
 		coverArtId,
 		albumId,
 		albumName,
-		// TODO: pass an IntersectionObserver
+		intersectionObserver,
 	}: {
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
+		intersectionObserver: IntersectionObserver;
 	} = $props();
 
 	let isBusy = $state(true);
@@ -28,18 +29,47 @@
 	const controller = new AbortController();
 	const signal = controller.signal;
 
-	let imageSrc: string | null = $state(`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-	`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`);
+	let albumDiv: HTMLElement = $state()!;
+
+	let imageSrc: string | null = $state(null);
 	let coverAltText: string = $derived.by(() => {
 		return `Covert art of album \"${albumName}\"`;
 	});
+
+	onMount(() => {
+		intersectionObserver.observe(albumDiv);
+
+		albumDiv.addEventListener(
+			"album-visible",
+			() => {
+				if (controller.signal.aborted) {
+					return;
+				}
+
+				imageSrc =
+					`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+					`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`;
+			},
+			{
+				once: true,
+			},
+		);
+
+		return () => {
+			intersectionObserver.unobserve(albumDiv);
+		};
+	});
 </script>
 
-<div class="album-image-wrapper">
+<div class="album-image-wrapper" bind:this={albumDiv}>
 	<img
 		src={imageSrc}
 		alt={coverAltText}
 		onload={() => {
+			if (imageSrc === null) {
+				return;
+			}
+
 			isBusy = false;
 		}}
 		class={[!isBusy && "loaded"]}
