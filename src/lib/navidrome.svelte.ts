@@ -14,6 +14,8 @@ import { cconsole } from "./logger.svelte";
 export const CLIENT_NAME = "Bloom [GG]";
 export const CLIENT_NAME_URL = encodeURI(CLIENT_NAME);
 
+// TODO: (GET: [host]/api/keepalive/keepalive)
+
 export type LoginResult =
 	| {
 			avatar: string;
