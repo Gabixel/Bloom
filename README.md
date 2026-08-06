@@ -1,6 +1,6 @@
 # Bloom
 
-An music player web app interface for [Navidrome](https://github.com/navidrome/navidrome) servers, with [SvelteKit](https://svelte.dev/docs/kit/introduction).
+A music player web app interface for [Navidrome](https://github.com/navidrome/navidrome) servers, with [SvelteKit](https://svelte.dev/docs/kit/introduction).
 
 Made for mobile phones thanks to [Capacitor](https://capacitorjs.com/).
 
