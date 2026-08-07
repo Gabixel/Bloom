@@ -76,7 +76,11 @@
 </script>
 
 <svelte:head>
-	<title>Album "{albumData.name}" &#183; Bloom</title>
+	{#if albumData != null}
+		<title>Album "{albumData.name}" &#183; Bloom</title>
+	{:else}
+		<title>(Album loading) &#183; Bloom</title>
+	{/if}
 </svelte:head>
 
 {#if albumData != null}
