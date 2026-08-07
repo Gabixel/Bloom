@@ -31,7 +31,7 @@
 
 	let albumData: any = $state(null)!;
 	let albumRequest = authFetch(
-		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 	);
 	albumRequest.then(async (data) => {
@@ -41,7 +41,7 @@
 
 		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
-		cconsole.log(response);
+		console.log(response);
 	});
 
 	async function playAudio(
