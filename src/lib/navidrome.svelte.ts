@@ -11,7 +11,7 @@ import { cconsole } from "./logger.svelte";
  * f = response format (xml, json)
  */
 
-export const CLIENT_NAME = "Bloom [GG]";
+export const CLIENT_NAME = "Bloom App";
 export const CLIENT_NAME_URL = encodeURI(CLIENT_NAME);
 
 // TODO: (GET: [host]/api/keepalive/keepalive)

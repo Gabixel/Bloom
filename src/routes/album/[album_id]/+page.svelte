@@ -3,7 +3,7 @@
 	import type { PageProps } from "./$types.ts";
 	import {
 		authFetch,
-		CLIENT_NAME_URL,
+		CLIENT_NAME,
 		getSubsonicApiPath,
 		navidromeData,
 	} from "$lib/navidrome.svelte";
@@ -65,7 +65,7 @@
 			t: authData.navidromeSubsonicToken(),
 			s: authData.navidromeSubsonicSalt(),
 			v: "1.16.1",
-			c: CLIENT_NAME_URL,
+			c: CLIENT_NAME,
 			f: "json",
 		});
 
