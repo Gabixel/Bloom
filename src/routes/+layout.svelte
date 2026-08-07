@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { SplashScreen } from "@capacitor/splash-screen";
 	import { navigating, page } from "$app/state";
+	import { dev as isSvelteDev, version } from "$app/environment";
 	import { authData, destroyUserData } from "$lib/auth.svelte";
 	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
 	import type { LayoutData } from "./$types.d.ts";
@@ -41,6 +42,34 @@
 	let audioElement: HTMLAudioElement = $state()!;
 	onMount(() => {
 		setupCustomLogger();
+
+		cconsole.log(Capacitor.DEBUG);
+		if (Capacitor.DEBUG === true) {
+			cconsole.debug("Capacitor running in debug!");
+		} else {
+			cconsole.warn("Capacitor NOT running in debug!");
+		}
+
+		if (isSvelteDev) {
+			cconsole.debug("SvelteKit running in debug!");
+		} else {
+			cconsole.warn("SvelteKit NOT running in debug!");
+		}
+
+		cconsole.log("SvelteKit app version:", version);
+
+		CapacitorApp.getInfo().then((data) => {
+			cconsole.log("app data", data);
+		});
+		CapacitorApp.getAppLanguage().then((data) => {
+			cconsole.log("app language", data);
+		});
+		CapacitorApp.addListener("pause", () => {
+			cconsole.log("app pause?");
+		});
+		CapacitorApp.addListener("resume", () => {
+			cconsole.log("app resume?");
+		});
 
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
