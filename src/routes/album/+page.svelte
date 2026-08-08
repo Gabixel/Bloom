@@ -138,6 +138,7 @@
 	});
 
 	async function search(input: string) {
+		// TODO: use Navidrome search (we're missing artist name for now)
 		let result = await authFetch(
 			`/rest/search3?u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&query=${input}&artistCount=0&songCount=0`,
