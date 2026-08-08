@@ -45,8 +45,26 @@
 </script>
 
 <form onsubmit={onSubmit} autocomplete="on">
-	<input type="url" bind:value={navidromeUrl} placeholder="url" autocomplete="url" spellcheck="false" />
-	<input bind:value={user} placeholder="username" autocomplete="nickname" spellcheck="false" />
-	<input type="password" bind:value={pass} placeholder="password" autocomplete="current-password webauthn" spellcheck="false" />
+	<input
+		bind:value={navidromeUrl}
+		type="url"
+		placeholder="url"
+		autocomplete="url"
+		spellcheck="false"
+	/>
+	<input
+		bind:value={user}
+		placeholder="username"
+		autocomplete="nickname"
+		spellcheck="false"
+		autocapitalize="none"
+	/>
+	<input
+		bind:value={pass}
+		type="password"
+		placeholder="password"
+		autocomplete="current-password webauthn"
+		spellcheck="false"
+	/>
 	<button>Login</button>
 </form>
