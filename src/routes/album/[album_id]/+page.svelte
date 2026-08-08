@@ -41,7 +41,7 @@
 
 		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
-		console.log(response);
+		console.log("album data:", response);
 	});
 
 	async function playAudio(
@@ -60,7 +60,6 @@
 		// cconsole.log(player);
 
 		const params = new URLSearchParams({
-			id: audioId,
 			u: user.username,
 			t: authData.navidromeSubsonicToken(),
 			s: authData.navidromeSubsonicSalt(),
@@ -68,10 +67,48 @@
 			c: CLIENT_NAME,
 			f: "json",
 		});
+		const streamParams = new URLSearchParams({
+			id: audioId,
+			...Object.fromEntries(params),
+		});
+		const lrcParams = new URLSearchParams({
+			artist: trackData.artist,
+			title: trackData.title,
+			...Object.fromEntries(params),
+		});
 
-		let url = getSubsonicApiPath(`/rest/stream.view?${params.toString()}`);
+		let url = getSubsonicApiPath(`/rest/stream.view?${streamParams.toString()}`);
+
+		//let lrcUrl = getSubsonicApiPath(`/rest/getLyrics?${lrcParams.toString()}`);
+		let lrcUrl = getSubsonicApiPath(
+			`/rest/getLyricsBySongId.view?${lrcParams.toString()}&id=${audioId}&f=json`,
+		);
+		printDebugLyrics(lrcUrl);
 
 		createAudioPlayer(url, trackData);
+	}
+
+	async function printDebugLyrics(lrcUrl: string) {
+		try {
+			let data = await fetch(lrcUrl);
+
+			if (!data.ok) {
+				return;
+			}
+
+			let result = await data.json();
+
+			let resultList = result["subsonic-response"]["lyricsList"][
+				"structuredLyrics"
+			];
+
+			if (resultList.length == 0) {
+				cconsole.log("resultList is empty");
+				return;
+			}
+
+			cconsole.log("existing lyrics and synced?", resultList[0].synced);
+		} catch (e) {}
 	}
 </script>
 
