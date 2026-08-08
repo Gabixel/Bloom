@@ -42,6 +42,8 @@
 		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
 		console.log("album data:", response);
+
+		// checkAlbumLyrics(albumData.id)
 	});
 
 	async function playAudio(
@@ -87,6 +89,26 @@
 
 		createAudioPlayer(url, trackData);
 	}
+
+	// async function checkAlbumLyrics(albumId: string) {
+	// 	const lrcParams = new URLSearchParams({
+	// 		u: user.username,
+	// 		t: authData.navidromeSubsonicToken(),
+	// 		s: authData.navidromeSubsonicSalt(),
+	// 		v: "1.16.1",
+	// 		c: CLIENT_NAME,
+	// 		f: "json",
+	// 	});
+
+	// 	let lrcRes = await authFetch("/api/song?album_id=" + albumId);
+	// 	if (lrcRes != null) {
+	// 		let json = await lrcRes.json();
+	// 		cconsole.log("album songs", json);
+	// 	}
+	// 	// let lrcUrl = getSubsonicApiPath(
+	// 	// 	`/rest/getLyricsBySongId.view?${lrcParams.toString()}&id=${audioId}&f=json`,
+	// 	// );
+	// }
 
 	async function printDebugLyrics(lrcUrl: string) {
 		try {
