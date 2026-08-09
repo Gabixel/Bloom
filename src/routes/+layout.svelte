@@ -196,7 +196,7 @@
 	<link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
 </svelte:head>
 
-<nav>
+<nav style="padding:0.5rem">
 	<a href="/">Home</a>
 	<a href="#/subpage-example">Example</a>
 	<a href="#/album">Albums</a>
