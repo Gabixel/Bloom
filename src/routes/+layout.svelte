@@ -210,15 +210,6 @@
 	>
 </nav>
 
-<p>
-	page url pathname: "{page.url.pathname}"<br />
-	location hash: "{_location.hash}"<br />
-	page state: "{JSON.stringify(page.state)}"<br />
-	page route id: "{page.route.id}"<br />
-	isLoggedIn: {String(authData.isLoggedIn())}<br />
-	dolbySupportStatus: {pMediaCapResult}
-</p>
-
 {#if authData.isLoggedIn()}
 	<div id="main-inner">
 		{@render children()}
@@ -234,6 +225,16 @@
 {/if}
 
 <div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">
+	<div>
+		<p style="white-space:normal;font-size:0.9rem">
+			page url pathname: "{page.url.pathname}"<br />
+			location hash: "{_location.hash}"<br />
+			page state: "{JSON.stringify(page.state)}"<br />
+			page route id: "{page.route.id}"<br />
+			isLoggedIn: {String(authData.isLoggedIn())}<br />
+			dolbySupportStatus: {pMediaCapResult}
+		</p>
+	</div>
 	{#each cconsole.logList() as log}
 		<p
 			class={(() => {
