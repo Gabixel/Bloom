@@ -11,6 +11,8 @@
 	import { createAudioPlayer } from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
 	import { Dialog } from "@capacitor/dialog";
+	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
+	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 
 	const showAlert = async (str: string) => {
 		await Dialog.alert({
@@ -97,9 +99,8 @@
 
 			let result = await data.json();
 
-			let resultList = result["subsonic-response"]["lyricsList"][
-				"structuredLyrics"
-			];
+			let resultList =
+				result["subsonic-response"]["lyricsList"]["structuredLyrics"];
 
 			if (resultList.length == 0) {
 				cconsole.log("resultList is empty");
@@ -120,30 +121,66 @@
 </svelte:head>
 
 {#if albumData != null}
-	<p>{albumData.name}</p>
-	<p>{albumData.displayArtist}</p>
+	<div
+		class="album-details"
+		style="display:flex;align-items:center;margin-bottom:1rem"
+	>
+		<AlbumImage
+			albumId={albumData.id}
+			albumName={albumData.name}
+			coverArtId={albumData.id}
+			intersectionObserver={AlbumIntersectionObserver}
+		></AlbumImage>
+		<div style="margin-left:1rem;">
+			<p>{albumData.name}</p>
+			<p>{albumData.displayArtist}</p>
+		</div>
+	</div>
 
-	<!-- TODO: paginate or something -->
-	{#each albumData.song as songEntry}
-		<p>
-			<button
-				type="button"
-				onclick={() => {
-					playAudio(
-						songEntry.id,
-						{
-							title: songEntry.title,
-							artist: songEntry.artist,
-							albumTitle: albumData.name,
-							duration: Number(songEntry.duration),
-						},
-						songEntry.suffix,
-					);
-				}}>[Play]</button
-			>
-			<span>
-				{songEntry.title}
-			</span>
-		</p>
-	{/each}
+	<div class="tracks">
+		<!-- TODO: paginate or something -->
+		{#each albumData.song as songEntry}
+			<p>
+				<a
+					role="button"
+					href="javascript:void(0)"
+					onclick={() => {
+						playAudio(
+							songEntry.id,
+							{
+								title: songEntry.title,
+								artist: songEntry.artist,
+								albumTitle: albumData.name,
+								duration: Number(songEntry.duration),
+							},
+							songEntry.suffix,
+						);
+					}}
+				>
+					{songEntry.title}
+				</a>
+			</p>
+		{/each}
+	</div>
 {/if}
+
+<style>
+	p {
+		margin: 0;
+	}
+
+	.tracks a {
+		display: block;
+		color: inherit;
+		width: 100%;
+
+		padding: 1rem;
+		background-color: #00000040;
+
+		text-decoration: none;
+	}
+
+	.tracks p:nth-child(odd) a {
+		background-color: #00000020;
+	}
+</style>
