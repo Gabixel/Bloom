@@ -54,6 +54,7 @@
 			cconsole.debug("SvelteKit running in debug!");
 		} else {
 			cconsole.warn("SvelteKit NOT running in debug!");
+			document.body.classList.add("svelte-prod");
 		}
 
 		cconsole.log("SvelteKit app version:", version);
@@ -347,6 +348,11 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: stretch;
+	}
+
+	/* TODO: unsure if I want this */
+	:global(body.svelte-prod) {
+		user-select: none;
 	}
 
 	#main-inner {
