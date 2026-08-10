@@ -76,6 +76,8 @@
 					albumlist = list;
 				}
 
+				// TODO: store somewhere when using search
+				// (actually, we just need to remake/separate the search logic)
 				let count = result.headers.get("x-total-count");
 
 				if (count != null) {
