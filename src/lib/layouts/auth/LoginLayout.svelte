@@ -12,6 +12,7 @@
 		navidromeData,
 	} from "$lib/navidrome.svelte";
 	import { storeUser } from "$lib/auth.svelte";
+	import { cconsole } from "../../logger.svelte";
 	let navidromeUrl = $state("");
 	let user = $state(""),
 		pass = $state(""),
@@ -30,6 +31,8 @@
 		e.preventDefault();
 
 		setNavidromeUrl(navidromeUrl);
+
+		cconsole.log("Logging in @", navidromeUrl, "with username", user, "…");
 
 		const r = await login(user, pass);
 		if ("error" in r) msg = r.error;
