@@ -10,7 +10,10 @@
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
 	import { cconsole } from "../../lib/logger.svelte";
 	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
-	import { AlbumIntersectionObserver, searchData } from "../../lib/album-search.svelte";
+	import {
+		AlbumIntersectionObserver,
+		searchData,
+	} from "../../lib/album-search.svelte";
 
 	let {}: PageProps = $props();
 
@@ -55,28 +58,6 @@
 	let albumCount = $state(-1);
 
 	async function listAlbums() {
-		/*await authFetch(
-			`/rest/getAlbumList2?type=newest&size=16&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-		)
-			.then(async (result) => {
-				if (result == null) {
-					return;
-				}
-
-				let list = (await result.json())["subsonic-response"]["albumList2"][
-					"album"
-				];
-
-				console.log(list);
-
-				if (Array.isArray(list)) {
-					albumlist = list;
-				}
-			})
-			.catch(() => {
-				albumlist = null;
-			});*/
 		await authFetch(
 			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
 				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
@@ -93,6 +74,12 @@
 
 				if (Array.isArray(list)) {
 					albumlist = list;
+				}
+
+				let count = result.headers.get("x-total-count");
+
+				if (count != null) {
+					albumCount = Number(count);
 				}
 			})
 			.catch(() => {
@@ -133,10 +120,6 @@
 		}
 	});
 
-	onMount(() => {
-		checkAlbumCount();
-	});
-
 	async function search(input: string) {
 		// TODO: use Navidrome search (we're missing artist name for now)
 		let result = await authFetch(
@@ -159,27 +142,6 @@
 		albumlist = searchList;
 
 		return searchList;
-	}
-
-	async function checkAlbumCount() {
-		// TODO: actually use this somehow for the search
-		let res = await authFetch(
-			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
-				`&_order=DESC&_sort=recently_added&_start=0&_end=1`,
-		);
-
-		if (res == null) {
-			return;
-		}
-
-		let count = res.headers.get("x-total-count");
-
-		if (count == null) {
-			return;
-		}
-
-		albumCount = Number(count);
 	}
 </script>
 
