@@ -201,7 +201,22 @@
 		<!-- TODO: paginate or something -->
 		{#each albumData.song as songEntry}
 			<p class="track-item">
+				<span class="track-text">
+					{#if songEntry.track != null}
+						<span>{songEntry.track} -</span>
+					{/if}
+					<span>{songEntry.title}</span>
+					{#if songEntry.explicitStatus === "explicit"}
+						<span>[Explicit]</span>
+					{/if}
+					{#if songEntry.duration != null}
+						<span>({formatDuration(songEntry.duration)})</span>
+					{/if}
+					<span>[{getAudioQuality(songEntry)}]</span>
+				</span>
 				<button
+					class="track-play-btn"
+					aria-label="Play song"
 					onclick={() => {
 						playAudio(
 							songEntry.id,
@@ -215,20 +230,14 @@
 						);
 					}}
 				>
-					<span>
-						{#if songEntry.track != null}
-							<span>{songEntry.track} -</span>
-						{/if}
-						<span>{songEntry.title}</span>
-						{#if songEntry.explicitStatus === "explicit"}
-							<span>[Explicit]</span>
-						{/if}
-						{#if songEntry.duration != null}
-							<span>({formatDuration(songEntry.duration)})</span>
-						{/if}
-						<span>[{getAudioQuality(songEntry)}]</span>
-					</span>
 				</button>
+				<button
+					aria-label="Track settings"
+					class="track-settings-btn"
+					onclick={() => {
+						console.log("TODO");
+					}}>⫶</button
+				>
 			</p>
 		{/each}
 	</div>
@@ -239,23 +248,89 @@
 		margin: 0;
 	}
 
-	.tracks button {
+	.tracks p.track-item {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: stretch;
+
+		color: inherit;
+
+		text-align: start;
+
+		padding: 0;
+		margin: 0;
+
+		/* text-decoration: none; */
+
+		position: relative;
+	}
+
+	.tracks p.track-item .track-text {
+		position: relative;
+		display: block;
+		pointer-events: none;
+		z-index: 10;
+
+		margin: auto 0;
+		padding: 1rem;
+	}
+
+	.tracks p.track-item button.track-settings-btn {
+		z-index: 10;
+		display: block;
+
+		appearance: none;
+		border: 0;
+
+		margin: 0;
+		margin-left: auto;
+
+		cursor: pointer;
+
+		background: none;
+
+		padding: 0.5rem 1rem;
+	}
+
+	.tracks p.track-item button.track-play-btn {
+		z-index: 2;
+		display: block;
+
 		appearance: none;
 		border: 0;
 		margin: 0;
+		padding: 0;
 
-		display: block;
-		color: inherit;
-		width: 100%;
-		text-align: start;
+		position: absolute;
+		inset: 0;
 
-		padding: 1rem;
+		cursor: pointer;
+
 		background-color: #00000040;
-
-		text-decoration: none;
+		width: 100%;
 	}
 
-	.tracks p:nth-child(odd) button {
+	.tracks p.track-item:nth-child(odd) button.track-play-btn {
 		background-color: #00000020;
+	}
+
+	.tracks p.track-item button.track-play-btn {
+		outline: 2px solid #ffffff00;
+	}
+	.tracks p.track-item button.track-play-btn:not(:hover):not(:focus-visible) {
+		transition: outline-color 0.45s ease;
+	}
+	.tracks p.track-item button.track-play-btn:hover,
+	.tracks p.track-item button.track-play-btn:focus-visible {
+		transition-duration: 0;
+	}
+
+	.tracks p.track-item button.track-play-btn:hover {
+		outline-color: #ffffff20;
+	}
+	.tracks p.track-item button.track-play-btn:focus-visible {
+		outline-color: #ffffff50;
 	}
 </style>
