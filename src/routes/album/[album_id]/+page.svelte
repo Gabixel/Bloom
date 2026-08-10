@@ -13,6 +13,7 @@
 	import { Dialog } from "@capacitor/dialog";
 	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
 	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
+	import { Capacitor } from "@capacitor/core";
 
 	const showAlert = async (str: string) => {
 		await Dialog.alert({
@@ -86,6 +87,10 @@
 		);
 		printDebugLyrics(lrcUrl);
 
+		if (Capacitor.getPlatform() === "web") {
+			return;
+		}
+
 		createAudioPlayer(url, trackData);
 	}
 
@@ -110,6 +115,45 @@
 			cconsole.log("existing lyrics and synced?", resultList[0].synced);
 		} catch (e) {}
 	}
+
+	function formatDuration(seconds: number) {
+		const m = Math.floor(seconds / 60);
+		const s = seconds % 60;
+
+		if (m < 60) {
+			return `${m}:${String(s).padStart(2, "0")}`;
+		}
+
+		const h = Math.floor(m / 60);
+		return `${h}:${String(m % 60).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+	}
+	// TODO
+	function getAudioQuality(song: any) {
+		const format = song.suffix?.toLowerCase();
+
+		const losslessFormats = ["flac", "wav", "alac", "aiff", "ape", "wv"];
+
+		if (losslessFormats.includes(format)) {
+			const parts = [format.toUpperCase()];
+
+			if (song.bitDepth > 0 && song.samplingRate > 0) {
+				const sampleRate =
+					song.samplingRate >= 1000
+						? `${song.samplingRate / 1000} kHz`
+						: `${song.samplingRate} Hz`;
+
+				parts.push(`${song.bitDepth}-bit / ${sampleRate}`);
+			}
+
+			return parts.join(" · ");
+		}
+
+		if (song.bitRate > 0) {
+			return `${format?.toUpperCase() ?? "Audio"} · ${song.bitRate} kbps`;
+		}
+
+		return format?.toUpperCase() ?? "Unknown";
+	}
 </script>
 
 <svelte:head>
@@ -133,17 +177,23 @@
 		></AlbumImage>
 		<div style="margin-left:1rem;">
 			<p>{albumData.name}</p>
-			<p>{albumData.displayArtist}</p>
+			<p>
+				{albumData.displayArtist}
+				{#if albumData.year != null}
+					- {albumData.year}
+				{/if}
+				{#if albumData.genre != null}
+					- {albumData.genre}
+				{/if}
+			</p>
 		</div>
 	</div>
 
 	<div class="tracks">
 		<!-- TODO: paginate or something -->
 		{#each albumData.song as songEntry}
-			<p>
-				<a
-					role="button"
-					href="javascript:void(0)"
+			<p class="track-item">
+				<button
 					onclick={() => {
 						playAudio(
 							songEntry.id,
@@ -157,8 +207,20 @@
 						);
 					}}
 				>
-					{songEntry.title}
-				</a>
+					<span>
+						{#if songEntry.track != null}
+							<span>{songEntry.track} -</span>
+						{/if}
+						<span>{songEntry.title}</span>
+						{#if songEntry.explicitStatus === "explicit"}
+							<span>[Explicit]</span>
+						{/if}
+						{#if songEntry.duration != null}
+							<span>({formatDuration(songEntry.duration)})</span>
+						{/if}
+						<span>[{getAudioQuality(songEntry)}]</span>
+					</span>
+				</button>
 			</p>
 		{/each}
 	</div>
@@ -169,10 +231,15 @@
 		margin: 0;
 	}
 
-	.tracks a {
+	.tracks button {
+		appearance: none;
+		border: 0;
+		margin: 0;
+
 		display: block;
 		color: inherit;
 		width: 100%;
+		text-align: start;
 
 		padding: 1rem;
 		background-color: #00000040;
@@ -180,7 +247,7 @@
 		text-decoration: none;
 	}
 
-	.tracks p:nth-child(odd) a {
+	.tracks p:nth-child(odd) button {
 		background-color: #00000020;
 	}
 </style>
