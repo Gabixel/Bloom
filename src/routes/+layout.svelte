@@ -75,7 +75,7 @@
 			cconsole.log("app state changed. Is active?", isActive);
 		});
 		CapacitorApp.addListener("appRestoredResult", (data) => {
-			cconsole.log("app restored state:", data);
+			cconsole.warn("app restored state:", data);
 		});
 		// const checkAppLaunchUrl = async () => {
 		// 	const { url } = await CapacitorApp.getLaunchUrl();
@@ -83,7 +83,11 @@
 		// 	console.log("App opened with URL: " + url);
 		// };
 		CapacitorApp.addListener("appUrlOpen", (data) => {
-			cconsole.log("app opened with URL:", data);
+			cconsole.warn("app opened with URL:", data);
+		});
+
+		window.addEventListener("beforeunload", () => {
+			cconsole.warn("beforeunload called");
 		});
 
 		const navidromeToken = localStorage.getItem("nd_token");
