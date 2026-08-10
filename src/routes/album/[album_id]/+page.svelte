@@ -185,7 +185,15 @@
 				{#if albumData.genre != null}
 					- {albumData.genre}
 				{/if}
+				{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
+					/ Single
+				{/if}
 			</p>
+			{#if albumData.duration != null}
+				<p>
+					<span>{formatDuration(albumData.duration)}</span>
+				</p>
+			{/if}
 		</div>
 	</div>
 
