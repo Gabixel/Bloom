@@ -68,6 +68,8 @@
 		align-items: stretch;
 		margin-top: auto;
 
+		z-index: 900;
+
 		background: #1a1a1a;
 	}
 	.track-cover,
