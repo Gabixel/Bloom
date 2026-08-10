@@ -66,10 +66,24 @@
 			cconsole.log("app language", data);
 		});
 		CapacitorApp.addListener("pause", () => {
-			cconsole.log("app pause?");
+			cconsole.log("app pause (background)");
 		});
 		CapacitorApp.addListener("resume", () => {
-			cconsole.log("app resume?");
+			cconsole.log("app resume (foreground)");
+		});
+		CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+			cconsole.log("app state changed. Is active?", isActive);
+		});
+		CapacitorApp.addListener("appRestoredResult", (data) => {
+			cconsole.log("app restored state:", data);
+		});
+		// const checkAppLaunchUrl = async () => {
+		// 	const { url } = await CapacitorApp.getLaunchUrl();
+
+		// 	console.log("App opened with URL: " + url);
+		// };
+		CapacitorApp.addListener("appUrlOpen", (data) => {
+			cconsole.log("app opened with URL:", data);
 		});
 
 		const navidromeToken = localStorage.getItem("nd_token");
@@ -233,7 +247,9 @@
 			page state: "{JSON.stringify(page.state)}"<br />
 			page route id: "{page.route.id}"<br />
 			isLoggedIn: {String(authData.isLoggedIn())}<br />
-			dolbySupportStatus: {pMediaCapResult}
+			dolbySupportStatus: {pMediaCapResult}<br />
+			platform: {Capacitor.getPlatform()}<br />
+			version:
 		</p>
 	</div>
 	{#each cconsole.logList() as log}
