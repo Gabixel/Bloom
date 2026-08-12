@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { navigating, page, updated } from "$app/state";
 	import { onMount, untrack } from "svelte";
-	import { authData, destroyUserData } from "../lib/auth.svelte.ts";
-	import { authFetch, CLIENT_NAME_URL } from "../lib/navidrome.svelte.ts";
-	import { cconsole } from "../lib/logger.svelte";
+	import { authData, destroyUserData } from "$lib/auth.svelte";
+	import {
+		authFetch,
+		CLIENT_NAME_URL,
+		TEST_FETCH_TARGET_ADDRESS_SPACE,
+	} from "$lib/navidrome.svelte";
+	import { cconsole } from "$lib/logger.svelte";
 
 	cconsole.log("Hello from page.svelte");
 
@@ -53,6 +57,9 @@
 		onclick={async () => {
 			const res = await authFetch(
 				"/rest/getLicense?u=gabixel&v=1.16.1&c=" + CLIENT_NAME_URL + "&t=",
+				{
+					...TEST_FETCH_TARGET_ADDRESS_SPACE,
+				},
 			);
 			if (res == null) return;
 			const parser = new DOMParser();
@@ -64,7 +71,10 @@
 	<button
 		type="button"
 		onclick={async () => {
-			const res = await authFetch("/api/user/" + authData.userData().id);
+			const res = await authFetch("/api/user/" + authData.userData().id,
+				{
+					...TEST_FETCH_TARGET_ADDRESS_SPACE,
+				},);
 			if (res == null) return;
 			let json = res.json();
 			cconsole.log(json);

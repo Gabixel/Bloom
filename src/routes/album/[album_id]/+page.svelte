@@ -7,6 +7,7 @@
 		CLIENT_NAME_URL,
 		getSubsonicApiPath,
 		navidromeData,
+		TEST_FETCH_TARGET_ADDRESS_SPACE,
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { playTrack } from "$lib/audio-player.svelte";
@@ -104,7 +105,12 @@
 
 	async function printDebugLyrics(lrcUrl: string) {
 		try {
-			let data = await fetch(lrcUrl);
+			let data = await fetch(
+				lrcUrl,
+				{
+					...TEST_FETCH_TARGET_ADDRESS_SPACE,
+				},
+			);
 
 			if (!data.ok) {
 				return;

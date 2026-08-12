@@ -1,6 +1,16 @@
 import * as IDB from "../../static/idb-keyval-6-esm.js";
 import { cconsole } from "./logger.svelte";
 
+// TODO: dynamic based on URL
+// TODO: make sure this isn't already an automatic thing made by browsers
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#targetaddressspace
+ * @see https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access
+*/
+export const TEST_FETCH_TARGET_ADDRESS_SPACE = {
+	targetAddressSpace: "local",
+} as any;
+
 /*
  * u = username
  * p = password
@@ -96,6 +106,7 @@ export async function authFetch(
 				method: requestMethod,
 				...init,
 				headers,
+				...TEST_FETCH_TARGET_ADDRESS_SPACE,
 			});
 		} catch (e: any) {
 			reject("network error");

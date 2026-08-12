@@ -4,6 +4,7 @@
 		authFetch,
 		CLIENT_NAME_URL,
 		navidromeData,
+		TEST_FETCH_TARGET_ADDRESS_SPACE,
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { cconsole } from "$lib/logger.svelte";
@@ -69,6 +70,8 @@
 
 		fetch(url, {
 			method: "get",
+			priority: "low",
+			...TEST_FETCH_TARGET_ADDRESS_SPACE,
 			signal,
 		})
 			.then((response) => {

@@ -3,6 +3,7 @@
 
 	import { Dialog } from "@capacitor/dialog";
 	import { onMount } from "svelte";
+	import { TEST_FETCH_TARGET_ADDRESS_SPACE } from "$lib/navidrome.svelte";
 
 	const showAlert = async (str: string) => {
 		await Dialog.alert({
@@ -16,7 +17,10 @@
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({}),
-			// credentials: 'include' // abilita se Navidrome usa cookie-based sessions
+
+			...TEST_FETCH_TARGET_ADDRESS_SPACE,
+
+			// credentials: 'include' // TODO, check out cookie-based stuff
 		});
 
 		if (!res.ok) {
