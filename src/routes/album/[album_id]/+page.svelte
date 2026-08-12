@@ -105,12 +105,9 @@
 
 	async function printDebugLyrics(lrcUrl: string) {
 		try {
-			let data = await fetch(
-				lrcUrl,
-				{
-					...TEST_FETCH_TARGET_ADDRESS_SPACE,
-				},
-			);
+			let data = await fetch(lrcUrl, {
+				...TEST_FETCH_TARGET_ADDRESS_SPACE,
+			});
 
 			if (!data.ok) {
 				return;
@@ -215,20 +212,30 @@
 		<!-- TODO: an eye toggle to expand info (in various stages) -->
 		<!-- TODO: paginate or something -->
 		{#each albumData.song as songEntry}
-			<p class="track-item">
-				<span class="track-text">
+			<div class="track-item">
+				<div class="track-text">
 					{#if songEntry.track != null}
-						<span>{songEntry.track} -</span>
+						<span style="font-weight:bold">{songEntry.track}</span>
 					{/if}
-					<span>{songEntry.title}</span>
-					{#if songEntry.explicitStatus === "explicit"}
-						<span>[Explicit]</span>
-					{/if}
-					{#if songEntry.duration != null}
-						<span>({formatDuration(songEntry.duration)})</span>
-					{/if}
-					<span>[{getAudioQuality(songEntry)}]</span>
-				</span>
+
+					<div
+						style="margin: 0 1rem; display: flex; flex-direction:column; justify-content: flex-start; align-items: flex-start"
+					>
+						<span>
+							<span>{songEntry.title}</span>
+							{#if songEntry.explicitStatus === "explicit"}
+								<span class="explicit" aria-label="Explicit track">E</span>
+							{/if}
+						</span>
+						<span style="font-size:0.8em;color:#ffffff80">{songEntry.artist}</span>
+						<span style="font-size:0.7em;color:#ffffff80"
+							>{#if songEntry.duration != null}
+								<span>{formatDuration(songEntry.duration)}</span>
+							{/if}
+							<span>- {getAudioQuality(songEntry)}</span>
+						</span>
+					</div>
+				</div>
 				<button
 					class="track-play-btn"
 					aria-label={`Play track: "${songEntry.title}"`}
@@ -254,7 +261,7 @@
 						console.log("TODO");
 					}}>⫶</button
 				>
-			</p>
+			</div>
 		{/each}
 	</div>
 {/if}
@@ -264,7 +271,18 @@
 		margin: 0;
 	}
 
-	.tracks p.track-item {
+	.explicit {
+		display: inline-block;
+		font-weight: bold;
+		background-color: #ffffff30;
+		color: #fff;
+		font-size: 0.7em;
+		padding: 0.3rem 0.4em;
+		line-height: 1;
+		border-radius: 0.4em;
+	}
+
+	.tracks .track-item {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
@@ -283,17 +301,20 @@
 		position: relative;
 	}
 
-	.tracks p.track-item .track-text {
+	.tracks .track-item .track-text {
 		position: relative;
-		display: block;
 		pointer-events: none;
 		z-index: 10;
+
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
 
 		margin: auto 0;
 		padding: 1rem;
 	}
 
-	.tracks p.track-item button.track-settings-btn {
+	.tracks .track-item button.track-settings-btn {
 		z-index: 10;
 		display: block;
 
@@ -310,7 +331,7 @@
 		padding: 0.5rem 1rem;
 	}
 
-	.tracks p.track-item button.track-play-btn {
+	.tracks .track-item button.track-play-btn {
 		z-index: 2;
 		display: block;
 
@@ -328,25 +349,25 @@
 		width: 100%;
 	}
 
-	.tracks p.track-item:nth-child(odd) button.track-play-btn {
+	.tracks .track-item:nth-child(odd) button.track-play-btn {
 		background-color: #00000020;
 	}
 
-	.tracks p.track-item button.track-play-btn {
+	.tracks .track-item button.track-play-btn {
 		outline: 2px solid #ffffff00;
 	}
-	.tracks p.track-item button.track-play-btn:not(:hover):not(:focus-visible) {
+	.tracks .track-item button.track-play-btn:not(:hover):not(:focus-visible) {
 		transition: outline-color 0.45s ease;
 	}
-	.tracks p.track-item button.track-play-btn:hover,
-	.tracks p.track-item button.track-play-btn:focus-visible {
+	.tracks .track-item button.track-play-btn:hover,
+	.tracks .track-item button.track-play-btn:focus-visible {
 		transition-duration: 0;
 	}
 
-	.tracks p.track-item button.track-play-btn:hover {
+	.tracks .track-item button.track-play-btn:hover {
 		outline-color: #ffffff20;
 	}
-	.tracks p.track-item button.track-play-btn:focus-visible {
+	.tracks .track-item button.track-play-btn:focus-visible {
 		outline-color: #ffffff50;
 	}
 </style>
