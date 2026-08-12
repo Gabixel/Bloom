@@ -39,9 +39,18 @@
 
 	let _location = $state(location);
 
+	let navigatorLANAccess = $state("...");
+
 	let audioElement: HTMLAudioElement = $state()!;
 	onMount(() => {
 		setupCustomLogger();
+
+		// https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access#local_network_access_permissions
+		navigator.permissions
+			.query({ name: "local-network" } as any)
+			.then((result) => {
+				navigatorLANAccess = String(result.state);
+			});
 
 		cconsole.log(Capacitor.DEBUG);
 		if (Capacitor.DEBUG === true) {
@@ -253,7 +262,7 @@
 			isLoggedIn: {String(authData.isLoggedIn())}<br />
 			dolbySupportStatus: {pMediaCapResult}<br />
 			platform: {Capacitor.getPlatform()}<br />
-			version:
+			navigator LAN access: {navigatorLANAccess}
 		</p>
 	</div>
 	{#each cconsole.logList() as log}
