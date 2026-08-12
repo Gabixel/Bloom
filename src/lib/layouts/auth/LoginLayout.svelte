@@ -13,32 +13,33 @@
 	} from "$lib/navidrome.svelte";
 	import { storeUser } from "$lib/auth.svelte";
 	import { cconsole } from "../../logger.svelte";
+
 	let navidromeUrl = $state("");
 	let user = $state(""),
-		pass = $state(""),
-		msg = $state("");
+		pass = $state("");
 
 	// TODO: check if logged in?
 	onMount(() => {
 		let previousNavidromeUrl = localStorage.getItem("nd_url");
 
 		if (previousNavidromeUrl != null) {
-			navidromeUrl = $state.snapshot(navidromeData.navidromeBaseUrl());
+			navidromeUrl = previousNavidromeUrl;
 		}
 	});
 
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault();
 
+		// TODO: actually store it only after login.
+		// Split this logic for the login
 		setNavidromeUrl(navidromeUrl);
 
 		cconsole.log("Logging in @", navidromeUrl, "with username", user, "…");
 
 		const r = await login(user, pass);
-		if ("error" in r) msg = r.error;
-		else {
-			msg = `Logged in as ${r.name}`;
-
+		if ("error" in r) {
+			cconsole.log(r.error);
+		} else {
 			// TODO: improve (also for the jwt case)
 			storeUser({
 				...(r as any),
