@@ -212,6 +212,7 @@
 	</div>
 
 	<div class="tracks">
+		<!-- TODO: an eye toggle to expand info (in various stages) -->
 		<!-- TODO: paginate or something -->
 		{#each albumData.song as songEntry}
 			<p class="track-item">
@@ -230,7 +231,7 @@
 				</span>
 				<button
 					class="track-play-btn"
-					aria-label="Play song"
+					aria-label={`Play track: "${songEntry.title}"`}
 					onclick={() => {
 						playAudio(
 							songEntry.id,

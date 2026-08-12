@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { AudioPlayer } from "$lib/audio-player.svelte";
+	import { cconsole } from "$lib/logger.svelte";
 
 	let {
 		audioPlayer,
@@ -11,9 +12,31 @@
 	let duration = $state(0);
 
 	let trackData = $state({
-		title: "aaa",
-		artist: "aaa"
+		title: "",
+		artist: "",
 	});
+
+	// let i = 0;
+	// let lastStatus: any = null;
+	// setInterval(async () => {
+	// 	let s = await getStatus();
+
+	// 	if (s === undefined) {
+	// 		return;
+	// 	}
+
+	// 	if (i > 70) {
+	// 		return;
+	// 	}
+
+	// 	if (lastStatus != null && s.currentTrack?.title == lastStatus?.currentTrack?.title) {
+	// 		return;
+	// 	}
+
+	// 	cconsole.log("player status:", s);
+	// 	lastStatus = s;
+	// 	i++;
+	// }, 1000);
 </script>
 
 <footer>
@@ -25,10 +48,12 @@
 		</p>
 		<p class="track-extra">
 			<span class="track-artist">{trackData.artist}</span>
-			<br />
-			<span>
-				{currentTime} | {duration}
-			</span>
+			{#if duration > 0}
+				<br />
+				<span>
+					{currentTime} | {duration}
+				</span>
+			{/if}
 		</p>
 	</div>
 	<!-- <div class="actions">

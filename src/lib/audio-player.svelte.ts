@@ -16,6 +16,13 @@ export async function playTrack(url: string, trackData: any) {
 	await GGCAudio.play();
 }
 
+// export async function getStatus() {
+// 	let status = await GGCAudio.getStatus();
+
+// 	console.log(status);
+// 	return status;
+// }
+
 export class AudioPlayer {
 	/**
 	 *
