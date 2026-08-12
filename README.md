@@ -15,6 +15,8 @@ Made for mobile phones thanks to [Capacitor](https://capacitorjs.com/).
 
 When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
+Before building the app, you need to modify the audio player plugin (for now) since it's private.
+
 ## A note about AI
 
 My current philosophy is: "I'd rather die than learn Java." As a result, I currently have no way to personally develop a native Capacitor plugin for Android (let alone iOS: Swift is arguably even more complicated) to play music.
