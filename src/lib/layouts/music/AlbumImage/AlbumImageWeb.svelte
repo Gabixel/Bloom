@@ -65,6 +65,7 @@
 	<img
 		src={imageSrc}
 		alt={coverAltText}
+		fetchpriority="low"
 		onload={() => {
 			if (imageSrc === null) {
 				return;
