@@ -14,5 +14,5 @@ project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor
 include ':capacitor-splash-screen'
 project(':capacitor-splash-screen').projectDir = new File('../node_modules/@capacitor/splash-screen/android')
 
-include ':mediagrid-capacitor-native-audio'
-project(':mediagrid-capacitor-native-audio').projectDir = new File('../node_modules/@mediagrid/capacitor-native-audio/android')
+include ':gabigroup-capacitor-audio-player'
+project(':gabigroup-capacitor-audio-player').projectDir = new File('../node_modules/@gabigroup/capacitor-audio-player/android')

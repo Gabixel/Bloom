@@ -4,11 +4,12 @@
 	import {
 		authFetch,
 		CLIENT_NAME,
+		CLIENT_NAME_URL,
 		getSubsonicApiPath,
 		navidromeData,
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
-	import { createAudioPlayer } from "$lib/audio-player.svelte";
+	import { playTrack } from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
 	import { Dialog } from "@capacitor/dialog";
 	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
@@ -50,6 +51,7 @@
 	async function playAudio(
 		audioId: string,
 		trackData: {
+			id: string;
 			title: string;
 			artist: string;
 			albumTitle: string;
@@ -91,7 +93,13 @@
 			return;
 		}
 
-		createAudioPlayer(url, trackData);
+		playTrack(url, {
+			...trackData,
+			// TODO: improve
+			image:
+				`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${trackData.id}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`,
+		});
 	}
 
 	async function printDebugLyrics(lrcUrl: string) {
@@ -221,6 +229,7 @@
 						playAudio(
 							songEntry.id,
 							{
+								id: songEntry.id,
 								title: songEntry.title,
 								artist: songEntry.artist,
 								albumTitle: albumData.name,

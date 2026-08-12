@@ -38,6 +38,6 @@
     "@capacitor/ios": "^8.5.0",
     "@capacitor/keyboard": "^8.0.5",
     "@capacitor/splash-screen": "^8.0.2",
-    "@mediagrid/capacitor-native-audio": "^3.0.0"
+    "@gabigroup/capacitor-audio-player": "file:env_audio-plugin/capacitor-audio-player-0.0.11.tgz"
   }
 }

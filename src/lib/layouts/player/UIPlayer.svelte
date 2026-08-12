@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AudioPlayer, trackInfo } from "$lib/audio-player.svelte";
+	import { AudioPlayer } from "$lib/audio-player.svelte";
 
 	let {
 		audioPlayer,
@@ -7,30 +7,13 @@
 		audioPlayer: AudioPlayer | null;
 	} = $props();
 
-	let currentTime = $derived.by(() => {
-		let time: string | number = trackInfo.getCurrentTime();
+	let currentTime = $state(0);
+	let duration = $state(0);
 
-		if (isNaN(time)) {
-			time = "...";
-		} else {
-			time = time.toFixed(0);
-		}
-
-		return time;
+	let trackData = $state({
+		title: "aaa",
+		artist: "aaa"
 	});
-	let duration = $derived.by(() => {
-		let time: string | number = trackInfo.getDuration();
-
-		if (isNaN(time)) {
-			time = "...";
-		} else {
-			time = time.toFixed(0);
-		}
-
-		return time;
-	});
-
-	let trackData = $derived(trackInfo.getData());
 </script>
 
 <footer>
@@ -48,7 +31,7 @@
 			</span>
 		</p>
 	</div>
-	<div class="actions">
+	<!-- <div class="actions">
 		<button
 			type="button"
 			onclick={() => {
@@ -57,7 +40,7 @@
 		>
 			{trackInfo.getIsPlaying() ? "Pause" : "Play"}
 		</button>
-	</div>
+	</div> -->
 </footer>
 
 <style>

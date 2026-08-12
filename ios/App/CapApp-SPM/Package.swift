@@ -16,7 +16,7 @@ let package = Package(
         .package(name: "CapacitorDialog", path: "../../../node_modules/@capacitor/dialog"),
         .package(name: "CapacitorKeyboard", path: "../../../node_modules/@capacitor/keyboard"),
         .package(name: "CapacitorSplashScreen", path: "../../../node_modules/@capacitor/splash-screen"),
-        .package(name: "MediagridCapacitorNativeAudio", path: "../../../node_modules/@mediagrid/capacitor-native-audio")
+        .package(name: "GabigroupCapacitorAudioPlayer", path: "../../../node_modules/@gabigroup/capacitor-audio-player")
     ],
     targets: [
         .target(
@@ -28,7 +28,7 @@ let package = Package(
                 .product(name: "CapacitorDialog", package: "CapacitorDialog"),
                 .product(name: "CapacitorKeyboard", package: "CapacitorKeyboard"),
                 .product(name: "CapacitorSplashScreen", package: "CapacitorSplashScreen"),
-                .product(name: "MediagridCapacitorNativeAudio", package: "MediagridCapacitorNativeAudio")
+                .product(name: "GabigroupCapacitorAudioPlayer", package: "GabigroupCapacitorAudioPlayer")
             ]
         )
     ]

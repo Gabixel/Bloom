@@ -13,7 +13,7 @@ dependencies {
     implementation project(':capacitor-dialog')
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-splash-screen')
-    implementation project(':mediagrid-capacitor-native-audio')
+    implementation project(':gabigroup-capacitor-audio-player')
 
 }
 
