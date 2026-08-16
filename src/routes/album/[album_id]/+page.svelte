@@ -239,6 +239,33 @@
 						<span style="font-weight:bold;white-space:nowrap;"
 							>
 							{songEntry.track ?? "--"}
+							<!--{String(songEntry.track ?? "").padStart(
+								String(songList.length).length - String(songEntry.track ?? i).length + 1,
+								"0",
+							)}-->
+							<!--{(() => {
+								// TODO: improve logic
+								return ;
+
+								// let trackNumberStr = "";
+
+								// // defaults to a "no discs" case, using the entire song list length as one whole disc
+								// let highestTrackNumberOfDisc = songList.length;
+
+								// if(songEntry.track != null) {
+								// 	trackNumberStr += trackNumberStr;
+
+								// }
+								
+								// if(songEntry.discNumber == null) {
+
+									
+								// 	songList.length
+								// } else {
+
+								// }
+
+							})()}-->
 						</span>
 					<!--{/if}-->
 

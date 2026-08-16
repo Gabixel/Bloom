@@ -1,10 +1,14 @@
 <script lang="ts">
 	import {
 		AudioPlayer,
-		listenAudioEvents,
 		getStatus,
+		listenAudioEvents,
+		pauseTrack,
+		playTrack,
+		resumeTrack,
 	} from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
+	import { GGCAudio } from "@gabigroup/capacitor-audio-player";
 	import { onMount } from "svelte";
 
 	let {
@@ -13,21 +17,40 @@
 		audioPlayer: AudioPlayer | null;
 	} = $props();
 
-	let currentTime = $state(0);
-	let duration = $state(0);
+	let trackState = "unknown";
 
 	let trackData = $state({
 		title: "",
 		artist: "",
+		currentTime: 0,
+		duration: 0,
 	});
 
 	onMount(() => {
 		listenAudioEvents();
 
-		setInterval(() => {
-			getStatus();
-		}, 50000);
+		GGCAudio.addListener("playbackStateChange", (status) => {
+			updateTrackData(status);
+		});
 	});
+
+	function updateTrackData(newData: any) {
+		if (newData.currentTrack!.title != trackData.title) {
+			trackData.title = newData.currentTrack!.title!;
+		}
+		if (newData.currentTrack!.artist != trackData.artist) {
+			trackData.artist = newData.currentTrack!.artist!;
+		}
+
+		if (newData.position != trackData.currentTime) {
+			trackData.currentTime = newData.position;
+		}
+		if (newData.duration != trackData.duration) {
+			trackData.duration = newData.duration;
+		}
+
+		trackState = newData.playbackState;
+	}
 </script>
 
 <footer>
@@ -37,26 +60,38 @@
 		<p class="track-name">
 			<span>{trackData.title}</span>
 		</p>
-		<p class="track-extra">
-			<span class="track-artist">{trackData.artist}</span>
-			{#if duration > 0}
-				<br />
-				<span>
-					{currentTime} | {duration}
-				</span>
-			{/if}
-		</p>
+		<span class="track-extra">
+			<p class="track-artist">{trackData.artist}</p>
+			<p>
+				{Math.floor(trackData.currentTime / 1000)} | {Math.floor(
+					trackData.duration / 1000,
+				)}
+			</p>
+		</span>
 	</div>
-	<!-- <div class="actions">
+	<div class="actions">
 		<button
+			disabled={trackState != "paused" && trackState != "playing"}
 			type="button"
+			style="font-size:1.5rem"
 			onclick={() => {
-				trackInfo.pauseOrResume();
+				switch (trackState) {
+					case "playing":
+						pauseTrack().then(() => {
+							updateTrackData(getStatus());
+						});
+						break;
+					case "paused":
+						resumeTrack().then(() => {
+							updateTrackData(getStatus());
+						});
+						break;
+				}
 			}}
 		>
-			{trackInfo.getIsPlaying() ? "Pause" : "Play"}
+			{trackState != "playing" ? "Play" : "Pause"}
 		</button>
-	</div> -->
+	</div>
 </footer>
 
 <style>
@@ -87,6 +122,13 @@
 
 	.track-info {
 		padding-right: 3rem;
+	}
+
+	/* keep rendering when paragraphs are empty */
+	.track-info p::before {
+		content: "";
+		display: inline-block;
+		width: 0px;
 	}
 
 	.actions {
