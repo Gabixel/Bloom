@@ -1,6 +1,11 @@
 <script lang="ts">
-	import { AudioPlayer } from "$lib/audio-player.svelte";
+	import {
+		AudioPlayer,
+		listenAudioEvents,
+		getStatus,
+	} from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
+	import { onMount } from "svelte";
 
 	let {
 		audioPlayer,
@@ -16,27 +21,13 @@
 		artist: "",
 	});
 
-	// let i = 0;
-	// let lastStatus: any = null;
-	// setInterval(async () => {
-	// 	let s = await getStatus();
+	onMount(() => {
+		listenAudioEvents();
 
-	// 	if (s === undefined) {
-	// 		return;
-	// 	}
-
-	// 	if (i > 70) {
-	// 		return;
-	// 	}
-
-	// 	if (lastStatus != null && s.currentTrack?.title == lastStatus?.currentTrack?.title) {
-	// 		return;
-	// 	}
-
-	// 	cconsole.log("player status:", s);
-	// 	lastStatus = s;
-	// 	i++;
-	// }, 1000);
+		setInterval(() => {
+			getStatus();
+		}, 50000);
+	});
 </script>
 
 <footer>
