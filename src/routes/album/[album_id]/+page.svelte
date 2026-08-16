@@ -35,6 +35,12 @@
 	}
 
 	let albumData: any = $state(null)!;
+	let songList: any[] = $state([])!;
+
+	// let highestTrackNumberOfDiscs = $state([]);
+
+	let isAnyTrackNumbered = $state(false);
+
 	let albumRequest = authFetch(
 		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
@@ -47,6 +53,14 @@
 		let response = (await data.json())["subsonic-response"];
 		albumData = response["album"];
 		console.log("album data:", response);
+
+		if (Array.isArray(albumData["song"])) {
+			songList = albumData["song"];
+
+			isAnyTrackNumbered = songList.some((item) => {
+				return item.track != null;
+			});
+		}
 	});
 
 	async function playAudio(
@@ -191,14 +205,21 @@
 			<p>
 				{albumData.displayArtist}
 				{#if albumData.year != null}
-					- {albumData.year}
+					<span>- {albumData.year}</span>
 				{/if}
 				{#if albumData.genre != null}
-					- {albumData.genre}
+					<span>- {albumData.genre}</span>
 				{/if}
 				{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
-					/ Single
+					<span>/ Single</span>
 				{/if}
+				<span
+					>/ {(() => {
+						let discCount = Math.min(1, albumData.discTitles.length);
+
+						return `${discCount} disc${discCount != 1 ? "s" : ""}`;
+					})()}</span
+				>
 			</p>
 			{#if albumData.duration != null}
 				<p>
@@ -211,12 +232,15 @@
 	<div class="tracks">
 		<!-- TODO: an eye toggle to expand info (in various stages) -->
 		<!-- TODO: paginate or something -->
-		{#each albumData.song as songEntry}
+		{#each songList as songEntry, i (songEntry.id)}
 			<div class="track-item">
 				<div class="track-text">
-					{#if songEntry.track != null}
-						<span style="font-weight:bold">{songEntry.track}</span>
-					{/if}
+					<!--{#if isAnyTrackNumbered}-->
+						<span style="font-weight:bold;white-space:nowrap;"
+							>
+							{songEntry.track ?? "--"}
+						</span>
+					<!--{/if}-->
 
 					<div
 						style="margin: 0 1rem; display: flex; flex-direction:column; justify-content: flex-start; align-items: flex-start"
