@@ -18,8 +18,19 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            // minifyEnabled false
+
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' // ???
+            
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            // minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
         }
     }
 }
