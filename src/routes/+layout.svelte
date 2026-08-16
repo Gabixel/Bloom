@@ -68,33 +68,6 @@
 
 		cconsole.log("SvelteKit app version:", version);
 
-		CapacitorApp.getInfo().then((data) => {
-			cconsole.log("app data", data);
-		});
-		CapacitorApp.getAppLanguage().then((data) => {
-			cconsole.log("app language", data);
-		});
-		CapacitorApp.addListener("pause", () => {
-			cconsole.log("app pause (background)");
-		});
-		CapacitorApp.addListener("resume", () => {
-			cconsole.log("app resume (foreground)");
-		});
-		CapacitorApp.addListener("appStateChange", ({ isActive }) => {
-			cconsole.log("app state changed. Is active?", isActive);
-		});
-		CapacitorApp.addListener("appRestoredResult", (data) => {
-			cconsole.warn("app restored state:", data);
-		});
-		// const checkAppLaunchUrl = async () => {
-		// 	const { url } = await CapacitorApp.getLaunchUrl();
-
-		// 	console.log("App opened with URL: " + url);
-		// };
-		CapacitorApp.addListener("appUrlOpen", (data) => {
-			cconsole.warn("app opened with URL:", data);
-		});
-
 		window.addEventListener("beforeunload", () => {
 			cconsole.warn("beforeunload called");
 		});
@@ -143,6 +116,11 @@
 	});
 
 	onMount(() => {
+		// TODO: iOS?
+		if (Capacitor.getPlatform() !== "android") {
+			return;
+		}
+
 		SplashScreen.hide({
 			fadeOutDuration: 200,
 		});
@@ -165,6 +143,35 @@
 
 		Keyboard.addListener("keyboardDidHide", () => {
 			cconsole.log("keyboard did hide");
+		});
+		
+		///
+
+		CapacitorApp.getInfo().then((data) => {
+			cconsole.log("app data", data);
+		});
+		CapacitorApp.getAppLanguage().then((data) => {
+			cconsole.log("app language", data);
+		});
+		CapacitorApp.addListener("pause", () => {
+			cconsole.log("app pause (background)");
+		});
+		CapacitorApp.addListener("resume", () => {
+			cconsole.log("app resume (foreground)");
+		});
+		CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+			cconsole.log("app state changed. Is active?", isActive);
+		});
+		CapacitorApp.addListener("appRestoredResult", (data) => {
+			cconsole.warn("app restored state:", data);
+		});
+		// const checkAppLaunchUrl = async () => {
+		// 	const { url } = await CapacitorApp.getLaunchUrl();
+
+		// 	console.log("App opened with URL: " + url);
+		// };
+		CapacitorApp.addListener("appUrlOpen", (data) => {
+			cconsole.warn("app opened with URL:", data);
 		});
 	});
 
