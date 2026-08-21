@@ -178,7 +178,7 @@
 </script>
 
 <svelte:head>
-	<title>Album list &#183; Bloom</title>
+	<title>Album List &#183; Bloom</title>
 </svelte:head>
 
 <input
