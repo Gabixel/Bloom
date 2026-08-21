@@ -190,7 +190,6 @@
 	placeholder="Search…"
 	autocomplete="off"
 />
-<!-- value={searchData.getLastSearchData().searchInput} -->
 
 {#if albumCount >= 0}
 	<button onclick={refreshInput}>Refresh</button>
