@@ -247,18 +247,26 @@
 	style="padding:0.5rem"
 	data-sveltekit-replacestate={!authData.isLoggedIn()}
 >
-	<a href="/" aria-current={page.route.id === "/" ? "page" : undefined}>
+	<a
+		href="/"
+		aria-current={page.route.id === "/" ? "page" : undefined}
+		data-sveltekit-preload-code="eager"
+	>
 		<span>Home</span>
 	</a>
 	<a
 		href="#/subpage-example"
 		aria-current={page.route.id === "/subpage-example" ? "page" : undefined}
-		>Example</a
 	>
+		Example
+	</a>
 	<a
 		href="#/album"
-		aria-current={page.route.id === "/album" ? "page" : undefined}>Albums</a
+		aria-current={page.route.id === "/album" ? "page" : undefined}
+		data-sveltekit-preload-code="eager"
 	>
+		Albums
+	</a>
 	<a href="#/about" aria-current={undefined}>About</a>
 	<a href="#/settings" aria-current={undefined}>Settings</a>
 	<button
