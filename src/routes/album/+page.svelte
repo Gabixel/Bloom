@@ -12,14 +12,16 @@
 	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
 	import {
 		AlbumIntersectionObserver,
-		searchData,
+		// searchData,
 	} from "../../lib/album-search.svelte";
+	import type { Snapshot } from "@sveltejs/kit";
 
 	let {}: PageProps = $props();
 
 	let _location = $state(location);
 
 	let searchBar: HTMLInputElement = $state()!;
+	let searchString: string = $state("");
 
 	let user = authData.userData();
 
@@ -49,13 +51,52 @@
 		// ...more
 	};
 
-	let albumlist: AlbumItem[] | null = $state.raw(
-		searchData.getLastSearchData().albumList,
-	);
+	let albumList: AlbumItem[] | null = $state.raw([]);
 
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
 	let albumCount = $state(-1);
+
+	let errorMessage = $state("");
+
+	type AlbumSnapshot = {
+		searchString: typeof searchString;
+		albumList: typeof albumList;
+		scrollY: number;
+	};
+	export const snapshot: Snapshot<AlbumSnapshot> = {
+		capture: () => {
+			return {
+				searchString,
+				albumList: albumList ?? [],
+				scrollY: window.scrollY,
+			};
+		},
+		restore: (value) => {
+			searchString = value.searchString;
+			albumList = value.albumList;
+			albumCount = value.albumList.length;
+
+			if (value.albumList.length <= 0) {
+				listAlbums().then(() => {
+					doScroll(value.scrollY);
+				});
+			} else {
+				doScroll(value.scrollY);
+			}
+
+			function doScroll(y: number) {
+				requestAnimationFrame(() => {
+					window.scrollTo(0, y);
+				});
+			}
+		},
+	};
+
+	// export const snapshot: Snapshot<string> = {
+	// 	capture: () => comment,
+	// 	restore: (value) => (comment = value),
+	// };
 
 	async function listAlbums() {
 		await authFetch(
@@ -73,7 +114,7 @@
 				console.log(list);
 
 				if (Array.isArray(list)) {
-					albumlist = list;
+					albumList = list;
 				}
 
 				// TODO: store somewhere when using search
@@ -85,7 +126,7 @@
 				}
 			})
 			.catch(() => {
-				albumlist = null;
+				albumList = null;
 			});
 	}
 
@@ -93,33 +134,18 @@
 		searchBar.addEventListener("input", () => {
 			clearTimeout(searchTimeout);
 			searchTimeout = setTimeout(() => {
-				let value = searchBar.value;
+				let value = searchString;
 
 				cconsole.log(`searching for '${value}'`);
 
 				if (value == "") {
 					// default listing
-					listAlbums().then(() => {
-						searchData.update({
-							searchInput: value,
-							albumList: [],
-						});
-					});
-					return;
+					listAlbums();
+				} else {
+					search(encodeURIComponent(value));
 				}
-
-				search(encodeURIComponent(value)).then((searchList) => {
-					searchData.update({
-						searchInput: value,
-						albumList: searchList,
-					});
-				});
 			}, 1100);
 		});
-
-		if (searchBar.value === "") {
-			listAlbums();
-		}
 	});
 
 	async function search(input: string) {
@@ -133,17 +159,21 @@
 			return [];
 		}
 
-		let searchList = (await result.json())["subsonic-response"]["searchResult3"][
-			"album"
-		];
+		let searchList = (await result.json())["subsonic-response"][
+			"searchResult3"
+		]["album"];
 
 		if (!Array.isArray(searchList)) {
 			searchList = [];
 		}
 
-		albumlist = searchList;
+		albumList = searchList;
 
 		return searchList;
+	}
+
+	function refreshInput() {
+		searchBar.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 </script>
 
@@ -153,20 +183,26 @@
 
 <input
 	bind:this={searchBar}
+	bind:value={searchString}
 	type="search"
-	value={searchData.getLastSearchData().searchInput}
 	class="album-search-bar"
 	id="album-search-bar"
 	placeholder="Search…"
 	autocomplete="off"
 />
+<!-- value={searchData.getLastSearchData().searchInput} -->
 
-<p>Total albums in DB: {albumCount >= 0 ? albumCount : "Loading..."}</p>
+{#if albumCount >= 0}
+	<button onclick={refreshInput}>Refresh</button>
+{/if}
 
-{#if albumlist == null || albumlist.length == 0}
+{#if albumCount < 0}
+	<p>{errorMessage === "" ? "Loading..." : errorMessage}</p>
+{:else if albumList == null || albumList.length == 0}
 	<p>No albums!</p>
 {:else}
-	{#each albumlist as album (album.id)}
+	<p>Total albums in DB: {albumCount}</p>
+	{#each albumList as album (album.id)}
 		{@render renderAlbum(album)}
 	{/each}
 {/if}

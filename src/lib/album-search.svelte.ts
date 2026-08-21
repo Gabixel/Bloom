@@ -1,17 +1,3 @@
-let lastSearch = $state({
-	searchInput: "",
-	albumList: [],
-});
-
-export const searchData = {
-	getLastSearchData: () => {
-		return lastSearch;
-	},
-	update: (newSearch: typeof lastSearch) => {
-		lastSearch = newSearch;
-	},
-};
-
 const AlbumVisibileEvent = new CustomEvent("album-visible");
 
 export const AlbumIntersectionObserver = new IntersectionObserver(
