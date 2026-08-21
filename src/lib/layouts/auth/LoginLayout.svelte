@@ -19,6 +19,8 @@
 	let fieldUser = $state(""),
 		fieldPass = $state("");
 
+	let showPsw = $state(false);
+
 	let prevUrls: string[] = $state([]);
 
 	// TODO: check if logged in?
@@ -77,14 +79,17 @@
 		spellcheck="false"
 		autocapitalize="none"
 	/>
+
 	<input
 		name="password"
 		bind:value={fieldPass}
-		type="password"
+		type={showPsw ? "text" : "password"}
 		placeholder="Password"
 		autocomplete="current-password webauthn"
 		spellcheck="false"
 	/>
+	<label><input type="checkbox" bind:checked={showPsw} /> <span>Show password</span></label>
+
 	<input
 		name="url"
 		list="login-url-list"
@@ -107,7 +112,7 @@
 
 <style>
 	.login-form {
-		width: 80%;
+		width: min(80%, 20rem);
 		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
@@ -115,11 +120,22 @@
 		align-items: stretch;
 
 		gap: 1rem;
+
+		text-align: center;
 	}
 
-	.login-form > * {
+	.login-form > input,
+	.login-form > button {
 		width: auto;
-
+	}
+	.login-form > input {
 		padding: 0.5rem;
+	}
+	.login-form > button {
+		padding: 1rem 0.5rem;
+	}
+
+	.login-form label {
+		width: max-content;
 	}
 </style>
