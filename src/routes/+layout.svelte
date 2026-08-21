@@ -244,11 +244,22 @@
 </svelte:head>
 
 <nav style="padding:0.5rem">
-	<a href="/">Home</a>
-	<a href="#/subpage-example">Example</a>
-	<a href="#/album">Albums</a>
-	<a href="#/about">About</a>
-	<a href="#/settings">Settings</a>
+	<a href="/" data-sveltekit-replacestate={!authData.isLoggedIn()}>
+		<span>Home</span>
+	</a>
+	<a
+		href="#/subpage-example"
+		data-sveltekit-replacestate={!authData.isLoggedIn()}>Example</a
+	>
+	<a href="#/album" data-sveltekit-replacestate={!authData.isLoggedIn()}
+		>Albums</a
+	>
+	<a href="#/about" data-sveltekit-replacestate={!authData.isLoggedIn()}
+		>About</a
+	>
+	<a href="#/settings" data-sveltekit-replacestate={!authData.isLoggedIn()}
+		>Settings</a
+	>
 	<button
 		type="button"
 		onclick={() => {
