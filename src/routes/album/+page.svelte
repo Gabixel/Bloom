@@ -173,6 +173,8 @@
 	}
 
 	function refreshInput() {
+		albumCount = -1;
+		albumList!.length = 0;
 		searchBar.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 </script>
