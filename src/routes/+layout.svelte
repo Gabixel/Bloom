@@ -247,13 +247,20 @@
 	style="padding:0.5rem"
 	data-sveltekit-replacestate={!authData.isLoggedIn()}
 >
-	<a href="/">
+	<a href="/" aria-current={page.route.id === "/" ? "page" : undefined}>
 		<span>Home</span>
 	</a>
-	<a href="#/subpage-example">Example</a>
-	<a href="#/album">Albums</a>
-	<a href="#/about">About</a>
-	<a href="#/settings">Settings</a>
+	<a
+		href="#/subpage-example"
+		aria-current={page.route.id === "/subpage-example" ? "page" : undefined}
+		>Example</a
+	>
+	<a
+		href="#/album"
+		aria-current={page.route.id === "/album" ? "page" : undefined}>Albums</a
+	>
+	<a href="#/about" aria-current={undefined}>About</a>
+	<a href="#/settings" aria-current={undefined}>Settings</a>
 	<button
 		type="button"
 		onclick={() => {
