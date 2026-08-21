@@ -15,7 +15,8 @@ Made for mobile phones thanks to [Capacitor](https://capacitorjs.com/).
 
 When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
-Before building the app, you need to modify the audio player plugin (for now) since it's private.
+> [!IMPORTANT]
+> Before building the app, you need to modify the audio player plugin because it's private.
 
 ## A note about AI
 
