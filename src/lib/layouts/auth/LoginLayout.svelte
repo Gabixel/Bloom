@@ -19,6 +19,9 @@
 	let fieldUser = $state(""),
 		fieldPass = $state("");
 
+	let logging = $state(false);
+	let errorMessage = $state("");
+
 	let showPsw = $state(false);
 
 	let prevUrls: string[] = $state([]);
@@ -55,9 +58,13 @@
 
 		cconsole.log("Logging in @", fieldUrl, "with username", fieldUser, "…");
 
+		logging = true;
+		errorMessage = "";
+
 		const r = await login(fieldUrl, fieldUser, fieldPass);
 		if ("error" in r) {
 			cconsole.log(r.error);
+			errorMessage = r.error;
 		} else {
 			setNavidromeUrl(fieldUrl);
 			storeLoginData(fieldUrl, fieldUser, fieldPass);
@@ -67,47 +74,56 @@
 				...(r as any),
 			});
 		}
+
+		logging = false;
 	}
 </script>
 
 <form class="login-form" onsubmit={onSubmit} autocomplete="on">
-	<input
-		name="username"
-		bind:value={fieldUser}
-		placeholder="Username"
-		autocomplete="nickname"
-		spellcheck="false"
-		autocapitalize="none"
-	/>
+	<fieldset disabled={logging}>
+		<input
+			name="username"
+			bind:value={fieldUser}
+			placeholder="Username"
+			autocomplete="nickname"
+			spellcheck="false"
+			autocapitalize="none"
+		/>
 
-	<input
-		name="password"
-		bind:value={fieldPass}
-		type={showPsw ? "text" : "password"}
-		placeholder="Password"
-		autocomplete="current-password webauthn"
-		spellcheck="false"
-	/>
-	<label><input type="checkbox" bind:checked={showPsw} /> <span>Show password</span></label>
+		<input
+			name="password"
+			bind:value={fieldPass}
+			type={showPsw ? "text" : "password"}
+			placeholder="Password"
+			autocomplete="current-password webauthn"
+			spellcheck="false"
+		/>
+		<label
+			><input type="checkbox" bind:checked={showPsw} />
+			<span>Show password</span></label
+		>
 
-	<input
-		name="url"
-		list="login-url-list"
-		bind:value={fieldUrl}
-		type="url"
-		placeholder="URL"
-		autocomplete="url"
-		spellcheck="false"
-	/>
+		<input
+			name="url"
+			list="login-url-list"
+			bind:value={fieldUrl}
+			type="url"
+			placeholder="URL"
+			autocomplete="url"
+			spellcheck="false"
+		/>
 
-	<button>Login</button>
+		<button>Login</button>
 
-	<datalist id="login-url-list">
-		{#each prevUrls as url (url)}
-			<option value={url}></option>
-		{/each}
-		<option value="http://192.168.1."></option>
-	</datalist>
+		<p>{errorMessage}</p>
+
+		<datalist id="login-url-list">
+			{#each prevUrls as url (url)}
+				<option value={url}></option>
+			{/each}
+			<option value="http://192.168.1."></option>
+		</datalist>
+	</fieldset>
 </form>
 
 <style>
@@ -124,14 +140,19 @@
 		text-align: center;
 	}
 
-	.login-form > input,
-	.login-form > button {
+	fieldset {
+		/* bit of a hack */
+		display: contents;
+	}
+
+	.login-form input,
+	.login-form button {
 		width: auto;
 	}
-	.login-form > input {
+	.login-form input {
 		padding: 0.5rem;
 	}
-	.login-form > button {
+	.login-form button {
 		padding: 1rem 0.5rem;
 	}
 
