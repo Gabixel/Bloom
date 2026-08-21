@@ -115,6 +115,18 @@
 	});
 
 	onMount(() => {
+		window.addEventListener("visibilitychange", () => {
+			cconsole.log(
+				"visibility changed!",
+				"\ndocument.hidden:",
+				document.hidden,
+				"\ndocument.visibilityState:",
+				document.visibilityState,
+			);
+		});
+	});
+
+	onMount(() => {
 		// TODO: iOS?
 		if (Capacitor.getPlatform() !== "android") {
 			return;
@@ -129,7 +141,10 @@
 		});
 
 		Keyboard.addListener("keyboardWillShow", (info) => {
-			cconsole.log("keyboard will show with height:", info.keyboardHeight);
+			cconsole.log(
+				"keyboard will show with height:",
+				info.keyboardHeight,
+			);
 		});
 
 		Keyboard.addListener("keyboardDidShow", (info) => {
@@ -143,7 +158,7 @@
 		Keyboard.addListener("keyboardDidHide", () => {
 			cconsole.log("keyboard did hide");
 		});
-		
+
 		///
 
 		CapacitorApp.getInfo().then((data) => {
@@ -164,6 +179,7 @@
 		CapacitorApp.addListener("appRestoredResult", (data) => {
 			cconsole.warn("app restored state:", data);
 		});
+
 		// const checkAppLaunchUrl = async () => {
 		// 	const { url } = await CapacitorApp.getLaunchUrl();
 
@@ -206,7 +222,8 @@
 		if ("mediaCapabilities" in navigator) {
 			mediacap.results =
 				await navigator.mediaCapabilities.decodingInfo(mediaConfig);
-			mediacap.message = (mediacap.results.supported ? "" : "not ") + "supported";
+			mediacap.message =
+				(mediacap.results.supported ? "" : "not ") + "supported";
 		}
 
 		return mediacap;
@@ -219,7 +236,11 @@
 </script>
 
 <svelte:head>
-	<link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
+	<link
+		rel="manifest"
+		href="/app.webmanifest"
+		crossorigin="use-credentials"
+	/>
 </svelte:head>
 
 <nav style="padding:0.5rem">
@@ -248,7 +269,7 @@
 
 <div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">
 	<div>
-		<p style="white-space:normal;font-size:0.9rem">
+		<p style="white-space:normal;font-size:0.8rem">
 			page url pathname: "{page.url.pathname}"<br />
 			location hash: "{_location.hash}"<br />
 			page state: "{JSON.stringify(page.state)}"<br />
@@ -271,7 +292,10 @@
 			</span>
 			{(() => {
 				/* remove everything before first comma */
-				return JSON.stringify(log.replace(/^.*?,\s*/, ""));
+				return JSON.stringify(log.replace(/^.*?,\s*/, "")).replaceAll(
+					"\\n",
+					"\n",
+				);
 			})()}
 		</p>
 	{/each}
