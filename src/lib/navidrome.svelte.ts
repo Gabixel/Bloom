@@ -6,7 +6,7 @@ import { cconsole } from "./logger.svelte";
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#targetaddressspace
  * @see https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access
-*/
+ */
 export const TEST_FETCH_TARGET_ADDRESS_SPACE = {
 	targetAddressSpace: "local",
 } as any;
@@ -39,22 +39,58 @@ export type LoginResult =
 	  }
 	| { error: string };
 
-let navidrome_base: string = $state("");
+let navidromeUrl: string = $state("");
 
 export const navidromeData = {
-	navidromeBaseUrl: () => navidrome_base,
+	navidromeBaseUrl: () => navidromeUrl,
 };
 
 export function setNavidromeUrl(url: string) {
-	navidrome_base = url;
+	navidromeUrl = url;
+}
+
+// VERY temporarily
+export function storeLoginData(
+	url: string,
+	username: string,
+	password: string,
+) {
+	let prevUrlsItem: Set<string> | string | string[] =
+		localStorage.getItem("nd_prev_urls") ?? new Set();
+
+	if (typeof prevUrlsItem === "string") {
+		prevUrlsItem = JSON.parse(prevUrlsItem) as string[];
+
+		if (Array.isArray(prevUrlsItem)) {
+			prevUrlsItem = new Set(prevUrlsItem);
+		} else {
+			prevUrlsItem = new Set();
+		}
+	}
+
+	prevUrlsItem.add(url);
+	localStorage.setItem(
+		"nd_prev_urls",
+		JSON.stringify(
+			(() => {
+				let finalArray = prevUrlsItem.values().toArray();
+				finalArray.length = 3;
+				return finalArray;
+			})(),
+		),
+	);
+
 	localStorage.setItem("nd_url", url);
+	localStorage.setItem("nd_username", username);
+	localStorage.setItem("nd_password", password);
 }
 
 export async function login(
+	fieldUrl: string,
 	username: string,
 	password: string,
 ): Promise<LoginResult> {
-	const url = `${navidrome_base}/auth/login`;
+	const url = `${fieldUrl}/auth/login`;
 
 	try {
 		const res = await fetch(url, {
@@ -119,5 +155,5 @@ export async function authFetch(
 }
 
 export function getSubsonicApiPath(input: RequestInfo) {
-	return navidrome_base + input;
+	return navidromeUrl + input;
 }

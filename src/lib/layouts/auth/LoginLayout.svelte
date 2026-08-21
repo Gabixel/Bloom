@@ -10,36 +10,56 @@
 		authFetch,
 		setNavidromeUrl,
 		navidromeData,
+		storeLoginData,
 	} from "$lib/navidrome.svelte";
 	import { storeUser } from "$lib/auth.svelte";
 	import { cconsole } from "../../logger.svelte";
 
-	let navidromeUrl = $state("");
-	let user = $state(""),
-		pass = $state("");
+	let fieldUrl = $state("");
+	let fieldUser = $state(""),
+		fieldPass = $state("");
+
+	let prevUrls: string[] = $state([]);
 
 	// TODO: check if logged in?
 	onMount(() => {
-		let previousNavidromeUrl = localStorage.getItem("nd_url");
+		let prevUrl = localStorage.getItem("nd_url");
+		if (prevUrl != null) {
+			fieldUrl = prevUrl;
+		}
 
-		if (previousNavidromeUrl != null) {
-			navidromeUrl = previousNavidromeUrl;
+		let prevUsername = localStorage.getItem("nd_username");
+		if (prevUsername != null) {
+			fieldUser = prevUsername;
+		}
+
+		let prevPassword = localStorage.getItem("nd_password");
+
+		if (prevPassword != null) {
+			fieldPass = prevPassword;
+		}
+
+		let prevLinks = JSON.parse(
+			localStorage.getItem("nd_prev_urls") ?? "[]",
+		);
+
+		if (Array.isArray(prevLinks)) {
+			prevUrls = [...prevLinks];
 		}
 	});
 
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault();
 
-		// TODO: actually store it only after login.
-		// Split this logic for the login
-		setNavidromeUrl(navidromeUrl);
+		cconsole.log("Logging in @", fieldUrl, "with username", fieldUser, "…");
 
-		cconsole.log("Logging in @", navidromeUrl, "with username", user, "…");
-
-		const r = await login(user, pass);
+		const r = await login(fieldUrl, fieldUser, fieldPass);
 		if ("error" in r) {
 			cconsole.log(r.error);
 		} else {
+			setNavidromeUrl(fieldUrl);
+			storeLoginData(fieldUrl, fieldUser, fieldPass);
+
 			// TODO: improve (also for the jwt case)
 			storeUser({
 				...(r as any),
@@ -48,27 +68,58 @@
 	}
 </script>
 
-<form onsubmit={onSubmit} autocomplete="on">
+<form class="login-form" onsubmit={onSubmit} autocomplete="on">
 	<input
-		bind:value={navidromeUrl}
-		type="url"
-		placeholder="url"
-		autocomplete="url"
-		spellcheck="false"
-	/>
-	<input
-		bind:value={user}
-		placeholder="username"
+		name="username"
+		bind:value={fieldUser}
+		placeholder="Username"
 		autocomplete="nickname"
 		spellcheck="false"
 		autocapitalize="none"
 	/>
 	<input
-		bind:value={pass}
+		name="password"
+		bind:value={fieldPass}
 		type="password"
-		placeholder="password"
+		placeholder="Password"
 		autocomplete="current-password webauthn"
 		spellcheck="false"
 	/>
+	<input
+		name="url"
+		list="login-url-list"
+		bind:value={fieldUrl}
+		type="url"
+		placeholder="URL"
+		autocomplete="url"
+		spellcheck="false"
+	/>
+
 	<button>Login</button>
+
+	<datalist id="login-url-list">
+		{#each prevUrls as url (url)}
+			<option value={url}></option>
+		{/each}
+		<option value="http://192.168.1."></option>
+	</datalist>
 </form>
+
+<style>
+	.login-form {
+		width: 80%;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+
+		gap: 1rem;
+	}
+
+	.login-form > * {
+		width: auto;
+
+		padding: 0.5rem;
+	}
+</style>

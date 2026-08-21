@@ -41,7 +41,6 @@
 
 	let navigatorLANAccess = $state("...");
 
-	let audioElement: HTMLAudioElement = $state()!;
 	onMount(() => {
 		setupCustomLogger();
 
@@ -175,14 +174,6 @@
 		});
 	});
 
-	/*$effect(() => {
-		if (authData.isLoggedIn()) {
-			storeAudioPlayer(audioElement);
-		} else {
-			deleteAudioPlayer();
-		}
-	});*/
-
 	$effect(() => {
 		if (navigating && !authData.isLoggedIn() && page.route.id != "/") {
 			untrack(() => {
@@ -195,7 +186,7 @@
 		}
 	});
 
-	//#region mca
+	//#region mca Dolby Immersive Capability
 	// https://webapi.streaming.dolby.com/v0_9/help_files/topics/checking_immersive_capability.html
 	async function Mca() {
 		let mediaConfig: any = {
@@ -250,10 +241,6 @@
 		{@render children()}
 	</div>
 
-	<!--<div style="background-color:#00000010">
-		Music player<br />
-		<audio bind:this={audioElement} controls></audio>
-	</div>-->
 	<UIPlayer audioPlayer={null}></UIPlayer>
 {:else}
 	<LoginLayout></LoginLayout>
