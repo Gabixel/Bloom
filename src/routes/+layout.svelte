@@ -76,48 +76,6 @@
 		window.addEventListener("beforeunload", () => {
 			cconsole.warn("beforeunload called");
 		});
-
-		const navidromeToken = localStorage.getItem("nd_token");
-		const navidromeSubsonicToken = localStorage.getItem("s_token");
-		const navidromeSubsonicSalt = localStorage.getItem("s_salt");
-
-		if (
-			navidromeToken != null &&
-			navidromeSubsonicToken != null &&
-			navidromeSubsonicSalt != null
-		) {
-			let jwt = jwtTranslate(navidromeToken);
-			let expiration = jwt.exp;
-
-			const nowSec = Math.floor(Date.now() / 1000);
-			const secondsLeft = Math.max(0, expiration - nowSec);
-
-			if (secondsLeft <= 60 * 5) {
-				return;
-			}
-
-			const navidromeUrl = localStorage.getItem("nd_url");
-
-			if (navidromeUrl == null) {
-				// TODO: is this too much?
-				destroyUserData();
-				return;
-			}
-
-			setNavidromeUrl(navidromeUrl);
-
-			storeUser({
-				id: jwt.uid,
-				// TODO: hmmm
-				name: jwt.sub,
-				username: jwt.sub,
-				token: navidromeToken,
-				subsonicToken: navidromeSubsonicToken,
-				subsonicSalt: navidromeSubsonicSalt,
-			});
-		} else {
-			destroyUserData();
-		}
 	});
 
 	onMount(() => {
@@ -194,6 +152,50 @@
 		CapacitorApp.addListener("appUrlOpen", (data) => {
 			cconsole.warn("app opened with URL:", data);
 		});
+	});
+
+	onMount(() => {
+		const navidromeToken = localStorage.getItem("nd_token");
+		const navidromeSubsonicToken = localStorage.getItem("s_token");
+		const navidromeSubsonicSalt = localStorage.getItem("s_salt");
+
+		if (
+			navidromeToken != null &&
+			navidromeSubsonicToken != null &&
+			navidromeSubsonicSalt != null
+		) {
+			let jwt = jwtTranslate(navidromeToken);
+			let expiration = jwt.exp;
+
+			const nowSec = Math.floor(Date.now() / 1000);
+			const secondsLeft = Math.max(0, expiration - nowSec);
+
+			if (secondsLeft <= 60 * 5) {
+				return;
+			}
+
+			const navidromeUrl = localStorage.getItem("nd_url");
+
+			if (navidromeUrl == null) {
+				// TODO: is this too much?
+				destroyUserData();
+				return;
+			}
+
+			setNavidromeUrl(navidromeUrl);
+
+			storeUser({
+				id: jwt.uid,
+				// TODO: hmmm
+				name: jwt.sub,
+				username: jwt.sub,
+				token: navidromeToken,
+				subsonicToken: navidromeSubsonicToken,
+				subsonicSalt: navidromeSubsonicSalt,
+			});
+		} else {
+			destroyUserData();
+		}
 	});
 
 	$effect(() => {
