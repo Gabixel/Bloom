@@ -31,6 +31,12 @@
 
 	// "[...] and you have to make sure that the links in your app all start with `#/`"
 
+	let eagerPreloadIfLoggedIn = authData.isLoggedIn() ? "eager" : "false";
+
+	function getAriaCurrentPage(path: string) {
+		return page.route.id === path ? "page" : undefined;
+	}
+
 	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
 	cconsole.log("Hello from layout.svelte");
@@ -249,21 +255,21 @@
 >
 	<a
 		href="/"
-		aria-current={page.route.id === "/" ? "page" : undefined}
-		data-sveltekit-preload-code="eager"
+		aria-current={getAriaCurrentPage("/")}
+		data-sveltekit-preload-code={eagerPreloadIfLoggedIn}
 	>
 		<span>Home</span>
 	</a>
 	<a
 		href="#/subpage-example"
-		aria-current={page.route.id === "/subpage-example" ? "page" : undefined}
+		aria-current={getAriaCurrentPage("/subpage-example")}
 	>
 		Example
 	</a>
 	<a
 		href="#/album"
-		aria-current={page.route.id === "/album" ? "page" : undefined}
-		data-sveltekit-preload-code="eager"
+		aria-current={getAriaCurrentPage("/album")}
+		data-sveltekit-preload-code={eagerPreloadIfLoggedIn}
 	>
 		Albums
 	</a>
