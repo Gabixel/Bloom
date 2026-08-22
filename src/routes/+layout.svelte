@@ -68,7 +68,7 @@
 				navigatorLANAccess = String(result.state);
 			});
 
-		cconsole.log(Capacitor.DEBUG);
+		cconsole.log("Capacitor.DEBUG:", Capacitor.DEBUG);
 		if (Capacitor.DEBUG === true) {
 			cconsole.debug("Capacitor running in debug!");
 		} else {
@@ -113,27 +113,27 @@
 		// });
 
 		Keyboard.getResizeMode().then((data) => {
-			cconsole.log(data);
+			cconsole.log("Keyboard.getResizeMode:", data);
 		});
 
-		Keyboard.addListener("keyboardWillShow", (info) => {
-			cconsole.log(
-				"keyboard will show with height:",
-				info.keyboardHeight,
-			);
-		});
+		// Keyboard.addListener("keyboardWillShow", (info) => {
+		// 	cconsole.log(
+		// 		"keyboard will show with height:",
+		// 		info.keyboardHeight,
+		// 	);
+		// });
 
-		Keyboard.addListener("keyboardDidShow", (info) => {
-			cconsole.log("keyboard did show with height:", info.keyboardHeight);
-		});
+		// Keyboard.addListener("keyboardDidShow", (info) => {
+		// 	cconsole.log("keyboard did show with height:", info.keyboardHeight);
+		// });
 
-		Keyboard.addListener("keyboardWillHide", () => {
-			cconsole.log("keyboard will hide");
-		});
+		// Keyboard.addListener("keyboardWillHide", () => {
+		// 	cconsole.log("keyboard will hide");
+		// });
 
-		Keyboard.addListener("keyboardDidHide", () => {
-			cconsole.log("keyboard did hide");
-		});
+		// Keyboard.addListener("keyboardDidHide", () => {
+		// 	cconsole.log("keyboard did hide");
+		// });
 
 		///
 
@@ -143,18 +143,18 @@
 		CapacitorApp.getAppLanguage().then((data) => {
 			cconsole.log("app language", data);
 		});
-		CapacitorApp.addListener("pause", () => {
-			cconsole.log("app pause (background)");
-		});
-		CapacitorApp.addListener("resume", () => {
-			cconsole.log("app resume (foreground)");
-		});
-		CapacitorApp.addListener("appStateChange", ({ isActive }) => {
-			cconsole.log("app state changed. Is active?", isActive);
-		});
-		CapacitorApp.addListener("appRestoredResult", (data) => {
-			cconsole.warn("app restored state:", data);
-		});
+		// CapacitorApp.addListener("pause", () => {
+		// 	cconsole.log("app pause (background)");
+		// });
+		// CapacitorApp.addListener("resume", () => {
+		// 	cconsole.log("app resume (foreground)");
+		// });
+		// CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+		// 	cconsole.log("app state changed. Is active?", isActive);
+		// });
+		// CapacitorApp.addListener("appRestoredResult", (data) => {
+		// 	cconsole.warn("app restored state:", data);
+		// });
 
 		// const checkAppLaunchUrl = async () => {
 		// 	const { url } = await CapacitorApp.getLaunchUrl();
