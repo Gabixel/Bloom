@@ -225,10 +225,6 @@
 			isActivelySearching = false;
 		});
 
-		/* /api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
-			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
-			`&_order=DESC&_sort=recently_added */
-
 		if (result == null) {
 			return [];
 		}
