@@ -211,7 +211,9 @@
 			}
 
 			if (prevScrollY > -1) {
-				doScroll(prevScrollY);
+				tick().then(() => {
+					doScroll(prevScrollY);
+				});
 			}
 		});
 	});
