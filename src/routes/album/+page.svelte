@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 	import type { PageProps } from "./$types.d.ts";
 	import {
 		authFetch,
@@ -51,7 +51,7 @@
 		// ...more
 	};
 
-	let albumList: AlbumItem[] | null = $state.raw([]);
+	let albumList: AlbumItem[] | null = $state([]);
 
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -59,6 +59,8 @@
 
 	let errorMessage = $state("");
 
+	// let snapshotRestored = $state(false);
+	let prevScrollY = $state(-1);
 	type AlbumSnapshot = {
 		searchString: typeof searchString;
 		albumList: typeof albumList;
@@ -76,27 +78,26 @@
 			searchString = value.searchString;
 			albumList = value.albumList;
 			albumCount = value.albumList.length;
+			prevScrollY = value.scrollY;
 
-			if (value.albumList.length <= 0) {
-				listAlbums().then(() => {
-					doScroll(value.scrollY);
-				});
-			} else {
-				doScroll(value.scrollY);
-			}
-
-			function doScroll(y: number) {
-				requestAnimationFrame(() => {
-					window.scrollTo(0, y);
-				});
-			}
+			// snapshotRestored = true;
 		},
 	};
+	function doScroll(y: number) {
+		requestAnimationFrame(() => {
+			window.scrollTo(0, y);
+		});
+	}
 
-	// export const snapshot: Snapshot<string> = {
-	// 	capture: () => comment,
-	// 	restore: (value) => (comment = value),
-	// };
+	tick().then(async () => {
+		if (albumList == null || albumCount <= 0) {
+			await listAlbums();
+		}
+
+		if (prevScrollY > -1) {
+			doScroll(prevScrollY);
+		}
+	});
 
 	async function listAlbums() {
 		await authFetch(
@@ -125,7 +126,8 @@
 					albumCount = Number(count);
 				}
 			})
-			.catch(() => {
+			.catch((e) => {
+				cconsole.error(e);
 				albumList = null;
 			});
 	}
@@ -167,7 +169,7 @@
 			searchList = [];
 		}
 
-		albumList = searchList;
+		albumList = [...searchList];
 
 		return searchList;
 	}
