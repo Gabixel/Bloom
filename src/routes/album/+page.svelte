@@ -321,6 +321,18 @@
 						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
 				).then(() => {
 					album.starred = !album.starred;
+
+					/*
+					{
+					    "subsonic-response": {
+					        "status": "ok",
+					        "version": "...",
+					        "type": "navidrome",
+					        "serverVersion": "... (...)",
+					        "openSubsonic": true
+					    }
+					}
+				 	*/
 				});
 			}}
 		>
