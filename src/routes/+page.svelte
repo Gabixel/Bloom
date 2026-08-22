@@ -92,6 +92,7 @@
 						></AlbumImage>
 
 						<p>{album.name}</p>
+						<p>{album.albumArtist}</p>
 					</div>
 				{/each}
 			</div>
@@ -225,15 +226,15 @@
 		margin: 0 -1rem;
 	}
 
-	.recently-listened-to .album-block {
+	.album-block {
 		display: flex;
 		flex-direction: column;
 
 		background-color: #ffffff10;
 
-		padding: 1rem;
+		cursor: pointer;
 
-		gap: 1rem;
+		padding: 1rem;
 
 		justify-content: flex-start;
 		align-items: flex-start;
@@ -247,7 +248,7 @@
 		border-radius: 0.6rem;
 	}
 
-	.recently-listened-to .album-block p {
+	.album-block > p {
 		margin: 0;
 		width: 100%;
 
@@ -259,5 +260,12 @@
 
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+	.album-block > p:nth-child(2) {
+		margin-top: 0.5rem;
+	}
+
+	.album-block p:nth-child(3) {
+		opacity: 0.6;
 	}
 </style>
