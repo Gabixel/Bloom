@@ -11,7 +11,10 @@ const config = {
 			process.env.NODE_ENV === "production"
 				? '"production"'
 				: '"development"',
-	}
+	},
+	build: {
+		minify: true,
+	},
 } satisfies UserConfig;
 
 export default config;
