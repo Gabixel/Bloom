@@ -37,10 +37,16 @@
       }
       :root,
       html,
-      body {
+      body,
+      a,
+      input,
+      button {
         -webkit-tap-highlight-color: transparent;
 
         -webkit-touch-callout: none;
+
+        /* TODO: do this only on Android? */
+        -webkit-user-drag: none;
 
         /*-webkit-user-select: none;
 				-khtml-user-select: none;
