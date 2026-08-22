@@ -271,6 +271,17 @@
 		}
 		searchBar.dispatchEvent(new Event("input", { bubbles: true }));
 	}
+
+	function toggleStar(album: AlbumItem, shouldAddStar: boolean) {
+		const operation = shouldAddStar ? "star" : "unstar";
+
+		authFetch(
+			`/rest/${operation}?id=${album.id}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
+		).then(() => {
+			album.starred = shouldAddStar;
+		});
+	}
 </script>
 
 <svelte:head>
@@ -365,26 +376,21 @@
 				// e.preventDefault();
 				e.stopImmediatePropagation();
 
-				const operation = album.starred ? "unstar" : "star";
+				if (album.starred) {
+					return;
+				}
 
-				authFetch(
-					`/rest/${operation}?id=${album.id}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME}` +
-						`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-				).then(() => {
-					album.starred = !album.starred;
+				toggleStar(album, true);
+			}}
+			ondblclick={(e) => {
+				e.preventDefault();
+				e.stopImmediatePropagation();
 
-					/*
-					{
-					    "subsonic-response": {
-					        "status": "ok",
-					        "version": "...",
-					        "type": "navidrome",
-					        "serverVersion": "... (...)",
-					        "openSubsonic": true
-					    }
-					}
-				 	*/
-				});
+				if (!album.starred) {
+					return;
+				}
+
+				toggleStar(album, false);
 			}}
 		>
 			{#if album.starred === true}
@@ -429,7 +435,7 @@
 		background-color: #00000060;
 	}
 
-	.album-element.starred::before {
+	.album-element::before {
 		content: "";
 		display: block;
 		position: absolute;
@@ -437,6 +443,15 @@
 		top: 30%;
 		bottom: 30%;
 		box-shadow: 0.6rem 0 2.3rem 0.6rem var(--bloom-theme-dark);
+
+		opacity: 1;
+	}
+	.album-element:not(.starred)::before {
+		opacity: 0;
+	}
+
+	.album-element::before {
+		transition: opacity 0.4s ease;
 	}
 
 	.album-element p {
@@ -486,12 +501,18 @@
 	.like-button svg {
 		width: 1.4rem;
 		height: 1.4rem;
-		fill: #fff;
+		fill: inherit;
 	}
 
-	.album-element.starred .like-button svg {
+	.album-element.starred .like-button {
 		fill: var(--bloom-theme);
 	}
+
+	.album-element .like-button {
+		fill: #fff;
+		transition: fill 0.4s ease;
+	}
+
 	/*:global(.album-element img) {
 		margin: 0.6rem 0;
 	}*/
