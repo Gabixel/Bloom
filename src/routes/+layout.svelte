@@ -397,10 +397,17 @@
 		font-weight: bold;
 
 		text-align: center;
+
+		position: sticky;
+		top: 0;
+
+		z-index: 50;
+
+		background-color: var(--app-bg);
 	}
-	/*nav > a + a::before {
-		content: "- ";
-	}*/
+	nav > a + a {
+		margin-left: 0.5rem;
+	}
 
 	:global(:root) {
 		--bloom-theme: #ffe06a;
