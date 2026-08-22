@@ -150,6 +150,35 @@
 		CapacitorApp.addListener("appUrlOpen", (data) => {
 			cconsole.warn("app opened with URL:", data);
 		});
+
+		// Disable long press on Android
+		document.addEventListener(
+			"contextmenu",
+			(e) => {
+				const target: HTMLElement | null = e.target as any;
+
+				const isValidInputForLongPress =
+					target != null &&
+					target.matches("input") &&
+					![
+						"checkbox",
+						"radio",
+						"button",
+						"submit",
+						"reset",
+						"file",
+						"hidden",
+						null,
+					].includes((target as HTMLInputElement).type || null);
+
+				if (!isValidInputForLongPress) {
+					e.preventDefault();
+				}
+			},
+			{
+				passive: false,
+			},
+		);
 	});
 
 	let credentialsMounted = $state(false);
