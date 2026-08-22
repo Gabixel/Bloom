@@ -409,6 +409,11 @@
 		contain-intrinsic-size: 1px calc(var(--item-height) * var(--count));
 	}
 
+	.album-element :global(.album-image-wrapper) {
+		overflow: hidden;
+		border-radius: 0.2rem;
+	}
+
 	.album-element {
 		cursor: pointer;
 		background-color: #00000020;
