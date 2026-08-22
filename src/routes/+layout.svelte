@@ -319,15 +319,17 @@
 			Albums
 		</a>
 		<a href="#/about" aria-current={undefined} draggable="false">About</a>
-		<a href="#/settings" aria-current={undefined} draggable="false"
-			>Settings</a
-		>
+		<a href="#/settings" aria-current={undefined} draggable="false">
+			Settings
+		</a>
 		<button
 			type="button"
 			onclick={() => {
 				jsConsoleDiv.classList.toggle("hidden");
-			}}>Toggle console</button
+			}}
 		>
+			Toggle console
+		</button>
 	</nav>
 {/if}
 
