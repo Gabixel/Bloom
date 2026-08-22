@@ -84,6 +84,7 @@
 
 	<fieldset disabled={logging}>
 		<input
+			class="txt"
 			name="username"
 			bind:value={fieldUser}
 			placeholder="Username"
@@ -93,6 +94,7 @@
 		/>
 
 		<input
+			class="txt"
 			name="password"
 			bind:value={fieldPass}
 			type={showPsw ? "text" : "password"}
@@ -106,6 +108,7 @@
 		>
 
 		<input
+			class="txt"
 			name="url"
 			list="login-url-list"
 			bind:value={fieldUrl}
@@ -170,6 +173,13 @@
 		text-transform: uppercase;
 
 		cursor: pointer;
+	}
+
+	.login-form .txt {
+		border: 2px solid #ffe06a;
+	}
+	.login-form .txt:disabled {
+		border: 2px solid #d1a700;
 	}
 
 	.login-form label {
