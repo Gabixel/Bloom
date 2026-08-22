@@ -240,8 +240,8 @@
 
 		flex: 0 0 40vw;
 		width: 40vw;
-		min-width: 40vw;
-		max-width: 40vw;
+		min-width: 8rem;
+		max-width: 10rem;
 
 		overflow: hidden;
 		border-radius: 0.6rem;
