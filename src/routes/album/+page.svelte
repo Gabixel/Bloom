@@ -376,7 +376,7 @@
 				// e.preventDefault();
 				e.stopImmediatePropagation();
 
-				if (album.starred) {
+				if (album.starred === true) {
 					return;
 				}
 
@@ -386,7 +386,7 @@
 				e.preventDefault();
 				e.stopImmediatePropagation();
 
-				if (!album.starred) {
+				if (album.starred !== true) {
 					return;
 				}
 
