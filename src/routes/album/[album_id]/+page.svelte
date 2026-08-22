@@ -215,7 +215,8 @@
 				{/if}
 				<span
 					>/ {(() => {
-						let discCount = Math.min(1, albumData.discTitles.length);
+						// length can be zero, so we enforce 1
+						let discCount = Math.max(1, albumData.discTitles.length);
 
 						return `${discCount} disc${discCount != 1 ? "s" : ""}`;
 					})()}</span
