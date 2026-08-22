@@ -50,6 +50,7 @@
 
 		if (Array.isArray(prevLinks)) {
 			prevUrls = [...prevLinks];
+			console.log(prevUrls);
 		}
 	});
 
