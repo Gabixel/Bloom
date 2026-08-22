@@ -59,28 +59,31 @@
 
 	let errorMessage = $state("");
 
-	// let snapshotRestored = $state(false);
+	let snapshotRestored = $state(false);
 	let prevScrollY = $state(-1);
 	type AlbumSnapshot = {
 		searchString: typeof searchString;
 		albumList: typeof albumList;
+		albumCount: number;
 		scrollY: number;
 	};
 	export const snapshot: Snapshot<AlbumSnapshot> = {
 		capture: () => {
 			return {
 				searchString,
-				albumList: albumList ?? [],
+				albumList: (isActivelySearching ? [] : albumList) || [],
+				albumCount: albumCount,
 				scrollY: window.scrollY,
 			};
 		},
 		restore: (value) => {
+			debugger;
 			searchString = value.searchString;
 			albumList = value.albumList;
-			albumCount = value.albumList.length;
+			albumCount = value.albumCount;
 			prevScrollY = value.scrollY;
 
-			// snapshotRestored = true;
+			snapshotRestored = true;
 		},
 	};
 	function doScroll(y: number) {
@@ -89,14 +92,25 @@
 		});
 	}
 
-	tick().then(async () => {
-		if (albumList == null || albumCount <= 0) {
-			await listAlbums();
-		}
+	tick().then(() => {
+		setTimeout(async () => {
+			if (!snapshotRestored) {
+				await listAlbums();
+				return;
+			}
 
-		if (prevScrollY > -1) {
-			doScroll(prevScrollY);
-		}
+			if (albumCount == -1) {
+				if (searchString == "") {
+					await listAlbums();
+				} else {
+					await search(searchString);
+				}
+			}
+
+			if (prevScrollY > -1) {
+				doScroll(prevScrollY);
+			}
+		});
 	});
 
 	async function listAlbums() {
@@ -128,23 +142,27 @@
 			})
 			.catch((e) => {
 				cconsole.error(e);
+				errorMessage = JSON.stringify(e);
 				albumList = null;
 			});
 	}
 
+	let isActivelySearching = $state(false);
 	onMount(() => {
 		searchBar.addEventListener("input", () => {
 			clearTimeout(searchTimeout);
 			searchTimeout = setTimeout(() => {
 				let value = searchString;
 
-				cconsole.log(`searching for '${value}'`);
-
 				if (value == "") {
 					// default listing
 					listAlbums();
 				} else {
-					search(encodeURIComponent(value));
+					cconsole.log(`searching for '${value}'`);
+					isActivelySearching = true;
+					search(encodeURIComponent(value)).finally(() => {
+						isActivelySearching = false;
+					});
 				}
 			}, 1100);
 		});
