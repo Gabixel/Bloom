@@ -394,6 +394,37 @@
 </div>
 
 <style>
+	:global(body) {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+	}
+
+	/* TODO: unsure if I want this */
+	:global(body.svelte-prod) {
+		user-select: none;
+	}
+
+	:global(footer) {
+		position: sticky;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+
+	#main-inner {
+		padding: 1rem;
+	}
+
+	/* https://stackoverflow.com/a/16077726/16804863 */
+	:global(button::-moz-focus-inner, input::-moz-focus-inner) {
+		border: 0;
+		padding: 0;
+	}
+
+	/* JS console down below */
+
 	#js-console {
 		position: fixed;
 		z-index: 999;
@@ -451,56 +482,5 @@
 	}
 	#js-console p.trace {
 		--theme: 191, 178, 163;
-	}
-
-	:global(:root, html, body) {
-		font-size: 100%;
-	}
-
-	:global(input),
-	:global(button) {
-		font-size: 1rem;
-		font-family: inherit;
-		border: none;
-	}
-
-	:global(footer) {
-		position: sticky;
-		bottom: 0;
-		left: 0;
-		right: 0;
-	}
-
-	:global(:root, html, body) {
-		padding: 0;
-		margin: 0;
-		height: 100%;
-		min-height: 100lvh;
-	}
-
-	:global(body, body *) {
-		box-sizing: border-box;
-	}
-
-	:global(body) {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: stretch;
-	}
-
-	/* TODO: unsure if I want this */
-	:global(body.svelte-prod) {
-		user-select: none;
-	}
-
-	#main-inner {
-		padding: 1rem;
-	}
-
-	/* https://stackoverflow.com/a/16077726/16804863 */
-	:global(button::-moz-focus-inner, input::-moz-focus-inner) {
-		border: 0;
-		padding: 0;
 	}
 </style>

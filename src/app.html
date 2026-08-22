@@ -26,6 +26,26 @@
       :root,
       html,
       body {
+        font-size: 100%;
+      }
+
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        min-height: 100lvh;
+      }
+
+      html,
+      body,
+      body * {
+        box-sizing: border-box;
+      }
+
+      :root,
+      html,
+      body {
         color-scheme: normal;
         background-color: #2e2e2e;
         color: #f0f0f0;
@@ -35,12 +55,22 @@
           Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
           "Segoe UI Symbol";
       }
+
+      input,
+      button,
+      select {
+        font-size: 1rem;
+        font-family: inherit;
+        border: none;
+      }
+
       :root,
       html,
       body,
       a,
       input,
-      button {
+      button,
+      select {
         -webkit-tap-highlight-color: transparent;
 
         -webkit-touch-callout: none;
@@ -54,6 +84,7 @@
 				-ms-user-select: none;
 				user-select: none;*/
       }
+
       a {
         /*color: #8080fe;*/
         color: #ffe06a;
