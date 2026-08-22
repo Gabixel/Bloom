@@ -60,7 +60,7 @@
 	<p>Welcome <strong>{authData.userData().name}</strong>!</p>
 
 	{#if recentAlbumList.length > 0}
-		<div class="recently-listened-to">
+		<section class="recently-listened-to">
 			<p>Recently Played</p>
 
 			<div class="list-flex">
@@ -95,7 +95,7 @@
 					</div>
 				{/each}
 			</div>
-		</div>
+		</section>
 	{/if}
 
 	<button
@@ -202,6 +202,12 @@
 		margin: 0;
 		margin-bottom: 1rem;
 		font-weight: bold;
+
+		padding-left: 0.5rem;
+		border-left: 0.25em solid currentColor;
+		border-radius: 0.2em;
+
+		line-height: 1.5;
 	}
 
 	.recently-listened-to .list-flex {
