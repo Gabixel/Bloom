@@ -4,9 +4,7 @@ import adapter from "@sveltejs/adapter-static";
 const config = {
 	compilerOptions: {
 		// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-		runes: /** @param {Object} o @param {string} o.filename */ ({
-			filename,
-		}) =>
+		runes: ({ filename }) =>
 			filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
 
 		hmr: false,
@@ -28,7 +26,7 @@ const config = {
 		adapter: adapter(
 			// TODO: https://svelte.dev/docs/kit/single-page-apps#Usage
 			{
-				pages: "www"
+				pages: "www",
 			},
 		),
 		serviceWorker: {
