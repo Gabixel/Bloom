@@ -10,6 +10,7 @@
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
+		albumImageSize?: number | null | undefined;
 		intersectionObserver: IntersectionObserver;
 	} = $props();
 

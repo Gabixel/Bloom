@@ -315,6 +315,7 @@
 			albumId={albumData.id}
 			albumName={albumData.name}
 			coverArtId={albumData.id}
+			albumImageSize={null}
 			intersectionObserver={AlbumIntersectionObserver}
 		></AlbumImage>
 		<div style="margin-left:1rem;">

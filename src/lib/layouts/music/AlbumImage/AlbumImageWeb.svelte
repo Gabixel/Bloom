@@ -16,11 +16,13 @@
 		coverArtId,
 		albumId,
 		albumName,
+		albumImageSize,
 		intersectionObserver,
 	}: {
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
+		albumImageSize?: number | null | undefined;
 		intersectionObserver: IntersectionObserver;
 	} = $props();
 
@@ -46,9 +48,19 @@
 					return;
 				}
 
+				let size: string | null = "&size=";
+
+				if (albumImageSize !== null) {
+					size += albumImageSize || 70;
+				} else {
+					size = null;
+				}
+
 				imageSrc =
 					`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${coverArtId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-					`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=70&square=true`;
+					`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
+					`${size != null ? size : ""}` +
+					`&square=true`;
 			},
 			{
 				once: true,
