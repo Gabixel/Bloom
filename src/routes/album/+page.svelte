@@ -368,6 +368,9 @@
 
 		overflow: clip;
 		isolation: isolate;
+
+		content-visibility: auto;
+		contain-intrinsic-size: 1px 5.574rem;
 	}
 	.album-element:nth-child(odd) {
 		background-color: #00000040;
