@@ -237,7 +237,7 @@
 </svelte:head>
 
 <div>
-	<div style="padding:1rem">
+	<div style="padding:1rem;padding-bottom:1.5rem">
 		<input
 			bind:this={searchBar}
 			bind:value={searchString}
@@ -249,6 +249,8 @@
 		/>
 
 		{#if albumCount >= 0}
+			<p>Total albums in DB: {albumCount}</p>
+
 			<button
 				onclick={() => {
 					refreshInput();
@@ -262,7 +264,6 @@
 	{:else if albumList == null || albumList.length == 0}
 		<p>No albums!</p>
 	{:else}
-		<p>Total albums in DB: {albumCount}</p>
 		{#each albumList as album (album.id)}
 			{@render renderAlbum(album)}
 		{/each}
@@ -445,10 +446,9 @@
 
 	.album-search-bar {
 		appearance: none;
-		padding: 0.25rem;
+		padding: 0.4rem;
 		min-width: 0;
 		max-width: none;
 		width: 100%;
-		margin-bottom: 1rem;
 	}
 </style>
