@@ -91,8 +91,8 @@
 		}}
 		data-album-id={albumId}
 		draggable="false"
-		width="70"
-		height="70"
+		width="50"
+		height="50"
 	/>
 </div>
 
@@ -111,10 +111,12 @@
 	}
 
 	.album-image-wrapper {
-		min-width: 70px;
-		width: 70px;
-		min-height: 70px;
-		height: 70px;
+		min-width: 50px;
+		width: 50px;
+		min-height: 50px;
+		height: 50px;
+		aspect-ratio: 1/1;
+		object-fit: contain;
 
 		background-color: #00000025;
 	}
