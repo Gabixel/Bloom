@@ -166,7 +166,7 @@
 	.login-form button {
 		padding: 1rem 0.5rem;
 
-		background-color: #ffe06a;
+		background-color: var(--bloom-theme);
 		color: #000;
 		font-weight: bold;
 		letter-spacing: 1px;
@@ -176,10 +176,10 @@
 	}
 
 	.login-form .txt {
-		border: 2px solid #ffe06a;
+		border: 2px solid var(--bloom-theme);
 	}
 	.login-form .txt:disabled {
-		border: 2px solid #d1a700;
+		border: 2px solid var(--bloom-theme-dark);
 	}
 
 	.login-form label {

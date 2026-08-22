@@ -311,10 +311,7 @@
 </svelte:head>
 
 {#if credentialsMounted && authData.isLoggedIn()}
-	<nav
-		style="padding:0.5rem"
-		data-sveltekit-replacestate={!authData.isLoggedIn()}
-	>
+	<nav data-sveltekit-replacestate={!authData.isLoggedIn()}>
 		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
 			<span>Home</span>
 		</a>
@@ -394,6 +391,30 @@
 </div>
 
 <style>
+	nav {
+		padding: 0.5rem;
+		font-weight: bold;
+	}
+	/*nav > a + a::before {
+		content: "- ";
+	}*/
+
+	:global(:root) {
+		--bloom-theme: #ffe06a;
+		--bloom-theme-dark: #d1a700;
+	}
+
+	:global(a) {
+		/*color: #8080fe;*/
+		color: var(--bloom-theme);
+		text-decoration: none;
+	}
+	/*
+	a:visited {
+    	color: #d1a700;
+    }
+    */
+
 	:global(body) {
 		display: flex;
 		flex-direction: column;
