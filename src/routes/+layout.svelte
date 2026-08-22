@@ -31,7 +31,7 @@
 
 	// "[...] and you have to make sure that the links in your app all start with `#/`"
 
-	function getAriaCurrentPage(path: string) {
+	function getAriaCurrentPage(path: typeof page.route.id) {
 		return page.route.id === path ? "page" : undefined;
 	}
 
@@ -305,20 +305,20 @@
 			<span>Home</span>
 		</a>
 		<a
-			href="#/subpage-example"
-			aria-current={getAriaCurrentPage("/subpage-example")}
-			draggable="false"
-		>
-			Example
-		</a>
-		<a
 			href="#/album"
 			aria-current={getAriaCurrentPage("/album")}
 			draggable="false"
 		>
 			Albums
 		</a>
-		<a href="#/about" aria-current={undefined} draggable="false">About</a>
+		<a
+			href="#/library"
+			aria-current={getAriaCurrentPage("/library")}
+			draggable="false"
+		>
+			My Library
+		</a>
+
 		<a href="#/settings" aria-current={undefined} draggable="false">
 			Settings
 		</a>
