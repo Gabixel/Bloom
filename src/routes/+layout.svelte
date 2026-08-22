@@ -310,6 +310,15 @@
 	/>
 </svelte:head>
 
+<button
+	type="button"
+	onclick={() => {
+		jsConsoleDiv.classList.toggle("hidden");
+	}}
+>
+	Toggle console
+</button>
+
 {#if credentialsMounted && authData.isLoggedIn()}
 	<nav data-sveltekit-replacestate={!authData.isLoggedIn()}>
 		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
@@ -333,14 +342,6 @@
 		<a href="#/settings" aria-current={undefined} draggable="false">
 			Settings
 		</a>
-		<button
-			type="button"
-			onclick={() => {
-				jsConsoleDiv.classList.toggle("hidden");
-			}}
-		>
-			Toggle console
-		</button>
 	</nav>
 {/if}
 
@@ -394,6 +395,8 @@
 	nav {
 		padding: 0.5rem;
 		font-weight: bold;
+
+		text-align: center;
 	}
 	/*nav > a + a::before {
 		content: "- ";
