@@ -128,20 +128,32 @@
 	let isActivelySearching = $state(false);
 	onMount(() => {
 		searchBar.addEventListener("input", () => {
-			clearTimeout(searchTimeout);
-			searchTimeout = setTimeout(() => {
-				let value = searchString;
+			updateSearchWait();
+		});
 
-				if (value == "") {
-					// default listing
-					listAlbums();
-				} else {
-					cconsole.log(`searching for '${value}'`);
-					search(encodeURIComponent(value));
-				}
-			}, 1100);
+		searchBar.addEventListener("keyup", (e) => {
+			if (e.key != "Enter") {
+				return;
+			}
+
+			updateSearchWait(0);
 		});
 	});
+
+	function updateSearchWait(delay = 1100) {
+		clearTimeout(searchTimeout);
+		searchTimeout = setTimeout(() => {
+			let value = searchString;
+
+			if (value == "") {
+				// default listing
+				listAlbums();
+			} else {
+				cconsole.log(`searching for '${value}'`);
+				search(encodeURIComponent(value));
+			}
+		}, delay);
+	}
 
 	tick().then(() => {
 		setTimeout(async () => {
@@ -210,9 +222,11 @@
 		return searchList;
 	}
 
-	function refreshInput() {
-		albumCount = -1;
-		albumList!.length = 0;
+	function refreshInput(clearDataBeforeSearching = true) {
+		if (clearDataBeforeSearching) {
+			albumCount = -1;
+			albumList!.length = 0;
+		}
 		searchBar.dispatchEvent(new Event("input", { bubbles: true }));
 	}
 </script>
@@ -232,7 +246,11 @@
 />
 
 {#if albumCount >= 0}
-	<button onclick={refreshInput}>Refresh</button>
+	<button
+		onclick={() => {
+			refreshInput();
+		}}>Refresh</button
+	>
 {/if}
 
 {#if albumCount < 0}
