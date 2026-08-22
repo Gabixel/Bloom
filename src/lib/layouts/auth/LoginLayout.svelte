@@ -123,7 +123,7 @@
 		<p>{errorMessage}</p>
 
 		<datalist id="login-url-list">
-			{#each prevUrls as url (url)}
+			{#each prevUrls as url, i (i)}
 				<option value={url}></option>
 			{/each}
 			<option value="http://192.168.1."></option>

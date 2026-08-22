@@ -372,7 +372,7 @@
 			navigator LAN access: {navigatorLANAccess}
 		</p>
 	</div>
-	{#each cconsole.logList() as log}
+	{#each cconsole.logList() as log, i (i)}
 		<p
 			class={(() => {
 				// get piece before first comma ("log", "debug", etc.)
