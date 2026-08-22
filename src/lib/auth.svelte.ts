@@ -1,3 +1,4 @@
+import { cconsole } from "./logger.svelte";
 import { authFetch, CLIENT_NAME } from "./navidrome.svelte";
 
 type user = {
@@ -74,37 +75,35 @@ export function startKeepAliveInterval() {
 		return;
 	}
 
-	let fetching = false;
+	// let fetching = false;
 
-	keepAliveInterval = setInterval(() => {
-		if (fetching) {
-			return;
-		}
+	// keepAliveInterval = setInterval(() => {
+	// 	if (fetching) {
+	// 		return;
+	// 	}
 
-		fetching = true;
+	// 	fetching = true;
 
-		authFetch(
-			`/api/keepalive/keepalive?u=${authData.userData().username}&v=1.16.1&c=${CLIENT_NAME}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-		)
-			.then(async (result) => {
-				if (result == null) {
-					return;
-				}
+	// 	authFetch(
+	// 		`/api/keepalive/keepalive?u=${authData.userData().username}&v=1.16.1&c=${CLIENT_NAME}` +
+	// 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
+	// 	)
+	// 		.then(async (result) => {
+	// 			if (result == null) {
+	// 				cconsole.warn("missing result data from keepalive");
+	// 				return;
+	// 			}
 
-				/*
-				{
-				    "response": "ok",
-				    "id": "keepalive"
-				}
-			 	*/
+	// 			const newToken = result.headers.get("x-nd-authorization");
 
-				// console.log(await result.json());
-			})
-			.finally(() => {
-				fetching = false;
-			});
-	}, 30_000);
+	// 			if (newToken == null) {
+	// 				cconsole.warn("missing keepalive new token");
+	// 			}
+	// 		})
+	// 		.finally(() => {
+	// 			fetching = false;
+	// 		});
+	// }, 30_000);
 }
 export function stopKeepAliveInterval() {
 	clearInterval(keepAliveInterval);
