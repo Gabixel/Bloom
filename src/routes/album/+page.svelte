@@ -125,9 +125,9 @@
 		},
 	};
 	function doScroll(y: number) {
-		requestAnimationFrame(() => {
+		setTimeout(() => {
 			window.scrollTo(0, y);
-		});
+		}, 0);
 	}
 
 	async function listAlbums() {
