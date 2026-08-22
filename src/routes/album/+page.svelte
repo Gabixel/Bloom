@@ -434,8 +434,8 @@
 		display: block;
 		position: absolute;
 		right: 0;
-		top: 10%;
-		bottom: 10%;
+		top: 30%;
+		bottom: 30%;
 		box-shadow: 0.6rem 0 2.3rem 0.6rem var(--bloom-theme-dark);
 	}
 
