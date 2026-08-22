@@ -301,20 +301,27 @@
 		style="padding:0.5rem"
 		data-sveltekit-replacestate={!authData.isLoggedIn()}
 	>
-		<a href="/" aria-current={getAriaCurrentPage("/")}>
+		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
 			<span>Home</span>
 		</a>
 		<a
 			href="#/subpage-example"
 			aria-current={getAriaCurrentPage("/subpage-example")}
+			draggable="false"
 		>
 			Example
 		</a>
-		<a href="#/album" aria-current={getAriaCurrentPage("/album")}>
+		<a
+			href="#/album"
+			aria-current={getAriaCurrentPage("/album")}
+			draggable="false"
+		>
 			Albums
 		</a>
-		<a href="#/about" aria-current={undefined}>About</a>
-		<a href="#/settings" aria-current={undefined}>Settings</a>
+		<a href="#/about" aria-current={undefined} draggable="false">About</a>
+		<a href="#/settings" aria-current={undefined} draggable="false"
+			>Settings</a
+		>
 		<button
 			type="button"
 			onclick={() => {
