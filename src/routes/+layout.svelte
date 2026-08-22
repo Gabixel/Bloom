@@ -2,7 +2,13 @@
 	import { SplashScreen } from "@capacitor/splash-screen";
 	import { navigating, page } from "$app/state";
 	import { dev as isSvelteDev, version } from "$app/environment";
-	import { authData, destroyUserData } from "$lib/auth.svelte";
+	import {
+		authData,
+		destroyUserData,
+		startKeepAliveInterval,
+		stopKeepAliveInterval,
+		toggleKeepAliveInterval,
+	} from "$lib/auth.svelte";
 	import LoginLayout from "$lib/layouts/auth/LoginLayout.svelte";
 	import type { LayoutData } from "./$types.d.ts";
 	import { onMount, untrack, type Snippet } from "svelte";
@@ -20,6 +26,7 @@
 	import { App as CapacitorApp } from "@capacitor/app";
 	import { Keyboard } from "@capacitor/keyboard";
 	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
+	import { derived } from "svelte/store";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
@@ -44,6 +51,12 @@
 	let _location = $state(location);
 
 	let navigatorLANAccess = $state("...");
+
+	let isDocumentHidden = $state(document.hidden);
+
+	$effect(() => {
+		toggleKeepAliveInterval(!isDocumentHidden && authData.isLoggedIn());
+	});
 
 	onMount(() => {
 		setupCustomLogger();
@@ -85,6 +98,7 @@
 				"\ndocument.visibilityState:",
 				document.visibilityState,
 			);
+			isDocumentHidden = document.hidden;
 		});
 	});
 

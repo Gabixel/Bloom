@@ -1,3 +1,5 @@
+import { authFetch, CLIENT_NAME } from "./navidrome.svelte";
+
 type user = {
 	id: string;
 	name: string;
@@ -64,4 +66,55 @@ export function jwtTranslate(token: string) {
 		/** User id */
 		uid: payload.uid as string,
 	};
+}
+
+let keepAliveInterval: NodeJS.Timeout | undefined = undefined;
+export function startKeepAliveInterval() {
+	if (keepAliveInterval != undefined) {
+		return;
+	}
+
+	let fetching = false;
+
+	keepAliveInterval = setInterval(() => {
+		if (fetching) {
+			return;
+		}
+
+		fetching = true;
+
+		authFetch(
+			`/api/keepalive/keepalive?u=${authData.userData().username}&v=1.16.1&c=${CLIENT_NAME}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
+		)
+			.then(async (result) => {
+				if (result == null) {
+					return;
+				}
+
+				/*
+				{
+				    "response": "ok",
+				    "id": "keepalive"
+				}
+			 	*/
+
+				// console.log(await result.json());
+			})
+			.finally(() => {
+				fetching = false;
+			});
+	}, 30_000);
+}
+export function stopKeepAliveInterval() {
+	clearInterval(keepAliveInterval);
+	keepAliveInterval = undefined;
+}
+
+export function toggleKeepAliveInterval(bool: boolean) {
+	if (bool) {
+		startKeepAliveInterval();
+	} else {
+		stopKeepAliveInterval();
+	}
 }
