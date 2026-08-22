@@ -77,7 +77,6 @@
 			};
 		},
 		restore: (value) => {
-			debugger;
 			searchString = value.searchString;
 			albumList = value.albumList;
 			albumCount = value.albumCount;
@@ -91,27 +90,6 @@
 			window.scrollTo(0, y);
 		});
 	}
-
-	tick().then(() => {
-		setTimeout(async () => {
-			if (!snapshotRestored) {
-				await listAlbums();
-				return;
-			}
-
-			if (albumCount == -1) {
-				if (searchString == "") {
-					await listAlbums();
-				} else {
-					await search(searchString);
-				}
-			}
-
-			if (prevScrollY > -1) {
-				doScroll(prevScrollY);
-			}
-		});
-	});
 
 	async function listAlbums() {
 		await authFetch(
@@ -159,35 +137,75 @@
 					listAlbums();
 				} else {
 					cconsole.log(`searching for '${value}'`);
-					isActivelySearching = true;
-					search(encodeURIComponent(value)).finally(() => {
-						isActivelySearching = false;
-					});
+					search(encodeURIComponent(value));
 				}
 			}, 1100);
 		});
 	});
 
+	tick().then(() => {
+		setTimeout(async () => {
+			if (!snapshotRestored) {
+				listAlbums();
+				return;
+			}
+
+			albumCount = -1;
+			if (albumCount == -1) {
+				if (searchString == "") {
+					await listAlbums();
+				} else {
+					await search(searchString);
+				}
+			}
+
+			if (prevScrollY > -1) {
+				doScroll(prevScrollY);
+			}
+		});
+	});
+
 	async function search(input: string) {
-		// TODO: use Navidrome search (we're missing artist name for now)
+		isActivelySearching = true;
+
 		let result = await authFetch(
-			`/rest/search3?u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&query=${input}&artistCount=0&songCount=0`,
-		);
+			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
+				`&_order=DESC&_sort=min_year&name=${input}`,
+		).finally(() => {
+			isActivelySearching = false;
+		});
+
+		/* /api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
+			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
+			`&_order=DESC&_sort=recently_added */
 
 		if (result == null) {
 			return [];
 		}
 
-		let searchList = (await result.json())["subsonic-response"][
-			"searchResult3"
-		]["album"];
+		let searchList = await result.json();
 
 		if (!Array.isArray(searchList)) {
 			searchList = [];
 		}
 
-		albumList = [...searchList];
+		if (albumList == null) {
+			albumList = [];
+		}
+		albumList.length = 0;
+
+		albumList.push(...searchList);
+
+		// TODO: revisit total count / search count
+		// we can't get the total db count when searching
+		let count = result.headers.get("x-total-count");
+		if (count != null) {
+			albumCount = Number(count);
+		} else {
+			// bad
+			albumCount = albumList.length;
+		}
 
 		return searchList;
 	}
