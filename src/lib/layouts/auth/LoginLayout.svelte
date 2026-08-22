@@ -162,6 +162,14 @@
 	}
 	.login-form button {
 		padding: 1rem 0.5rem;
+
+		background-color: #ffe06a;
+		color: #000;
+		font-weight: bold;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+
+		cursor: pointer;
 	}
 
 	.login-form label {
