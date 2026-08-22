@@ -301,8 +301,10 @@
 			class="track-settings-btn"
 			onclick={() => {
 				console.log("TODO");
-			}}>⫶</button
+			}}
 		>
+			<span>&vellip;</span>
+		</button>
 	</div>
 {/snippet}
 
@@ -384,6 +386,8 @@
 		z-index: 10;
 		display: block;
 
+		font-size: 1.4em;
+
 		appearance: none;
 		border: 0;
 
@@ -395,6 +399,10 @@
 		background: none;
 
 		padding: 0.5rem 1rem;
+	}
+
+	button.track-settings-btn span {
+		vertical-align: 1;
 	}
 
 	.tracks .track-item button.track-play-btn {
