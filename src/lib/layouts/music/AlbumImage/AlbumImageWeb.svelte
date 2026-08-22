@@ -51,7 +51,7 @@
 				let size: string | null = "&size=";
 
 				if (albumImageSize !== null) {
-					size += albumImageSize || 70;
+					size += albumImageSize || 50;
 				} else {
 					size = null;
 				}
@@ -73,7 +73,11 @@
 	});
 </script>
 
-<div class="album-image-wrapper" bind:this={albumDiv}>
+<div
+	class="album-image-wrapper"
+	bind:this={albumDiv}
+	style={`--size:${albumImageSize === null ? "unset" : (albumImageSize || 50) + "px"};width:var(--size);aspect-ratio: 1/1;`}
+>
 	<img
 		src={imageSrc}
 		alt={coverAltText}
@@ -91,8 +95,12 @@
 		}}
 		data-album-id={albumId}
 		draggable="false"
-		width="50"
-		height="50"
+		width={albumImageSize === null
+			? undefined
+			: (albumImageSize || 50) + "px"}
+		height={albumImageSize === null
+			? undefined
+			: (albumImageSize || 50) + "px"}
 	/>
 </div>
 
@@ -111,10 +119,10 @@
 	}
 
 	.album-image-wrapper {
-		min-width: 50px;
-		width: 50px;
-		min-height: 50px;
-		height: 50px;
+		min-width: var(--size);
+		width: var(--size);
+		min-height: var(--size);
+		height: var(--size);
 		aspect-ratio: 1/1;
 		object-fit: contain;
 

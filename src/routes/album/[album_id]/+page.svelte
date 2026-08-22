@@ -192,7 +192,7 @@
 </svelte:head>
 
 {#snippet albumDetails()}
-	<p>{albumData.name}</p>
+	<p style="font-weight:bold;">{albumData.name}</p>
 	<p>
 		{albumData.displayArtist}
 		{#if albumData.year != null}
@@ -310,10 +310,7 @@
 
 {#if albumData != null}
 	<div>
-		<div
-			class="album-details"
-			style="display:flex;align-items:center;margin-bottom:1rem;padding:1rem"
-		>
+		<div class="album-details">
 			<AlbumImage
 				albumId={albumData.id}
 				albumName={albumData.name}
@@ -321,7 +318,7 @@
 				albumImageSize={null}
 				intersectionObserver={AlbumIntersectionObserver}
 			></AlbumImage>
-			<div style="margin-left:1rem;">
+			<div style="margin: 0.5rem 0.5rem 0;">
 				{@render albumDetails()}
 			</div>
 		</div>
@@ -339,6 +336,29 @@
 <style>
 	p {
 		margin: 0;
+	}
+
+	.album-details {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+
+		text-align: center;
+
+		margin-bottom: 1rem;
+		padding: 1rem;
+	}
+
+	.album-details :global(.album-image-wrapper) {
+		margin: 0 20vw;
+		overflow: hidden;
+		border-radius: 0.8rem;
+	}
+
+	.album-details :global(.album-image-wrapper),
+	.album-details :global(.album-image-wrapper img) {
+		width: 100%;
 	}
 
 	.explicit {
