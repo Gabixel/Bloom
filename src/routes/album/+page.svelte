@@ -162,7 +162,6 @@
 				return;
 			}
 
-			albumCount = -1;
 			if (albumCount == -1) {
 				if (searchString == "") {
 					await listAlbums();
