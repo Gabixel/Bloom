@@ -94,9 +94,9 @@
 			return;
 		}
 
-		SplashScreen.hide({
-			fadeOutDuration: 200,
-		});
+		// SplashScreen.hide({
+		// 	fadeOutDuration: 200,
+		// });
 
 		Keyboard.getResizeMode().then((data) => {
 			cconsole.log(data);
@@ -152,6 +152,8 @@
 		});
 	});
 
+	let credentialsMounted = $state(false);
+
 	onMount(() => {
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
@@ -194,6 +196,22 @@
 		} else {
 			destroyUserData();
 		}
+
+		credentialsMounted = true;
+	});
+
+	$effect(() => {
+		if (!credentialsMounted) {
+			return;
+		}
+
+		if (Capacitor.getPlatform() !== "android") {
+			return;
+		}
+
+		SplashScreen.hide({
+			fadeOutDuration: 200,
+		});
 	});
 
 	$effect(() => {
@@ -249,37 +267,33 @@
 	/>
 </svelte:head>
 
-<nav
-	style="padding:0.5rem"
-	data-sveltekit-replacestate={!authData.isLoggedIn()}
->
-	<a
-		href="/"
-		aria-current={getAriaCurrentPage("/")}
+{#if credentialsMounted}
+	<nav
+		style="padding:0.5rem"
+		data-sveltekit-replacestate={!authData.isLoggedIn()}
 	>
-		<span>Home</span>
-	</a>
-	<a
-		href="#/subpage-example"
-		aria-current={getAriaCurrentPage("/subpage-example")}
-	>
-		Example
-	</a>
-	<a
-		href="#/album"
-		aria-current={getAriaCurrentPage("/album")}
-	>
-		Albums
-	</a>
-	<a href="#/about" aria-current={undefined}>About</a>
-	<a href="#/settings" aria-current={undefined}>Settings</a>
-	<button
-		type="button"
-		onclick={() => {
-			jsConsoleDiv.classList.toggle("hidden");
-		}}>Toggle console</button
-	>
-</nav>
+		<a href="/" aria-current={getAriaCurrentPage("/")}>
+			<span>Home</span>
+		</a>
+		<a
+			href="#/subpage-example"
+			aria-current={getAriaCurrentPage("/subpage-example")}
+		>
+			Example
+		</a>
+		<a href="#/album" aria-current={getAriaCurrentPage("/album")}>
+			Albums
+		</a>
+		<a href="#/about" aria-current={undefined}>About</a>
+		<a href="#/settings" aria-current={undefined}>Settings</a>
+		<button
+			type="button"
+			onclick={() => {
+				jsConsoleDiv.classList.toggle("hidden");
+			}}>Toggle console</button
+		>
+	</nav>
+{/if}
 
 {#if authData.isLoggedIn()}
 	<div id="main-inner">
@@ -287,8 +301,10 @@
 	</div>
 
 	<UIPlayer audioPlayer={null}></UIPlayer>
-{:else}
+{:else if credentialsMounted}
 	<LoginLayout></LoginLayout>
+{:else}
+	<div></div>
 {/if}
 
 <div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">

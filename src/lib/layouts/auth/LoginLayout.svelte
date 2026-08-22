@@ -145,6 +145,10 @@
 		display: contents;
 	}
 
+	input[type="url"] {
+		font-family: monospace, monospace;
+	}
+
 	.login-form input,
 	.login-form button {
 		width: auto;
