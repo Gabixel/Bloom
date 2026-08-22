@@ -55,6 +55,43 @@
 
 	let albumList: AlbumItem[] | null = $state([]);
 
+	let splittedList: Array<{ id: string; list: AlbumItem[] }> = $derived.by(
+		() => {
+			if (albumList == null || albumList.length == 0) {
+				return [];
+			}
+
+			let final: typeof splittedList = [];
+
+			// 1rem = 16px
+			// ~5.574rem = 1 track item height
+			const itemsPerSection = Math.floor(
+				window.innerHeight / (16 * 5.574),
+			);
+
+			const listLength = albumList.length;
+
+			const sectionCount = Math.ceil(listLength / itemsPerSection);
+
+			for (let split = 0; split < sectionCount; split++) {
+				final[split] = {
+					id: Date.now().toString() + "_" + split,
+					list: [],
+				};
+
+				for (
+					let i = itemsPerSection * split;
+					i < listLength && i < itemsPerSection * (split + 1);
+					i++
+				) {
+					final[split].list.push(albumList[i]);
+				}
+			}
+
+			return final;
+		},
+	);
+
 	let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
 	let albumCount = $state(-1);
@@ -108,16 +145,17 @@
 
 				console.log(list);
 
-				if (Array.isArray(list)) {
-					albumList = list;
-				}
-
 				// TODO: store somewhere when using search
 				// (actually, we just need to remake/separate the search logic)
 				let count = result.headers.get("x-total-count");
 
 				if (count != null) {
 					albumCount = Number(count);
+				}
+
+				if (Array.isArray(list)) {
+					albumList = list;
+					// updateListSplit();
 				}
 			})
 			.catch((e) => {
@@ -220,6 +258,7 @@
 			albumCount = albumList.length;
 		}
 
+		// updateListSplit();
 		return searchList;
 	}
 
@@ -264,8 +303,12 @@
 	{:else if albumList == null || albumList.length == 0}
 		<p>No albums!</p>
 	{:else}
-		{#each albumList as album (album.id)}
-			{@render renderAlbum(album)}
+		{#each splittedList as albumArraySplit (albumArraySplit.id)}
+			<section class="album-list-split">
+				{#each albumArraySplit.list as album (album.id)}
+					{@render renderAlbum(album)}
+				{/each}
+			</section>
 		{/each}
 	{/if}
 </div>
@@ -352,6 +395,13 @@
 {/snippet}
 
 <style>
+	.album-list-split {
+		--item-height: 5.574rem;
+
+		content-visibility: auto;
+		contain-intrinsic-size: 1px calc(100vh / (1rem * var(--item-height)));
+	}
+
 	.album-element {
 		cursor: pointer;
 		background-color: #00000020;
