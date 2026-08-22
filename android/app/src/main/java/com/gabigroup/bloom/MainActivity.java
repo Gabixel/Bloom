@@ -18,6 +18,11 @@ public class MainActivity extends BridgeActivity {
 		// https://forum.ionicframework.com/t/android-disable-scroll-bounce-effect/231528
         webView.setOverScrollMode(WebView.OVER_SCROLL_NEVER);
 
+		// https://stackoverflow.com/a/60541297/16804863
+		// Disable long click vibration
+        webView.setHapticFeedbackEnabled(false);
+		// TODO: ^ also in manifest? (https://stackoverflow.com/a/4670818/16804863)
+
         // https://stackoverflow.com/a/47148988/16804863
         // "viewport" seems to get ignored by default:
         // https://developer.chrome.com/blog/viewport-resize-behavior#:~:text=These%20changes%20do%20not%20affect%20WebView
