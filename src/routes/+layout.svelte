@@ -296,7 +296,7 @@
 	/>
 </svelte:head>
 
-{#if credentialsMounted}
+{#if credentialsMounted && authData.isLoggedIn()}
 	<nav
 		style="padding:0.5rem"
 		data-sveltekit-replacestate={!authData.isLoggedIn()}

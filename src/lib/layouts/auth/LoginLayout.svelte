@@ -80,6 +80,8 @@
 </script>
 
 <form class="login-form" onsubmit={onSubmit} autocomplete="on">
+	<h2>Welcome to Bloom!</h2>
+
 	<fieldset disabled={logging}>
 		<input
 			name="username"
@@ -132,12 +134,14 @@
 		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
-		justify-content: flex-start;
+		justify-content: center;
 		align-items: stretch;
 
 		gap: 1rem;
 
 		text-align: center;
+
+		height: 100%;
 	}
 
 	fieldset {
