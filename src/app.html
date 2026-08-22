@@ -27,6 +27,14 @@
       html,
       body {
         font-size: 100%;
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        /*TODO: overscroll-behavior*/
+      }
+      *::-webkit-scrollbar {
+        display: none; /* Older Safari and Chromium */
       }
 
       html,

@@ -309,28 +309,30 @@
 {/snippet}
 
 {#if albumData != null}
-	<div
-		class="album-details"
-		style="display:flex;align-items:center;margin-bottom:1rem"
-	>
-		<AlbumImage
-			albumId={albumData.id}
-			albumName={albumData.name}
-			coverArtId={albumData.id}
-			albumImageSize={null}
-			intersectionObserver={AlbumIntersectionObserver}
-		></AlbumImage>
-		<div style="margin-left:1rem;">
-			{@render albumDetails()}
+	<div>
+		<div
+			class="album-details"
+			style="display:flex;align-items:center;margin-bottom:1rem;padding:1rem"
+		>
+			<AlbumImage
+				albumId={albumData.id}
+				albumName={albumData.name}
+				coverArtId={albumData.id}
+				albumImageSize={null}
+				intersectionObserver={AlbumIntersectionObserver}
+			></AlbumImage>
+			<div style="margin-left:1rem;">
+				{@render albumDetails()}
+			</div>
 		</div>
-	</div>
 
-	<div class="tracks">
-		<!-- TODO: an eye toggle to expand info (in various stages) -->
-		<!-- TODO: paginate or something -->
-		{#each songList as songEntry, i (songEntry.id)}
-			{@render track(songEntry)}
-		{/each}
+		<div class="tracks">
+			<!-- TODO: an eye toggle to expand info (in various stages) -->
+			<!-- TODO: paginate or something -->
+			{#each songList as songEntry, i (songEntry.id)}
+				{@render track(songEntry)}
+			{/each}
+		</div>
 	</div>
 {/if}
 

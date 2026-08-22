@@ -434,9 +434,9 @@
 		right: 0;
 	}
 
-	#main-inner {
+	/*#main-inner {
 		padding: 1rem;
-	}
+	}*/
 
 	/* https://stackoverflow.com/a/16077726/16804863 */
 	:global(button::-moz-focus-inner, input::-moz-focus-inner) {

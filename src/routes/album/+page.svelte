@@ -236,34 +236,38 @@
 	<title>Album List &#183; Bloom</title>
 </svelte:head>
 
-<input
-	bind:this={searchBar}
-	bind:value={searchString}
-	type="search"
-	class="album-search-bar"
-	id="album-search-bar"
-	placeholder="Search…"
-	autocomplete="off"
-/>
+<div>
+	<div style="padding:1rem">
+		<input
+			bind:this={searchBar}
+			bind:value={searchString}
+			type="search"
+			class="album-search-bar"
+			id="album-search-bar"
+			placeholder="Search…"
+			autocomplete="off"
+		/>
 
-{#if albumCount >= 0}
-	<button
-		onclick={() => {
-			refreshInput();
-		}}>Refresh</button
-	>
-{/if}
+		{#if albumCount >= 0}
+			<button
+				onclick={() => {
+					refreshInput();
+				}}>Refresh</button
+			>
+		{/if}
+	</div>
 
-{#if albumCount < 0}
-	<p>{errorMessage === "" ? "Loading..." : errorMessage}</p>
-{:else if albumList == null || albumList.length == 0}
-	<p>No albums!</p>
-{:else}
-	<p>Total albums in DB: {albumCount}</p>
-	{#each albumList as album (album.id)}
-		{@render renderAlbum(album)}
-	{/each}
-{/if}
+	{#if albumCount < 0}
+		<p>{errorMessage === "" ? "Loading..." : errorMessage}</p>
+	{:else if albumList == null || albumList.length == 0}
+		<p>No albums!</p>
+	{:else}
+		<p>Total albums in DB: {albumCount}</p>
+		{#each albumList as album (album.id)}
+			{@render renderAlbum(album)}
+		{/each}
+	{/if}
+</div>
 
 {#snippet heartFull()}
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
@@ -283,16 +287,17 @@
 {#snippet renderAlbum(album: AlbumItem)}
 	<div
 		role="link"
-		class="album-element"
+		class={["album-element", album.starred && "starred"]}
 		tabindex="0"
-		onclick={() => {
+		onclick={(e) => {
 			goto(`${_location.hash}/${album.id}`, {});
 		}}
-		onkeydown={() => {
+		onkeydown={() => {}}
+	>
+		<!-- onkeydown={() => {
 			// TODO: check for enter key specifically
 			goto(`${_location.hash}/${album.id}`, {});
-		}}
-	>
+		}} -->
 		<!-- TODO: we need an "infinite scroller" and paginate at the same time (with some skeletons) -->
 		<AlbumImage
 			albumName={album.name}
@@ -352,14 +357,33 @@
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		align-items: center;
+		align-items: stretch;
 		gap: 2ch;
+
+		padding: 0.6rem 0.85rem;
+		padding-right: 0;
+
+		position: relative;
+
+		overflow: clip;
+		isolation: isolate;
 	}
 	.album-element:nth-child(odd) {
 		background-color: #00000040;
 	}
+
 	.album-element:hover {
 		background-color: #00000060;
+	}
+
+	.album-element.starred::before {
+		content: "";
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 10%;
+		bottom: 10%;
+		box-shadow: 0.6rem 0 2.3rem 0.6rem var(--bloom-theme-dark);
 	}
 
 	.album-element p {
@@ -377,6 +401,9 @@
 
 	.album-element > div {
 		overflow: hidden;
+
+		height: max-content;
+		margin: auto 0;
 	}
 
 	p.album-artist {
@@ -392,15 +419,29 @@
 
 		margin: 0;
 		margin-left: auto;
-		margin-right: 0.8rem;
 
 		cursor: pointer;
+
+		padding: 0.5rem 0.8rem;
+		/*border-top: 0.6rem solid transparent;
+		border-bottom: 0.6rem solid transparent;*/
+		margin-top: -0.6rem;
+		margin-bottom: -0.6rem;
+
+		/*height: stretch;*/
 	}
 	.like-button svg {
 		width: 1.4rem;
 		height: 1.4rem;
 		fill: #fff;
 	}
+
+	.album-element.starred .like-button svg {
+		fill: var(--bloom-theme);
+	}
+	/*:global(.album-element img) {
+		margin: 0.6rem 0;
+	}*/
 
 	.album-search-bar {
 		appearance: none;
