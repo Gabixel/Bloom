@@ -357,7 +357,13 @@
 	<div></div>
 {/if}
 
-<div id="js-console" bind:this={jsConsoleDiv} class="hidden" style="">
+<div
+	id="js-console"
+	bind:this={jsConsoleDiv}
+	class="hidden"
+	style=""
+	aria-hidden="true"
+>
 	<div>
 		<p style="white-space:normal;font-size:0.8rem">
 			page url pathname: "{page.url.pathname}"<br />
