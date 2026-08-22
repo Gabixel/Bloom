@@ -63,11 +63,7 @@
 
 			let final: typeof splittedList = [];
 
-			// 1rem = 16px
-			// ~5.574rem = 1 track item height
-			const itemsPerSection = Math.floor(
-				window.innerHeight / (16 * 5.574),
-			);
+			const itemsPerSection = Math.floor(window.innerHeight / 69.19);
 
 			const listLength = albumList.length;
 
@@ -317,7 +313,10 @@
 		<p>No albums!</p>
 	{:else}
 		{#each splittedList as albumArraySplit (albumArraySplit.id)}
-			<section class="album-list-split">
+			<section
+				class="album-list-split"
+				style={`--count:${albumArraySplit.list.length}`}
+			>
 				{#each albumArraySplit.list as album (album.id)}
 					{@render renderAlbum(album)}
 				{/each}
@@ -404,10 +403,10 @@
 
 <style>
 	.album-list-split {
-		--item-height: 5.574rem;
+		--item-height: 69.19px;
 
 		content-visibility: auto;
-		contain-intrinsic-size: 1px calc(100vh / (1rem * var(--item-height)));
+		contain-intrinsic-size: 1px calc(var(--item-height) * var(--count));
 	}
 
 	.album-element {
@@ -417,7 +416,7 @@
 		flex-direction: row;
 		flex-wrap: nowrap;
 		align-items: stretch;
-		gap: 2ch;
+		gap: 1.3ch;
 
 		padding: 0.6rem 0.85rem;
 		padding-right: 0;
