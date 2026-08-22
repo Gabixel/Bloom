@@ -97,7 +97,9 @@
 			...Object.fromEntries(params),
 		});
 
-		let url = getSubsonicApiPath(`/rest/stream.view?${streamParams.toString()}`);
+		let url = getSubsonicApiPath(
+			`/rest/stream.view?${streamParams.toString()}`,
+		);
 
 		let lrcUrl = getSubsonicApiPath(
 			`/rest/getLyricsBySongId.view?${lrcParams.toString()}&id=${audioId}&f=json`,
@@ -189,62 +191,46 @@
 	{/if}
 </svelte:head>
 
-{#if albumData != null}
-	<div
-		class="album-details"
-		style="display:flex;align-items:center;margin-bottom:1rem"
-	>
-		<AlbumImage
-			albumId={albumData.id}
-			albumName={albumData.name}
-			coverArtId={albumData.id}
-			intersectionObserver={AlbumIntersectionObserver}
-		></AlbumImage>
-		<div style="margin-left:1rem;">
-			<p>{albumData.name}</p>
-			<p>
-				{albumData.displayArtist}
-				{#if albumData.year != null}
-					<span>- {albumData.year}</span>
-				{/if}
-				{#if albumData.genre != null}
-					<span>- {albumData.genre}</span>
-				{/if}
-				{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
-					<span>/ Single</span>
-				{/if}
-				<span
-					>/ {(() => {
-						// length can be zero, so we enforce 1
-						let discCount = Math.max(1, albumData.discTitles.length);
+{#snippet albumDetails()}
+	<p>{albumData.name}</p>
+	<p>
+		{albumData.displayArtist}
+		{#if albumData.year != null}
+			<span>- {albumData.year}</span>
+		{/if}
+		{#if albumData.genre != null}
+			<span>- {albumData.genre}</span>
+		{/if}
+		{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
+			<span>/ Single</span>
+		{/if}
+		<span
+			>/ {(() => {
+				// length can be zero, so we enforce 1
+				let discCount = Math.max(1, albumData.discTitles.length);
 
-						return `${discCount} disc${discCount != 1 ? "s" : ""}`;
-					})()}</span
-				>
-			</p>
-			{#if albumData.duration != null}
-				<p>
-					<span>{formatDuration(albumData.duration)}</span>
-				</p>
-			{/if}
-		</div>
-	</div>
+				return `${discCount} disc${discCount != 1 ? "s" : ""}`;
+			})()}</span
+		>
+	</p>
+	{#if albumData.duration != null}
+		<p>
+			<span>{formatDuration(albumData.duration)}</span>
+		</p>
+	{/if}
+{/snippet}
 
-	<div class="tracks">
-		<!-- TODO: an eye toggle to expand info (in various stages) -->
-		<!-- TODO: paginate or something -->
-		{#each songList as songEntry, i (songEntry.id)}
-			<div class="track-item">
-				<div class="track-text">
-					<!--{#if isAnyTrackNumbered}-->
-						<span style="font-weight:bold;white-space:nowrap;"
-							>
-							{songEntry.track ?? "--"}
-							<!--{String(songEntry.track ?? "").padStart(
+{#snippet track(songEntry: any)}
+	<div class="track-item">
+		<div class="track-text">
+			<!--{#if isAnyTrackNumbered}-->
+			<span style="font-weight:bold;white-space:nowrap;">
+				{songEntry.track ?? "--"}
+				<!--{String(songEntry.track ?? "").padStart(
 								String(songList.length).length - String(songEntry.track ?? i).length + 1,
 								"0",
 							)}-->
-							<!--{(() => {
+				<!--{(() => {
 								// TODO: improve logic
 								return ;
 
@@ -267,53 +253,80 @@
 								// }
 
 							})()}-->
-						</span>
-					<!--{/if}-->
+			</span>
+			<!--{/if}-->
 
-					<div
-						style="margin: 0 1rem; display: flex; flex-direction:column; justify-content: flex-start; align-items: flex-start"
-					>
-						<span>
-							<span>{songEntry.title}</span>
-							{#if songEntry.explicitStatus === "explicit"}
-								<span class="explicit" aria-label="Explicit track">E</span>
-							{/if}
-						</span>
-						<span style="font-size:0.8em;color:#ffffff80">{songEntry.artist}</span>
-						<span style="font-size:0.7em;color:#ffffff80"
-							>{#if songEntry.duration != null}
-								<span>{formatDuration(songEntry.duration)}</span>
-							{/if}
-							<span>- {getAudioQuality(songEntry)}</span>
-						</span>
-					</div>
-				</div>
-				<button
-					class="track-play-btn"
-					aria-label={`Play track: "${songEntry.title}"`}
-					onclick={() => {
-						playAudio(
-							songEntry.id,
-							{
-								id: songEntry.id,
-								title: songEntry.title,
-								artist: songEntry.artist,
-								albumTitle: albumData.name,
-								duration: Number(songEntry.duration),
-							},
-							songEntry.suffix,
-						);
-					}}
+			<div
+				style="margin: 0 1rem; display: flex; flex-direction:column; justify-content: flex-start; align-items: flex-start"
+			>
+				<span>
+					<span>{songEntry.title}</span>
+					{#if songEntry.explicitStatus === "explicit"}
+						<span class="explicit" aria-label="Explicit track"
+							>E</span
+						>
+					{/if}
+				</span>
+				<span style="font-size:0.8em;color:#ffffff80"
+					>{songEntry.artist}</span
 				>
-				</button>
-				<button
-					aria-label="Track settings"
-					class="track-settings-btn"
-					onclick={() => {
-						console.log("TODO");
-					}}>⫶</button
-				>
+				<span style="font-size:0.7em;color:#ffffff80"
+					>{#if songEntry.duration != null}
+						<span>{formatDuration(songEntry.duration)}</span>
+					{/if}
+					<span>- {getAudioQuality(songEntry)}</span>
+				</span>
 			</div>
+		</div>
+		<button
+			class="track-play-btn"
+			aria-label={`Play track: "${songEntry.title}"`}
+			onclick={() => {
+				playAudio(
+					songEntry.id,
+					{
+						id: songEntry.id,
+						title: songEntry.title,
+						artist: songEntry.artist,
+						albumTitle: albumData.name,
+						duration: Number(songEntry.duration),
+					},
+					songEntry.suffix,
+				);
+			}}
+		>
+		</button>
+		<button
+			aria-label="Track settings"
+			class="track-settings-btn"
+			onclick={() => {
+				console.log("TODO");
+			}}>⫶</button
+		>
+	</div>
+{/snippet}
+
+{#if albumData != null}
+	<div
+		class="album-details"
+		style="display:flex;align-items:center;margin-bottom:1rem"
+	>
+		<AlbumImage
+			albumId={albumData.id}
+			albumName={albumData.name}
+			coverArtId={albumData.id}
+			intersectionObserver={AlbumIntersectionObserver}
+		></AlbumImage>
+		<div style="margin-left:1rem;">
+			{@render albumDetails()}
+		</div>
+	</div>
+
+	<div class="tracks">
+		<!-- TODO: an eye toggle to expand info (in various stages) -->
+		<!-- TODO: paginate or something -->
+		{#each songList as songEntry, i (songEntry.id)}
+			{@render track(songEntry)}
 		{/each}
 	</div>
 {/if}
