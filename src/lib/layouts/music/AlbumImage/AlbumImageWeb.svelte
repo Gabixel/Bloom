@@ -17,12 +17,14 @@
 		albumId,
 		albumName,
 		albumImageSize,
+		albumRequestSize,
 		intersectionObserver,
 	}: {
 		coverArtId: string;
 		albumId: string;
 		albumName: string;
 		albumImageSize?: number | null | undefined;
+		albumRequestSize?: number | undefined;
 		intersectionObserver: IntersectionObserver;
 	} = $props();
 
@@ -50,10 +52,10 @@
 
 				let size: string | null = "&size=";
 
-				if (albumImageSize !== null) {
-					size += albumImageSize || 50;
+				if (albumRequestSize != null) {
+					size += albumRequestSize;
 				} else {
-					size = null;
+					size += "400";
 				}
 
 				imageSrc =

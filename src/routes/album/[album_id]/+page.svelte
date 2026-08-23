@@ -316,6 +316,7 @@
 				albumName={albumData.name}
 				coverArtId={albumData.id}
 				albumImageSize={null}
+				albumRequestSize={Math.min(window.innerHeight, window.innerWidth)}
 				intersectionObserver={AlbumIntersectionObserver}
 			></AlbumImage>
 			<div style="margin: 0.5rem 0.5rem 0;">

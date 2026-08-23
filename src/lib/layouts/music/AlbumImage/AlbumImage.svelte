@@ -11,6 +11,7 @@
 		albumId: string;
 		albumName: string;
 		albumImageSize?: number | null | undefined;
+		albumRequestSize?: number | undefined;
 		intersectionObserver: IntersectionObserver;
 	} = $props();
 

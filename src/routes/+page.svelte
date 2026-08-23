@@ -112,6 +112,7 @@
 					albumName={album.name}
 					coverArtId={album.id}
 					albumImageSize={null}
+					albumRequestSize={400}
 					intersectionObserver={AlbumIntersectionObserver}
 				></AlbumImage>
 

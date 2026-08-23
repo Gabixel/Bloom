@@ -355,6 +355,8 @@
 			albumName={album.name}
 			coverArtId={album.id}
 			albumId={album.id}
+			albumImageSize={50}
+			albumRequestSize={400}
 			intersectionObserver={AlbumIntersectionObserver}
 		></AlbumImage>
 		<!-- <p><a href={`${_location.hash}/${album.id}`}>{album.name}</a></p> -->
