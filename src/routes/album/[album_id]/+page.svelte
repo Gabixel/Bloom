@@ -356,10 +356,6 @@
 		border-radius: 0.8rem;
 	}
 
-	/*.album-details :global(.album-image-wrapper) {
-		width: 100%;
-	}*/
-
 	.explicit {
 		display: inline-block;
 		font-weight: bold;
