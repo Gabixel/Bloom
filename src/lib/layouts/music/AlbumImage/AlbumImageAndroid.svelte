@@ -6,9 +6,10 @@
 		navidromeData,
 		TEST_FETCH_TARGET_ADDRESS_SPACE,
 	} from "$lib/navidrome.svelte";
-	import { authData } from "$lib/auth.svelte";
+	import { authData, hashString } from "$lib/auth.svelte";
 	import { cconsole } from "$lib/logger.svelte";
 	import { Capacitor } from "@capacitor/core";
+	import { imageMap } from "../../../album-search.svelte";
 
 	// TODO: optimize
 	let user = authData.userData();
@@ -81,6 +82,14 @@
 			`${size}` +
 			`&square=true`;
 
+		const hashedUrl = hashString(url);
+		console.warn(hashedUrl);
+
+		if (imageMap.has(hashedUrl)) {
+			imageSrc = imageMap.get(hashedUrl)!;
+			return;
+		}
+
 		fetch(url, {
 			method: "get",
 			priority: "low",
@@ -94,14 +103,13 @@
 
 				return response.blob();
 			})
-			// TODO: cache blob
 			.then((blob) => {
 				if (blob == null) {
 					cconsole.error("blob is", typeof blob);
 					return;
 				}
 
-				imageSrc = URL.createObjectURL(blob);
+				imageMap.set(hashedUrl, (imageSrc = URL.createObjectURL(blob)));
 			})
 			.catch((err) => cconsole.error("album cover fetch failed:", err));
 	}

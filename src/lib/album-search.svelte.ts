@@ -14,3 +14,10 @@ export const AlbumIntersectionObserver = new IntersectionObserver(
 		});
 	},
 );
+
+/**
+ * A map containing Blob source URLs, keyed by hashed base URLs.
+ *
+ * `Map<[hash], [blob object URL]>`
+ */
+export let imageMap = new Map<string, string>();
