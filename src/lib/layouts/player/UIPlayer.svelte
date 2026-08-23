@@ -17,7 +17,7 @@
 		audioPlayer: AudioPlayer | null;
 	} = $props();
 
-	let trackState = "unknown";
+	let trackState = $state("unknown");
 
 	let trackData = $state({
 		title: "",
