@@ -351,9 +351,9 @@
 	}
 
 	.album-details :global(.album-image-wrapper) {
-		margin: 0 20vw;
 		overflow: hidden;
 		border-radius: 0.8rem;
+		max-width: 260px;
 	}
 
 	.explicit {
