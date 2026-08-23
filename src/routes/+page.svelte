@@ -44,6 +44,7 @@
 	});
 
 	let recentAlbumList: any[] = $state([]);
+	let hasRecentAlbums = $derived.by(() => recentAlbumList.length);
 
 	authFetch(
 		`/api/album?u=${userData.username}&c=${CLIENT_NAME_URL}` +
@@ -73,45 +74,49 @@
 <div style="padding:1rem">
 	<p>Welcome <strong>{authData.userData().name}</strong>!</p>
 
-	{#if recentAlbumList.length > 0}
-		<section class="recently-listened-to">
+	<section
+		class={["recently-listened-to", hasRecentAlbums && "visible"]}
+		aria-hidden={hasRecentAlbums == 0}
+	>
+		{#if hasRecentAlbums}
 			<p>Recently Played</p>
 
 			<div class="list-flex">
 				{#each recentAlbumList as album}
-					<div
-						class="album-block"
-						role="link"
-						tabindex="0"
-						onclick={(e) => {
-							let hash =
-								_location.hash.length > 0
-									? _location.hash
-									: "#";
-
-							if (!hash.endsWith("/")) {
-								hash += "/";
-							}
-
-							goto(`${hash}album/${album.id}`, {});
-						}}
-						onkeydown={() => {}}
-					>
-						<AlbumImage
-							albumId={album.id}
-							albumName={album.name}
-							coverArtId={album.id}
-							albumImageSize={null}
-							intersectionObserver={AlbumIntersectionObserver}
-						></AlbumImage>
-
-						<p>{album.name}</p>
-						<p>{album.albumArtist}</p>
-					</div>
+					{@render albumBlock(album)}
 				{/each}
 			</div>
-		</section>
-	{/if}
+		{/if}
+
+		{#snippet albumBlock(album: any)}
+			<div
+				class="album-block"
+				role="link"
+				tabindex="0"
+				onclick={(e) => {
+					let hash = _location.hash.length > 0 ? _location.hash : "#";
+
+					if (!hash.endsWith("/")) {
+						hash += "/";
+					}
+
+					goto(`${hash}album/${album.id}`, {});
+				}}
+				onkeydown={() => {}}
+			>
+				<AlbumImage
+					albumId={album.id}
+					albumName={album.name}
+					coverArtId={album.id}
+					albumImageSize={null}
+					intersectionObserver={AlbumIntersectionObserver}
+				></AlbumImage>
+
+				<p>{album.name}</p>
+				<p>{album.albumArtist}</p>
+			</div>
+		{/snippet}
+	</section>
 
 	<button
 		type="button"
@@ -206,6 +211,22 @@
 
 		isolation: isolate;
 		overflow: clip;
+
+		display: grid;
+	}
+
+	.recently-listened-to:not(.visible) {
+		height: 0;
+		max-height: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+
+		will-change: contents;
+	}
+	.recently-listened-to {
+		transition: 0.5s ease;
+		max-height: 20rem;
+		transition-property: padding-top, padding-bottom, max-height;
 	}
 
 	.recently-listened-to > p {
