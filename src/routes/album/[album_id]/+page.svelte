@@ -115,7 +115,7 @@
 			// TODO: improve
 			image:
 				`${navidromeData.navidromeBaseUrl()}/rest/getCoverArt?id=${trackData.id}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&square=true`,
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json&size=400&square=true`,
 		});
 	}
 
