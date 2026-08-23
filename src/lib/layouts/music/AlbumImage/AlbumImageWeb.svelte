@@ -125,7 +125,7 @@
 
 	.album-image-wrapper {
 		min-width: var(--size);
-		width: var(--size);
+		width: var(--size, 100%);
 		min-height: var(--size);
 		height: var(--size);
 		aspect-ratio: 1/1;
