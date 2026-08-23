@@ -208,11 +208,6 @@
 		border-radius: 0.3rem;
 	}
 
-	.recently-listened-to .list-flex :global(.album-image-wrapper),
-	.recently-listened-to .list-flex :global(.album-image-wrapper img) {
-		width: 100%;
-	}
-
 	.recently-listened-to > p {
 		margin: 0;
 		margin-bottom: 1rem;
