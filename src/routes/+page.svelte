@@ -23,6 +23,7 @@
 		cconsole.log("page.svelte mounted!");
 	});
 
+	// Recent albums
 	$effect(() => {
 		let userData = authData.userData();
 		untrack(() => {
@@ -78,15 +79,17 @@
 		class={["recently-listened-to", hasRecentAlbums && "visible"]}
 		aria-hidden={hasRecentAlbums == 0}
 	>
-		{#if hasRecentAlbums}
-			<p>Recently Played</p>
+		<div class="inner-transform">
+			{#if hasRecentAlbums}
+				<p>Recently Played</p>
 
-			<div class="list-flex">
-				{#each recentAlbumList as album}
-					{@render albumBlock(album)}
-				{/each}
-			</div>
-		{/if}
+				<div class="list-flex">
+					{#each recentAlbumList as album}
+						{@render albumBlock(album)}
+					{/each}
+				</div>
+			{/if}
+		</div>
 
 		{#snippet albumBlock(album: any)}
 			<div
@@ -211,27 +214,41 @@
 
 		isolation: isolate;
 		overflow: clip;
-
-		display: grid;
 	}
 
 	.recently-listened-to:not(.visible) {
 		height: 0;
-		max-height: 0;
 		padding-top: 0;
 		padding-bottom: 0;
 	}
 
-	:global(body.fonts-loaded) .recently-listened-to.visible {
-		max-height: 20rem;
+	.recently-listened-to:not(.visible) .inner-transform {
+		transform: translateX(-5vw) scale(1.1);
 	}
 
-	:global(body:not(.resizing)) .recently-listened-to {
-		transition: 0.5s ease;
-		transition-property: padding-top, padding-bottom, max-height;
+	:global(body.fonts-loaded) .recently-listened-to.visible .inner-transform {
+		/*transform: translateX(0) scale(1);*/
+		animation: enter 0.7s var(--ease-emphasized) forwards;
 	}
 
-	.recently-listened-to > p {
+	/*:global(body:not(.resizing))*/
+	.recently-listened-to .inner-transform {
+		transform-origin: center center;
+		transform-style: flat;
+		
+		/*transition: transform 0.7s var(--ease-emphasized);*/
+	}
+
+	@keyframes enter {
+		from {
+			transform: translateX(-5vw) scale(1.1);
+		}
+		to {
+			transform: translateX(0) scale(1);
+		}
+	}
+
+	.recently-listened-to .inner-transform > p {
 		z-index: 4;
 	}
 
@@ -265,7 +282,7 @@
 		border-radius: 0.3rem;
 	}
 
-	.recently-listened-to > p {
+	.recently-listened-to .inner-transform > p {
 		margin: 0;
 		margin-bottom: 1rem;
 		font-weight: bold;
@@ -335,5 +352,9 @@
 
 	.album-block p:nth-child(3) {
 		opacity: 0.6;
+	}
+	
+	.recently-listened-to .inner-transform {
+		--ease-emphasized: linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%);
 	}
 </style>
