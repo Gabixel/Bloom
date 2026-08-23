@@ -279,8 +279,11 @@
 		}
 	});
 
+	let fontsReady = $state(false);
+	
 	onMount(() => {
 		document.fonts.ready.then(() => {
+			fontsReady = true;
 			document.body.classList.add("fonts-loaded");
 		});
 	});

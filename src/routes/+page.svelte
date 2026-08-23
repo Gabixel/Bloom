@@ -220,12 +220,14 @@
 		max-height: 0;
 		padding-top: 0;
 		padding-bottom: 0;
-
-		will-change: contents;
 	}
-	.recently-listened-to {
-		transition: 0.5s ease;
+
+	:global(body.fonts-loaded) .recently-listened-to.visible {
 		max-height: 20rem;
+	}
+
+	:global(body:not(.resizing)) .recently-listened-to {
+		transition: 0.5s ease;
 		transition-property: padding-top, padding-bottom, max-height;
 	}
 
@@ -235,6 +237,8 @@
 
 	.recently-listened-to .list-flex {
 		z-index: 2;
+
+		touch-action: pan-x;
 	}
 
 	.recently-listened-to::before,
