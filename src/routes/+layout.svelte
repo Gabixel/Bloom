@@ -59,6 +59,10 @@
 	});
 
 	onMount(() => {
+		if ("scrollRestoration" in history) {
+			history.scrollRestoration = "manual";
+		}
+
 		setupCustomLogger();
 
 		// https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Local_network_access#local_network_access_permissions
