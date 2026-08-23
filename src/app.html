@@ -37,6 +37,14 @@
         display: none; /* Older Safari and Chromium */
       }
 
+      body:not(.fonts-loaded) {
+        opacity: 0;
+        pointer-events: none;
+      }
+      body {
+        transition: opacity 0.22s ease-in-out;
+      }
+
       html,
       body {
         padding: 0;
@@ -101,8 +109,9 @@
   </head>
   <body
     data-sveltekit-preload-data="false"
+    class=""
     data-version="%sveltekit.version%"
-    style="background-color: #2e2e2e"
+    style="background-color: var(--app-bg)"
   >
     <div style="display: contents">%sveltekit.body%</div>
   </body>

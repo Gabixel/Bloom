@@ -58,6 +58,7 @@
 		toggleKeepAliveInterval(!isDocumentHidden && authData.isLoggedIn());
 	});
 
+	// Some setup (debugger, events)
 	onMount(() => {
 		if ("scrollRestoration" in history) {
 			history.scrollRestoration = "manual";
@@ -93,6 +94,7 @@
 		});
 	});
 
+	// visibilitychange log
 	onMount(() => {
 		window.addEventListener("visibilitychange", () => {
 			cconsole.log(
@@ -106,6 +108,7 @@
 		});
 	});
 
+	// Android Capacitor events
 	onMount(() => {
 		// TODO: iOS?
 		if (Capacitor.getPlatform() !== "android") {
@@ -201,6 +204,7 @@
 
 	let credentialsMounted = $state(false);
 
+	// Salt/token restoration
 	onMount(() => {
 		const navidromeToken = localStorage.getItem("nd_token");
 		const navidromeSubsonicToken = localStorage.getItem("s_token");
@@ -247,6 +251,7 @@
 		credentialsMounted = true;
 	});
 
+	// Splash screen
 	$effect(() => {
 		if (!credentialsMounted) {
 			return;
@@ -261,6 +266,7 @@
 		});
 	});
 
+	// Navigation state lock when logged out
 	$effect(() => {
 		if (navigating && !authData.isLoggedIn() && page.route.id != "/") {
 			untrack(() => {
@@ -271,6 +277,12 @@
 				});
 			});
 		}
+	});
+
+	onMount(() => {
+		document.fonts.ready.then(() => {
+			document.body.classList.add("fonts-loaded");
+		});
 	});
 
 	//#region mca Dolby Immersive Capability
