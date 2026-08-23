@@ -280,7 +280,7 @@
 	});
 
 	let fontsReady = $state(false);
-	
+
 	onMount(() => {
 		document.fonts.ready.then(() => {
 			fontsReady = true;
@@ -318,8 +318,12 @@
 	let pMediaCapResult = $state("");
 
 	Mca().then((value) => (pMediaCapResult = value.message));
+
+	let isBrowserOnline = $state(window.navigator.onLine);
 	//#endregion
 </script>
+
+<svelte:window bind:online={isBrowserOnline} />
 
 <svelte:head>
 	<link
@@ -391,6 +395,13 @@
 {/if}
 
 <div
+	class={["offline-banner", !isBrowserOnline && "visible"]}
+	aria-hidden={isBrowserOnline}
+>
+	<p>You're offline!</p>
+</div>
+
+<div
 	id="js-console"
 	bind:this={jsConsoleDiv}
 	class="hidden"
@@ -448,6 +459,43 @@
 		margin-left: 0.5rem;
 	}
 
+	.offline-banner {
+		color: #fff;
+		font-weight: bold;
+
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		overflow: visible;
+
+		z-index: 400;
+
+		pointer-events: none;
+	}
+	.offline-banner:not(.visible) p {
+		transform: translateY(100%);
+	}
+	.offline-banner.visible p {
+		transform: translateY(0);
+	}
+	.offline-banner p {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		text-align: center;
+		font-size: 1.25rem;
+		opacity: 0.6;
+
+		margin: 0;
+		padding: 1.5rem 1rem;
+		background-color: #d05843;
+		transform-style: flat;
+
+		transition: transform 0.4s ease-out;
+	}
+
 	:global(:root) {
 		--bloom-theme: #ffe06a;
 		--bloom-theme-dark: #d1a700;
@@ -474,13 +522,6 @@
 	/* TODO: unsure if I want this */
 	:global(body.svelte-prod) {
 		user-select: none;
-	}
-
-	:global(footer) {
-		position: sticky;
-		bottom: 0;
-		left: 0;
-		right: 0;
 	}
 
 	/*#main-inner {

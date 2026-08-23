@@ -102,9 +102,14 @@
 		align-items: stretch;
 		margin-top: auto;
 
-		z-index: 900;
+		z-index: 100;
 
 		background: #1a1a1a;
+
+		position: sticky;
+		bottom: 0;
+		left: 0;
+		right: 0;
 	}
 	.track-cover,
 	.track-info {
