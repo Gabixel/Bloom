@@ -24,6 +24,42 @@ export const TEST_FETCH_TARGET_ADDRESS_SPACE = {
 export const CLIENT_NAME = "Bloom App";
 export const CLIENT_NAME_URL = encodeURI(CLIENT_NAME);
 
+/** @see https://www.subsonic.org/pages/api.jsp#versions */
+export const OPENSUBSONIC_REST_API_VERSION = "1.16.1";
+
+const SEED_UPDATE_INTERVAL_SECONDS = 60;
+let lastSeedTime = Date.now();
+let seedRegeneratingCount = 0;
+
+let seed = "";
+generateSeed();
+
+function regenerateSeedIfTimePassed() {
+	const now = Date.now();
+
+	if (
+		Math.floor((now - lastSeedTime) / 60_000) < SEED_UPDATE_INTERVAL_SECONDS
+	) {
+		return;
+	}
+
+	console.warn("regenerating seed");
+
+	seedRegeneratingCount++;
+
+	generateSeed();
+}
+
+function generateSeed() {
+	seed = Date.now().toString() + "-" + seedRegeneratingCount;
+}
+
+export function getSeed() {
+	regenerateSeedIfTimePassed();
+
+	return seed;
+}
+
 // TODO: (GET: [host]/api/keepalive/keepalive)
 
 export type LoginResult =

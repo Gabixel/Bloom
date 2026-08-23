@@ -5,6 +5,7 @@
 	import {
 		authFetch,
 		CLIENT_NAME_URL,
+		getSeed,
 		TEST_FETCH_TARGET_ADDRESS_SPACE,
 	} from "$lib/navidrome.svelte";
 	import { cconsole } from "$lib/logger.svelte";
@@ -27,16 +28,29 @@
 		untrack(() => {
 			cconsole.log(userData);
 		});
+
+		authFetch(
+			`/rest/getScanStatus?u=${userData.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
+				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
+		).then(async (result) => {
+			if (result == null) {
+				return;
+			}
+
+			let final = await result.json();
+
+			cconsole.log(final["subsonic-response"]);
+		});
 	});
 
 	let recentAlbumList: any[] = $state([]);
 
-	// TODO: seed?
 	authFetch(
 		`/api/album?u=${userData.username}&c=${CLIENT_NAME_URL}` +
 			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
 			`&_order=DESC&_sort=play_date&recently_played=true` +
-			`&_start=0&_end=10`,
+			// TODO: not sure if seed is needed (or if the current logic makes sense)
+			`&_start=0&_end=10&seed=${getSeed()}`,
 	).then(async (result) => {
 		if (result == null) {
 			return;
@@ -112,7 +126,7 @@
 			type="button"
 			onclick={async () => {
 				const res = await authFetch(
-					"/rest/getLicense?u=gabixel&v=1.16.1&c=" +
+					`/rest/getLicense?u=${userData.username}&v=1.16.1&c=` +
 						CLIENT_NAME_URL +
 						"&t=",
 					{
