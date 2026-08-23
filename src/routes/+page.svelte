@@ -197,10 +197,44 @@
 
 <style>
 	.recently-listened-to {
-		background-color: #00000060;
+		background-color: #1d1d1d;
 
 		padding: 1rem;
 		margin: 0 -1rem;
+
+		position: relative;
+
+		isolation: isolate;
+		overflow: clip;
+	}
+
+	.recently-listened-to > p {
+		z-index: 4;
+	}
+
+	.recently-listened-to .list-flex {
+		z-index: 2;
+	}
+
+	.recently-listened-to::before,
+	.recently-listened-to::after {
+		z-index: 3;
+
+		content: "";
+		display: block;
+
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 0;
+
+		box-shadow: 0 0 1rem 1rem #1d1d1d;
+	}
+	.recently-listened-to::before {
+		left: 0;
+	}
+	.recently-listened-to::after {
+		right: 0;
 	}
 
 	.recently-listened-to .list-flex :global(.album-image-wrapper) {
