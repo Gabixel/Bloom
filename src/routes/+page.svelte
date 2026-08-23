@@ -237,8 +237,6 @@
 
 	.recently-listened-to .list-flex {
 		z-index: 2;
-
-		touch-action: pan-x;
 	}
 
 	.recently-listened-to::before,
@@ -284,7 +282,7 @@
 		flex-direction: row;
 		flex-wrap: nowrap;
 		justify-content: safe flex-start;
-		align-items: flex-start;
+		align-items: stretch;
 
 		gap: 1rem;
 
@@ -292,6 +290,8 @@
 
 		padding: 0 1rem;
 		margin: 0 -1rem;
+
+		touch-action: pan-x;
 	}
 
 	.album-block {
