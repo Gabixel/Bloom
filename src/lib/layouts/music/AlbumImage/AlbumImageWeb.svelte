@@ -76,7 +76,7 @@
 <div
 	class="album-image-wrapper"
 	bind:this={albumDiv}
-	style={`--size:${albumImageSize === null ? "unset" : (albumImageSize || 50) + "px"};width:var(--size);aspect-ratio: 1/1;`}
+	style={`--size:${albumImageSize === null ? "unset" : (albumImageSize || 50) + "px"};aspect-ratio: 1/1;`}
 >
 	<img
 		src={imageSrc}
@@ -105,11 +105,16 @@
 </div>
 
 <style>
+	img {
+		display: block;
+	}
+
 	img:not(.loaded) {
 		opacity: 0;
 	}
 
 	img {
+		width: var(--size, 100%);
 		transition: opacity 0.5s ease;
 		user-select: none;
 	}
