@@ -337,13 +337,27 @@
 		</a>
 		<a
 			href="#/library"
+			style="opacity:0.6"
 			aria-current={getAriaCurrentPage("/library")}
 			draggable="false"
 		>
 			My Library
 		</a>
+		<a
+			href="#/stations"
+			style="opacity:0.6"
+			aria-current={getAriaCurrentPage("/stations")}
+			draggable="false"
+		>
+			Radios
+		</a>
 
-		<a href="#/settings" aria-current={undefined} draggable="false">
+		<a
+			href="#/settings"
+			style="opacity:0.6"
+			aria-current={undefined}
+			draggable="false"
+		>
 			Settings
 		</a>
 	</nav>
