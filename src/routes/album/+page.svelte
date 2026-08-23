@@ -526,4 +526,8 @@
 		max-width: none;
 		width: 100%;
 	}
+	.album-search-bar::-webkit-search-cancel-button {
+		opacity: 1 !important;
+		pointer-events: auto !important;
+	}
 </style>
