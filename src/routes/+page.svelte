@@ -227,16 +227,12 @@
 	}
 
 	:global(body.fonts-loaded) .recently-listened-to.visible .inner-transform {
-		/*transform: translateX(0) scale(1);*/
 		animation: enter 0.7s var(--ease-emphasized) forwards;
 	}
 
-	/*:global(body:not(.resizing))*/
 	.recently-listened-to .inner-transform {
 		transform-origin: center center;
 		transform-style: flat;
-		
-		/*transition: transform 0.7s var(--ease-emphasized);*/
 	}
 
 	@keyframes enter {
