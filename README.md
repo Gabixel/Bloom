@@ -1,11 +1,11 @@
-# This is **Bloom**! 🌻☀
+<h1 align="center">🌻 This is <strong>Bloom</strong>! ☀</h1>
 
-Bloom acts as a simple application for listening to tracks and radios from a hosted **[<img width="14" height="14" alt="Navidrome logo" src="https://avatars.githubusercontent.com/u/26692192?s=60&v=4"> Navidrome](https://github.com/navidrome/navidrome) music server**.<br>
+**Bloom** acts as a simple application for listening to tracks and radios from a hosted **[<img width="14" height="14" alt="Navidrome logo" src="https://avatars.githubusercontent.com/u/26692192?s=60&v=4"> Navidrome](https://github.com/navidrome/navidrome) music server**.<br>
 It's programmed using common web technologies, **[<picture title="Vite" ><source media="(prefers-color-scheme: dark)" width="22.82" height="14" srcset=" https://github.com/user-attachments/assets/5684bc34-b885-4673-aeec-ab7abafee4a7 " alt="Vite" /> <source media="(prefers-color-scheme: light)" width="22.82" height="14" srcset=" https://github.com/user-attachments/assets/a5279f54-d088-4282-b986-50da9b65cb7c " alt="Vite" /> <img src="https://github.com/user-attachments/assets/5684bc34-b885-4673-aeec-ab7abafee4a7" width="22.82" height="14" alt="Vite" /></picture> Vite](https://vite.dev/guide/)**, and **[<img width="14" height="14" alt="SvelteKit logo" src="https://github.com/user-attachments/assets/6742e7b1-6f0b-4940-8197-6fb0993e5db6" /> SvelteKit](https://svelte.dev/docs/kit/introduction)**.<br>
 Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="https://github.com/user-attachments/assets/1fd81e61-adfc-4ea9-be9c-4bd2d2d138a8" /> Capacitor](https://capacitorjs.com/)**.
 
 > [!NOTE]
-> This project is still in very early stages and has slow progress.
+> <mark>This project is still in very early stages and has slow progress.</mark>
 
 ## Setup
 
