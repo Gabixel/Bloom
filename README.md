@@ -29,7 +29,7 @@ When your dev environment is ready, you can `npm run compile-debug` for generati
 
 > [!IMPORTANT]
 > <details>
-> <summary>Before building the app, you need to change the audio player plugin (with something else) because it's <strong>private</strong>.<br>Open here for more info.</summary>
+> <summary>Before building the app, you need to change the audio player plugin (with something else) because it's <strong>private</strong>.<br><sup>(Open here for more info)</sup></summary>
 > 
 > ---
 > 
