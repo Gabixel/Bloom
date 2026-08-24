@@ -1,15 +1,8 @@
-# This is **Bloom**!
+# This is **Bloom**! 🌻☀
 
 Bloom acts as a simple application for listening to tracks and radios from a hosted **[<img width="14" height="14" alt="Navidrome logo" src="https://avatars.githubusercontent.com/u/26692192?s=60&v=4"> Navidrome](https://github.com/navidrome/navidrome) music server**.<br>
-It's programmed using common web technologies, [<img width="22.75" height="14" alt="Vite logo" alt="image" src="https://github.com/user-attachments/assets/1fd7f091-f26a-4023-ad05-14e322c65bac" /> Vite](https://vite.dev/guide/), and [<img width="14" height="14" alt="SvelteKit logo" src="https://github.com/user-attachments/assets/6742e7b1-6f0b-4940-8197-6fb0993e5db6" /> SvelteKit](https://svelte.dev/docs/kit/introduction).<br>
-Built for mobile thanks to
-<a href="https://capacitorjs.com/">
- <picture title="Capacitor">
-    <source media="(prefers-color-scheme: dark)" width="75.83" height="14" srcset="https://github.com/user-attachments/assets/f9de554f-f288-4be6-baf8-56cac03af882" alt="Capacitor" />
-    <source media="(prefers-color-scheme: light)" width="75.83" height="14" srcset="https://github.com/user-attachments/assets/837fb80b-b617-43c1-a7cf-43cb8058ed2a" alt="Capacitor" />
-    <img src="https://github.com/user-attachments/assets/f9de554f-f288-4be6-baf8-56cac03af882" alt="Capacitor" />
-  </picture>
-</a>.
+It's programmed using common web technologies, **[<picture title="Vite" ><source media="(prefers-color-scheme: dark)" width="22.82" height="14" srcset=" https://github.com/user-attachments/assets/5684bc34-b885-4673-aeec-ab7abafee4a7 " alt="Vite" /> <source media="(prefers-color-scheme: light)" width="22.82" height="14" srcset=" https://github.com/user-attachments/assets/a5279f54-d088-4282-b986-50da9b65cb7c " alt="Vite" /> <img src="https://github.com/user-attachments/assets/5684bc34-b885-4673-aeec-ab7abafee4a7" width="22.82" height="14" alt="Vite" /></picture> Vite](https://vite.dev/guide/)**, and **[<img width="14" height="14" alt="SvelteKit logo" src="https://github.com/user-attachments/assets/6742e7b1-6f0b-4940-8197-6fb0993e5db6" /> SvelteKit](https://svelte.dev/docs/kit/introduction)**.<br>
+Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="https://github.com/user-attachments/assets/1fd81e61-adfc-4ea9-be9c-4bd2d2d138a8" /> Capacitor](https://capacitorjs.com/)**.
 
 > [!NOTE]
 > This project is still in very early stages and has slow progress.
@@ -18,9 +11,12 @@ Built for mobile thanks to
 
 Not definitive, but recommended.
 
-- Java 21 (e.g., for Codespaces, `sdk install java 21.0.8-ms` for the Microsoft version)
-- Android 36
-- iOS/Swift… unknown
+- Android
+  - Java 21<br>
+    (e.g., for Codespaces, `sdk install java 21.0.8-ms` for the Microsoft version)
+  - Target Android version: 36
+- iOS (unsupported, for now)
+  - Swift… unknown
 
 When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
