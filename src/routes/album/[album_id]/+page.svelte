@@ -101,11 +101,12 @@
 		let lrcUrl = getSubsonicApiPath(
 			`/rest/getLyricsBySongId.view?${lrcParams.toString()}&id=${audioId}&f=json`,
 		);
-		printDebugLyrics(lrcUrl);
 
 		if (Capacitor.getPlatform() === "web") {
 			return;
 		}
+
+		printDebugLyrics(lrcUrl);
 
 		playTrack(url, {
 			...trackData,
@@ -120,6 +121,7 @@
 		try {
 			let data = await fetch(lrcUrl, {
 				...TEST_FETCH_TARGET_ADDRESS_SPACE,
+				priority: "low",
 			});
 
 			if (!data.ok) {
