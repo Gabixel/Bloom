@@ -119,6 +119,7 @@
 		width: var(--size, 100%);
 		transition: opacity 0.5s ease;
 		user-select: none;
+		pointer-events: none;
 	}
 
 	img.loaded {
