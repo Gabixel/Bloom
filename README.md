@@ -19,6 +19,7 @@ It's programmed using common web technologies, **[<picture title="Vite" ><source
 Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="https://github.com/user-attachments/assets/1fd81e61-adfc-4ea9-be9c-4bd2d2d138a8" />&shy;&nbsp;Capacitor](https://capacitorjs.com/)**.
 
 <table>
+<tr></tr>
 <tr><td>
 
 > [!NOTE]
