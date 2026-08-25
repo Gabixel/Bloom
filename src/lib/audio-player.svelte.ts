@@ -1,13 +1,66 @@
 import { GGCAudio } from "@gabigroup/capacitor-audio-player";
 import { cconsole } from "./logger.svelte";
 import type { CapacitorException } from "@capacitor/core";
+import { authFetch } from "./navidrome.svelte";
+
+let currentTrackPlayerIndex = -1;
+let scrobbleStartRequested = false;
+let lastUpdateTs: number | null = null;
+let scrobbled: "yes" | "no" | "maybe" = "no";
+let lastTrackPosition = 0;
+let trackMsListened = 0;
 
 export async function listenAudioEvents() {
 	getStatus();
 
-	// GGCAudio.addListener("playbackStateChange", (status) => {
-	// 	// if (status.playbackState != "playing") return;
-	// });
+	// TODO: this scrobble logic might "break" when the app is in background, we need to port this logic somewhere else:
+	// - a background JS runner? (https://capacitorjs.com/docs/apis/background-runner)
+	// - in the native audio plugin itself?
+	GGCAudio.addListener("playbackStateChange", (e) => {
+		if (e.currentTrack == null || e.currentTrack.id == null) return;
+
+		if (e.isLiveStream) {
+			return;
+		}
+
+		if (!scrobbleStartRequested) {
+			return;
+		}
+
+		if (scrobbled !== "no") {
+			return;
+		}
+
+		const now = Date.now();
+
+		if (lastUpdateTs === null) {
+			lastUpdateTs = now;
+			lastTrackPosition = e.position;
+			return;
+		}
+
+		const deltaTime = now - lastUpdateTs;
+		const deltaPos = e.position - lastTrackPosition;
+
+		// If delta isn't too high (e.g. after seeking)
+		if (deltaPos < 2000) {
+			trackMsListened += deltaTime;
+		}
+
+		lastUpdateTs = now;
+		lastTrackPosition = e.position;
+
+		// Scrobble checks
+		const listenedEnoughTime = trackMsListened >= 240_000;
+		const listenedHalfTrack =
+			e.duration > 0 && trackMsListened >= e.duration * 0.5;
+
+		if (listenedEnoughTime || listenedHalfTrack) {
+			scrobbled = "maybe";
+			cconsole.log("scrobbling track id", e.currentTrack.id);
+			doScrobble(currentTrackPlayerIndex, e.currentTrack.id);
+		}
+	});
 
 	GGCAudio.addListener("trackChange", (event) => {
 		cconsole.log("TRACK", event);
@@ -54,17 +107,61 @@ export async function resumeTrack() {
 }
 
 export async function playTrack(url: string, trackData: any) {
+	scrobbleStartRequested = false;
+	scrobbled = "no";
+	trackMsListened = 0;
+	lastTrackPosition = 0;
+	lastUpdateTs = null;
+	currentTrackPlayerIndex++;
 	await GGCAudio.start({
 		autoPlay: true,
 		track: {
 			url,
+			id: trackData.id,
 			artwork: trackData.image,
 			title: trackData.title,
 			artist: trackData.artist,
 		},
 	});
+	informScrobbleAboutTrackStart(currentTrackPlayerIndex, trackData.id);
+	cconsole.log("informed about track id", trackData.id);
 
 	// await GGCAudio.play();
+}
+
+function informScrobbleAboutTrackStart(
+	trackPlayerIndex: number,
+	trackId: string,
+) {
+	authFetch(
+		`/rest/scrobble?id=${trackId}&time=${Date.now()}&submission=false`,
+	).then(() => {
+		if (currentTrackPlayerIndex != trackPlayerIndex) {
+			return;
+		}
+
+		scrobbleStartRequested = true;
+	});
+}
+
+function doScrobble(trackPlayerIndex: number, trackId: string) {
+	authFetch(`/rest/scrobble?id=${trackId}&time=${Date.now()}&submission=true`)
+		.then(() => {
+			if (currentTrackPlayerIndex != trackPlayerIndex) {
+				return;
+			}
+
+			scrobbled = "yes";
+			cconsole.log("scrobbled track id", trackId);
+		})
+		.catch((e) => {
+			if (currentTrackPlayerIndex != trackPlayerIndex) {
+				return;
+			}
+
+			scrobbled = "no";
+			cconsole.error("error scrobbling track id", trackId, ":", e);
+		});
 }
 
 export async function getStatus() {
