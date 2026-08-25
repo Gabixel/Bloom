@@ -8,6 +8,17 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	interface NavidromeRadioObject {
+		id: string;
+		streamUrl: string;
+		name: string;
+		homePageUrl?: string;
+		/** Timestamp */
+		createdAt: string;
+		/** Timestamp */
+		updatedAt?: string;
+	}
 }
 
 export {};

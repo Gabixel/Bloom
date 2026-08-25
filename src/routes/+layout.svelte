@@ -367,7 +367,6 @@
 		</a>
 		<a
 			href="#/stations"
-			style="opacity:0.6"
 			aria-current={getAriaCurrentPage("/stations")}
 			draggable="false"
 		>
