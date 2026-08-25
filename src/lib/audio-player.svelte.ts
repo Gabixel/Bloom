@@ -24,6 +24,26 @@ export async function listenAudioEvents() {
 	GGCAudio.addListener("error", (error) => {
 		cconsole.error("AUDIO ERROR", error);
 	});
+
+	retrieveMediaDevices();
+	navigator.mediaDevices.addEventListener("devicechange", async (event) => {
+		cconsole.log("Device configuration changed!");
+
+		retrieveMediaDevices();
+	});
+
+	async function retrieveMediaDevices() {
+		try {
+			const devices = await navigator.mediaDevices.enumerateDevices();
+			const audioOutputs = devices.filter(
+				(device) => device.kind === "audiooutput",
+			);
+
+			console.log("New output list:", audioOutputs);
+		} catch (error) {
+			console.error("Error while obtaining audio devices:", error);
+		}
+	}
 }
 
 export async function pauseTrack() {
