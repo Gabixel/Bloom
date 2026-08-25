@@ -23,34 +23,40 @@
 		cconsole.log("page.svelte mounted!");
 	});
 
-	// Recent albums
+	// Scan status check
 	$effect(() => {
-		let userData = authData.userData();
 		untrack(() => {
 			cconsole.log(userData);
 		});
 
-		authFetch(
-			`/rest/getScanStatus?u=${userData.username}&v=1.16.1&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-		).then(async (result) => {
-			if (result == null) {
-				return;
-			}
+		untrack(() => {
+			authFetch(`/rest/getScanStatus`).then(async (result) => {
+				if (result == null) {
+					return;
+				}
 
-			let final = await result.json();
+				let final = null;
+				try {
+					final = await result.json();
+				} catch (e) {
+					return;
+				}
 
-			cconsole.log(final["subsonic-response"]);
+				cconsole.log(
+					"navidrome/subsonic scan status",
+					final["subsonic-response"],
+				);
+			});
 		});
 	});
 
 	let recentAlbumList: any[] = $state([]);
 	let hasRecentAlbums = $derived.by(() => recentAlbumList.length);
 
+	// Recent albums
 	authFetch(
-		`/api/album?u=${userData.username}&c=${CLIENT_NAME_URL}` +
-			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
-			`&_order=DESC&_sort=play_date&recently_played=true` +
+		`/api/album` +
+			`?_order=DESC&_sort=play_date&recently_played=true` +
 			// TODO: not sure if seed is needed (or if the current logic makes sense)
 			`&_start=0&_end=10&seed=${getSeed()}`,
 	).then(async (result) => {
@@ -130,18 +136,11 @@
 		}}>logout</button
 	>
 
-	{#if false}
+	{#snippet unusedStuff()}
 		<button
 			type="button"
 			onclick={async () => {
-				const res = await authFetch(
-					`/rest/getLicense?u=${userData.username}&v=1.16.1&c=` +
-						CLIENT_NAME_URL +
-						"&t=",
-					{
-						...TEST_FETCH_TARGET_ADDRESS_SPACE,
-					},
-				);
+				const res = await authFetch(`/rest/getLicense`);
 				if (res == null) return;
 				const parser = new DOMParser();
 
@@ -156,9 +155,6 @@
 			onclick={async () => {
 				const res = await authFetch(
 					"/api/user/" + authData.userData().id,
-					{
-						...TEST_FETCH_TARGET_ADDRESS_SPACE,
-					},
 				);
 				if (res == null) return;
 				let json = res.json();
@@ -177,7 +173,7 @@
 		<button
 			type="button"
 			onclick={async () => {
-				const res = await authFetch("/api/player/");
+				const res = await authFetch("/api/player");
 				if (res == null) return;
 				let json = res.json();
 				cconsole.log(json);
@@ -186,7 +182,7 @@
 		<button
 			type="button"
 			onclick={async () => {
-				const res = await authFetch("/api/transcoding/");
+				const res = await authFetch("/api/transcoding");
 				if (res == null) return;
 				let json = res.json();
 				cconsole.log(json);
@@ -195,13 +191,13 @@
 		<button
 			type="button"
 			onclick={async () => {
-				const res = await authFetch("/api/share/");
+				const res = await authFetch("/api/share");
 				if (res == null) return;
 				let json = res.json();
 				cconsole.log(json);
 			}}>share</button
 		>
-	{/if}
+	{/snippet}
 </div>
 
 <style>
@@ -350,8 +346,32 @@
 	.album-block p:nth-child(3) {
 		opacity: 0.6;
 	}
-	
+
 	.recently-listened-to .inner-transform {
-		--ease-emphasized: linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%);
+		--ease-emphasized: linear(
+			0 0%,
+			0 1.8%,
+			0.01 3.6%,
+			0.03 6.35%,
+			0.07 9.1%,
+			0.13 11.4%,
+			0.19 13.4%,
+			0.27 15%,
+			0.34 16.1%,
+			0.54 18.35%,
+			0.66 20.6%,
+			0.72 22.4%,
+			0.77 24.6%,
+			0.81 27.3%,
+			0.85 30.4%,
+			0.88 35.1%,
+			0.92 40.6%,
+			0.94 47.2%,
+			0.96 55%,
+			0.98 64%,
+			0.99 74.4%,
+			1 86.4%,
+			1 100%
+		);
 	}
 </style>

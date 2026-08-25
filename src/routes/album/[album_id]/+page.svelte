@@ -41,10 +41,7 @@
 
 	let isAnyTrackNumbered = $state(false);
 
-	let albumRequest = authFetch(
-		`/rest/getAlbum?id=${albumId}&u=${user.username}&v=1.16.1&c=${CLIENT_NAME}` +
-			`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json`,
-	);
+	let albumRequest = authFetch(`/rest/getAlbum?id=${albumId}`);
 	albumRequest.then(async (data) => {
 		if (data == null) {
 			return;
@@ -316,7 +313,10 @@
 				albumName={albumData.name}
 				coverArtId={albumData.id}
 				albumImageSize={null}
-				albumRequestSize={Math.min(window.innerHeight, window.innerWidth)}
+				albumRequestSize={Math.min(
+					window.innerHeight,
+					window.innerWidth,
+				)}
 				intersectionObserver={AlbumIntersectionObserver}
 			></AlbumImage>
 			<div style="margin: 0.5rem 0.5rem 0;">

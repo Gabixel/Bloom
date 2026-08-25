@@ -1,4 +1,5 @@
 import * as IDB from "../../static/idb-keyval-6-esm.js";
+import { authData } from "./auth.svelte.js";
 import { cconsole } from "./logger.svelte";
 
 // TODO: dynamic based on URL
@@ -170,11 +171,19 @@ export async function authFetch(
 
 	if (token) headers.set("X-ND-Authorization", `Bearer ${token}`);
 
+	let finalUrl = new URL(inputUrl);
+	finalUrl.searchParams.append("u", authData.userData().username);
+	finalUrl.searchParams.append("c", CLIENT_NAME_URL);
+	finalUrl.searchParams.append("v", "1.16.1"); // TODO: is this needed?
+	finalUrl.searchParams.append("t", authData.navidromeSubsonicToken());
+	finalUrl.searchParams.append("s", authData.navidromeSubsonicSalt());
+	finalUrl.searchParams.append("f", "json");
+
 	let fetchResult: Response | null = null;
 
 	return new Promise(async (resolve, reject) => {
 		try {
-			fetchResult = await fetch(inputUrl, {
+			fetchResult = await fetch(finalUrl.toString(), {
 				method: requestMethod,
 				...init,
 				headers,

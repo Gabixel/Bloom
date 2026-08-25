@@ -127,11 +127,7 @@
 	}
 
 	async function listAlbums() {
-		await authFetch(
-			`/api/album?u=${user.username}&c=${CLIENT_NAME_URL}` +
-				`&t=${authData.navidromeSubsonicToken()}&s=${authData.navidromeSubsonicSalt()}&f=json` +
-				`&_order=DESC&_sort=recently_added`,
-		)
+		await authFetch(`/api/album?_order=DESC&_sort=recently_added`)
 			.then(async (result) => {
 				if (result == null) {
 					return;
