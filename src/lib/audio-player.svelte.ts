@@ -92,9 +92,9 @@ export async function listenAudioEvents() {
 				(device) => device.kind === "audiooutput",
 			);
 
-			console.log("New output list:", audioOutputs);
+			cconsole.log("New output list:", audioOutputs);
 		} catch (error) {
-			console.error("Error while obtaining audio devices:", error);
+			cconsole.error("Error while obtaining audio devices:", error);
 		}
 	}
 }
