@@ -117,8 +117,11 @@
 
 <div
 	class="album-image-wrapper"
+	draggable="false"
 	bind:this={albumDiv}
 	style={`--size:${albumImageSize === null ? "unset" : (albumImageSize || 50) + "px"};aspect-ratio: 1/1;`}
+	role="img"
+	ondrag={(e) => e.preventDefault()}
 >
 	<img
 		src={imageSrc}
@@ -170,6 +173,7 @@
 		height: var(--size);
 		aspect-ratio: 1/1;
 		object-fit: contain;
+		user-select: none;
 
 		background-color: #00000025;
 	}
