@@ -16,6 +16,7 @@ export async function listenAudioEvents() {
 	// TODO: this scrobble logic might "break" when the app is in background, we need to port this logic somewhere else:
 	// - a background JS runner? (https://capacitorjs.com/docs/apis/background-runner)
 	// - in the native audio plugin itself?
+	// TODO: this currently ignores a user restarting a track (when already scrobbled)
 	GGCAudio.addListener("playbackStateChange", (e) => {
 		if (e.currentTrack == null || e.currentTrack.id == null) return;
 
