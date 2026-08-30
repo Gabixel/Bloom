@@ -12,17 +12,9 @@
 	import { authData } from "$lib/auth.svelte";
 	import { playTrack } from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
-	import { Dialog } from "@capacitor/dialog";
 	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
 	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 	import { Capacitor } from "@capacitor/core";
-
-	const showAlert = async (str: string) => {
-		await Dialog.alert({
-			title: "Message",
-			message: str,
-		});
-	};
 
 	let { data }: PageProps = $props();
 
