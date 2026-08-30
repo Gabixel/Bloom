@@ -186,23 +186,11 @@ export async function authFetch(
 	finalUrl.searchParams.append("s", authData.navidromeSubsonicSalt());
 	finalUrl.searchParams.append("f", "json");
 
-	let fetchResult: Response | null = null;
-
-	return new Promise(async (resolve, reject) => {
-		try {
-			fetchResult = await fetch(finalUrl.toString(), {
-				method: requestMethod,
-				...init,
-				headers,
-				...TEST_FETCH_TARGET_ADDRESS_SPACE,
-			});
-		} catch (e: any) {
-			reject("network error");
-			cconsole.error("network error", e);
-			return null;
-		}
-
-		resolve(fetchResult);
+	return fetch(finalUrl.toString(), {
+		method: requestMethod,
+		...init,
+		headers,
+		...TEST_FETCH_TARGET_ADDRESS_SPACE,
 	});
 }
 

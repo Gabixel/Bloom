@@ -15,18 +15,30 @@
 	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
 	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 	import { Capacitor } from "@capacitor/core";
+	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
 
 	let { data }: PageProps = $props();
 
 	let user = authData.userData();
 
+	let errorMessage = $state("");
+
 	let albumId = page.params.album_id;
 
 	if (albumId == null || albumId === "") {
+		errorMessage = "No album provided";
 		throw new Error("No album provided");
 	}
 
 	let albumData: any = $state(null)!;
+	let albumArtistsTokenized = $derived.by(() => {
+		if (albumData == null) {
+			return [];
+		}
+
+		return tokenizeArtist(albumData.displayArtist, albumData.artists);
+	});
+
 	let songList: any[] = $state([])!;
 
 	// let highestTrackNumberOfDiscs = $state([]);
@@ -34,21 +46,45 @@
 	let isAnyTrackNumbered = $state(false);
 
 	let albumRequest = authFetch(`/rest/getAlbum?id=${albumId}`);
-	albumRequest.then(async (data) => {
+	albumRequest.then((data) => {
 		if (data == null) {
+			throwError("Data is empty");
 			return;
 		}
 
-		let response = (await data.json())["subsonic-response"];
-		albumData = response["album"];
-		console.log("album data:", response);
+		data.json().then((response) => {
+			response = response["subsonic-response"];
 
-		if (Array.isArray(albumData["song"])) {
+			if (response["error"] != null) {
+				throwError(response["error"].message);
+				return;
+			}
+
+			if (typeof response["album"] == "undefined") {
+				throwError("Album data is malformed/empty");
+				return;
+			}
+
+			albumData = response["album"];
+			console.log("album data:", response);
+
+			if (
+				typeof albumData["song"] == "undefined" ||
+				!Array.isArray(albumData["song"])
+			) {
+				throwError("Album song list is malformed/empty");
+				return;
+			}
+
 			songList = albumData["song"];
-
 			isAnyTrackNumbered = songList.some((item) => {
 				return item.track != null;
 			});
+		});
+
+		function throwError(message: string) {
+			errorMessage = message;
+			throw new Error(message);
 		}
 	});
 
@@ -117,7 +153,7 @@
 			});
 
 			if (!data.ok) {
-				return;
+				return null;
 			}
 
 			let result = await data.json();
@@ -127,10 +163,16 @@
 
 			if (resultList.length == 0) {
 				cconsole.log("resultList is empty");
-				return;
+				return null;
 			}
 
 			cconsole.log("existing lyrics and synced?", resultList[0].synced);
+
+			if (!resultList[0].synced) {
+				return null;
+			}
+
+			return resultList[0];
 		} catch (e) {}
 	}
 
@@ -172,6 +214,51 @@
 
 		return format?.toUpperCase() ?? "Unknown";
 	}
+
+	function tokenizeArtist(
+		fullText: string,
+		artists: Array<{ id: string; name: string }>,
+	) {
+		const matches = artists
+			.map((a) => ({
+				artist: a,
+				start: fullText.indexOf(a.name),
+			}))
+			.filter((x) => x.start !== -1)
+			.sort((a, b) => a.start - b.start);
+
+		const parts = [];
+		let cursor = 0;
+
+		for (const { artist: a, start } of matches) {
+			// prevent overlapping matches
+			if (start < cursor) continue;
+
+			if (start > cursor) {
+				parts.push({
+					type: "text",
+					value: fullText.slice(cursor, start),
+				});
+			}
+
+			parts.push({
+				type: "artist",
+				value: a.name,
+				artist: a,
+			});
+
+			cursor = start + a.name.length;
+		}
+
+		if (cursor < fullText.length) {
+			parts.push({
+				type: "text",
+				value: fullText.slice(cursor),
+			});
+		}
+
+		return parts;
+	}
 </script>
 
 <svelte:head>
@@ -187,30 +274,46 @@
 		{albumData.name}
 	</p>
 	<p>
-		{albumData.displayArtist}
-		{#if albumData.year != null}
-			<span>- {albumData.year}</span>
-		{/if}
-		{#if albumData.genre != null}
-			<span>- {albumData.genre}</span>
-		{/if}
-		{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
-			<span>/ Single</span>
-		{/if}
-		<span
-			>/ {(() => {
-				// length can be zero, so we enforce 1
-				let discCount = Math.max(1, albumData.discTitles.length);
-
-				return `${discCount} disc${discCount != 1 ? "s" : ""}`;
-			})()}</span
-		>
+		{#each albumArtistsTokenized as text}
+			{#if text.type === "artist"}
+				<!-- TODO: check nullable -->
+				<a href={`#/artist/${text.artist!.id}`}>
+					{text.value}
+				</a>
+			{:else}
+				{text.value}
+			{/if}
+		{/each}
 	</p>
-	{#if albumData.duration != null}
-		<p>
-			<span>{formatDuration(albumData.duration)}</span>
-		</p>
-	{/if}
+	<p>
+		<span>
+			{#if albumData.year != null}
+				{albumData.year}
+			{:else}
+				{"<no year>"}
+			{/if}
+		</span>
+		{#if Array.isArray(albumData.releaseTypes) && albumData.releaseTypes.includes("Single")}
+			<span>- Single</span>
+		{/if}
+	</p>
+	<p>
+		{#if albumData.genre != null}
+			<span>{albumData.genre}</span>
+		{/if}
+		<!-- TODO: better check for slash -->
+		{#if albumData.duration != null}
+			<span>/ {formatDuration(albumData.duration)}</span>
+		{/if}
+	</p>
+	<p>
+		{(() => {
+			// length can be zero, so we enforce 1
+			let discCount = Math.max(1, albumData.discTitles.length);
+
+			return `${discCount} disc${discCount != 1 ? "s" : ""}`;
+		})()}
+	</p>
 {/snippet}
 
 {#snippet track(songEntry: any)}
@@ -300,6 +403,12 @@
 		</button>
 	</div>
 {/snippet}
+
+{#if errorMessage != ""}
+	<p style="margin:1rem;text-align:center;">{errorMessage}</p>
+{:else if albumData == null}
+	<LoadingIcon></LoadingIcon>
+{/if}
 
 {#if albumData != null}
 	<div>
