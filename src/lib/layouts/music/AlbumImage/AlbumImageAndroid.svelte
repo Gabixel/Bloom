@@ -146,10 +146,6 @@
 </div>
 
 <style>
-	img {
-		display: block;
-	}
-
 	img:not([src]),
 	img:not(.loaded) {
 		opacity: 0;

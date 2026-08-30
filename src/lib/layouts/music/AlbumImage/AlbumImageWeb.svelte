@@ -111,10 +111,6 @@
 </div>
 
 <style>
-	img {
-		display: block;
-	}
-
 	img:not(.loaded) {
 		opacity: 0;
 	}
