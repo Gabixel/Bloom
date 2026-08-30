@@ -11,7 +11,7 @@
 <style>
 	div {
 		aspect-ratio: 1 / 1;
-		max-width: min(10vw, 10%);
+		max-width: 15vw;
 		opacity: 0;
 		animation: wait-for-fade 0.45s ease 0.75s normal forwards;
 	}
