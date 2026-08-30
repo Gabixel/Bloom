@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { authFetch } from "../../lib/navidrome.svelte";
+	import { authFetch } from "$lib/navidrome.svelte";
 
 	let loaded = $state(false);
 	let stations: NavidromeRadioObject[] = $state([]);

@@ -9,8 +9,9 @@
 		TEST_FETCH_TARGET_ADDRESS_SPACE,
 	} from "$lib/navidrome.svelte";
 	import { cconsole } from "$lib/logger.svelte";
-	import AlbumImage from "../lib/layouts/music/AlbumImage/AlbumImage.svelte";
-	import { AlbumIntersectionObserver } from "../lib/album-search.svelte";
+	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
+	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
+	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 	import { goto } from "$app/navigation";
 
 	cconsole.log("Hello from page.svelte");
@@ -52,6 +53,7 @@
 
 	let recentAlbumList: any[] = $state([]);
 	let hasRecentAlbums = $derived.by(() => recentAlbumList.length);
+	let loadingRecentAlbums = $state(true);
 
 	// Recent albums
 	authFetch(
@@ -68,6 +70,8 @@
 			return;
 		}
 
+		loadingRecentAlbums = false;
+
 		recentAlbumList.push(...final);
 	});
 </script>
@@ -79,6 +83,9 @@
 <div style="padding:1rem">
 	<p>Welcome <strong>{authData.userData().name}</strong>!</p>
 
+	{#if loadingRecentAlbums}
+		<LoadingIcon style="margin: 0 auto;"></LoadingIcon>
+	{/if}
 	<!-- TODO: make the block clickable (or with a button) to navigate a dedicated page with the whole list -->
 	<section
 		class={["recently-listened-to", hasRecentAlbums && "visible"]}

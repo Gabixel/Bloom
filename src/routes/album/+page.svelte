@@ -9,13 +9,14 @@
 	} from "$lib/navidrome.svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { goto } from "$app/navigation"; // TODO: preloadData? (sounds risky)
-	import { cconsole } from "../../lib/logger.svelte";
-	import AlbumImage from "../../lib/layouts/music/AlbumImage/AlbumImage.svelte";
+	import { cconsole } from "$lib/logger.svelte";
+	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
 	import {
 		AlbumIntersectionObserver,
 		// searchData,
-	} from "../../lib/album-search.svelte";
+	} from "$lib/album-search.svelte";
 	import type { Snapshot } from "@sveltejs/kit";
+	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
 
 	let {}: PageProps = $props();
 
@@ -300,7 +301,11 @@
 	</div>
 
 	{#if albumCount < 0}
-		<p>{errorMessage === "" ? "Loading..." : errorMessage}</p>
+		{#if errorMessage === ""}
+			<LoadingIcon style="margin: 0 auto;"></LoadingIcon>
+		{:else}
+			<p>{errorMessage}</p>
+		{/if}
 	{:else if albumList == null || albumList.length == 0}
 		<p>No albums!</p>
 	{:else}
