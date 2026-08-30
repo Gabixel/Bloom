@@ -302,7 +302,7 @@
 
 	{#if albumCount < 0}
 		{#if errorMessage === ""}
-			<LoadingIcon style="margin: 0 auto;"></LoadingIcon>
+			<LoadingIcon></LoadingIcon>
 		{:else}
 			<p>{errorMessage}</p>
 		{/if}

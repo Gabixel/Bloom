@@ -84,7 +84,7 @@
 	<p>Welcome <strong>{authData.userData().name}</strong>!</p>
 
 	{#if loadingRecentAlbums}
-		<LoadingIcon style="margin: 0 auto;"></LoadingIcon>
+		<LoadingIcon></LoadingIcon>
 	{/if}
 	<!-- TODO: make the block clickable (or with a button) to navigate a dedicated page with the whole list -->
 	<section

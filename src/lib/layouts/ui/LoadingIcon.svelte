@@ -13,6 +13,7 @@
 		aspect-ratio: 1 / 1;
 		max-width: 15vw;
 		opacity: 0;
+		margin-inline: auto;
 		--wait: 0.75s;
 		animation: wait-for-fade 0.45s ease var(--wait) normal forwards;
 	}
