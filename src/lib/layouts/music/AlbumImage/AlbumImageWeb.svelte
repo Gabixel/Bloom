@@ -124,6 +124,10 @@
 		transition: opacity 0.5s ease;
 		user-select: none;
 		pointer-events: none;
+
+		image-rendering: optimizeQuality;
+		image-rendering: optimizequality;
+		image-rendering: smooth;
 	}
 
 	img.loaded {
