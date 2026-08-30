@@ -183,7 +183,9 @@
 </svelte:head>
 
 {#snippet albumDetails()}
-	<p style="font-weight:bold;">{albumData.name}</p>
+	<p style="font-weight:bold;text-rendering:optimizeLegibility;">
+		{albumData.name}
+	</p>
 	<p>
 		{albumData.displayArtist}
 		{#if albumData.year != null}
