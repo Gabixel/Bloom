@@ -79,6 +79,7 @@
 <div style="padding:1rem">
 	<p>Welcome <strong>{authData.userData().name}</strong>!</p>
 
+	<!-- TODO: make the block clickable (or with a button) to navigate a dedicated page with the whole list -->
 	<section
 		class={["recently-listened-to", hasRecentAlbums && "visible"]}
 		aria-hidden={hasRecentAlbums == 0}
