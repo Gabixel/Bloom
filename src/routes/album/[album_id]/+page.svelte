@@ -16,6 +16,7 @@
 	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 	import { Capacitor } from "@capacitor/core";
 	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
+	import { untrack } from "svelte";
 
 	let { data }: PageProps = $props();
 
@@ -24,11 +25,6 @@
 	let errorMessage = $state("");
 
 	let albumId = page.params.album_id;
-
-	if (albumId == null || albumId === "") {
-		errorMessage = "No album provided";
-		throw new Error("No album provided");
-	}
 
 	let albumData: any = $state(null)!;
 	let albumArtistsTokenized = $derived.by(() => {
@@ -45,48 +41,68 @@
 
 	let isAnyTrackNumbered = $state(false);
 
-	let albumRequest = authFetch(`/rest/getAlbum?id=${albumId}`);
-	albumRequest.then((data) => {
-		if (data == null) {
-			throwError("Data is empty");
+	$effect.pre(() => {
+		if (page.params.album_id != albumId) {
+			albumId = page.params.album_id!;
+			errorMessage = "";
+			albumData = null;
+		} else {
 			return;
 		}
 
-		data.json().then((response) => {
-			response = response["subsonic-response"];
+		if (albumId == null || albumId === "") {
+			throwError("No album provided");
+			return;
+		}
 
-			if (response["error"] != null) {
-				throwError(response["error"].message);
+		untrack(() => {
+			if (errorMessage != "") {
 				return;
 			}
 
-			if (typeof response["album"] == "undefined") {
-				throwError("Album data is malformed/empty");
-				return;
-			}
+			authFetch(`/rest/getAlbum?id=${albumId}`).then((data) => {
+				if (data == null) {
+					throwError("Data is empty");
+					return;
+				}
 
-			albumData = response["album"];
-			console.log("album data:", response);
+				data.json().then((response) => {
+					response = response["subsonic-response"];
+					console.log("album data:", response);
 
-			if (
-				typeof albumData["song"] == "undefined" ||
-				!Array.isArray(albumData["song"])
-			) {
-				throwError("Album song list is malformed/empty");
-				return;
-			}
+					if (response["error"] != null) {
+						throwError(response["error"].message);
+						return;
+					}
 
-			songList = albumData["song"];
-			isAnyTrackNumbered = songList.some((item) => {
-				return item.track != null;
+					if (typeof response["album"] == "undefined") {
+						throwError("Album data is malformed/empty");
+						return;
+					}
+
+					albumData = response["album"];
+
+					if (
+						typeof albumData["song"] == "undefined" ||
+						!Array.isArray(albumData["song"])
+					) {
+						throwError("Album song list is malformed/empty");
+						return;
+					}
+
+					songList = albumData["song"];
+					isAnyTrackNumbered = songList.some((item) => {
+						return item.track != null;
+					});
+				});
 			});
 		});
-
-		function throwError(message: string) {
-			errorMessage = message;
-			throw new Error(message);
-		}
 	});
+
+	function throwError(message: string) {
+		errorMessage = message;
+		cconsole.error(message);
+	}
 
 	async function playAudio(
 		audioId: string,
