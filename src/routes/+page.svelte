@@ -56,9 +56,7 @@
 	// Recent albums
 	authFetch(
 		`/api/album` +
-			`?_order=DESC&_sort=play_date&recently_played=true` +
-			// TODO: not sure if seed is needed (or if the current logic makes sense)
-			`&_start=0&_end=10&seed=${getSeed()}`,
+			`?_order=DESC&_sort=play_date&recently_played=true&_start=0&_end=10`,
 	).then(async (result) => {
 		if (result == null) {
 			return;
