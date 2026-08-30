@@ -52,11 +52,18 @@ function regenerateSeedIfTimePassed() {
 }
 
 function generateSeed() {
+	lastSeedTime = Date.now();
 	seed = Date.now().toString() + "-" + seedRegeneratingCount;
 }
 
 export function getSeed() {
 	regenerateSeedIfTimePassed();
+
+	return seed;
+}
+
+export function forceNewSeed() {
+	generateSeed();
 
 	return seed;
 }
