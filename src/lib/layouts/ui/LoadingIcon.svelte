@@ -13,7 +13,8 @@
 		aspect-ratio: 1 / 1;
 		max-width: 15vw;
 		opacity: 0;
-		animation: wait-for-fade 0.45s ease 0.75s normal forwards;
+		--wait: 0.75s;
+		animation: wait-for-fade 0.45s ease var(--wait) normal forwards;
 	}
 
 	div :global(svg) {
