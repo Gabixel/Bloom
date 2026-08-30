@@ -456,6 +456,8 @@
 		z-index: 50;
 
 		background-color: var(--app-bg);
+
+		text-rendering: optimizeLegibility;
 	}
 	nav > a + a {
 		margin-left: 0.5rem;
@@ -564,6 +566,8 @@
 
 	#js-console {
 		padding: 0.25rem;
+
+		text-rendering: geometricPrecision;
 	}
 
 	#js-console p {
