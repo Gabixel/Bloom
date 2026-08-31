@@ -61,6 +61,10 @@
 			}
 
 			authFetch(`/rest/getAlbum?id=${albumId}`).then((data) => {
+				if (page.params.album_id != albumId) {
+					return;
+				}
+
 				if (data == null) {
 					throwError("Data is empty");
 					return;
@@ -93,6 +97,23 @@
 					songList = albumData["song"];
 					isAnyTrackNumbered = songList.some((item) => {
 						return item.track != null;
+					});
+
+					// Get description
+					authFetch(`/api/album/${albumId}`).then((response) => {
+						if (page.params.album_id != albumId) {
+							return;
+						}
+
+						if (!response) {
+							return;
+						}
+
+						response.json().then((data) => {
+							if (data && data.comment && data.comment != "") {
+								albumData["comment"] = data.comment;
+							}
+						});
 					});
 				});
 			});
@@ -313,13 +334,15 @@
 			<span>- Single</span>
 		{/if}
 	</p>
-	<p>
+	<p
+		style="display: flex; flex-direction: row; justify-content: center; gap: 0.5ch"
+	>
 		{#if albumData.genre != null}
 			<span>{albumData.genre}</span>
 		{/if}
 		<!-- TODO: better check for slash -->
 		{#if albumData.duration != null}
-			<span>/ {formatDuration(albumData.duration)}</span>
+			<span>{formatDuration(albumData.duration)}</span>
 		{/if}
 	</p>
 	<p>
@@ -330,6 +353,11 @@
 			return `${discCount} disc${discCount != 1 ? "s" : ""}`;
 		})()}
 	</p>
+	{#if albumData.comment && albumData.comment != ""}
+		<p style="font-size: 0.9em">
+			{albumData.comment}
+		</p>
+	{/if}
 {/snippet}
 
 {#snippet track(songEntry: any)}
