@@ -1,4 +1,4 @@
-<h1 align="center">🌻 This is <strong>Bloom</strong>! ☀</h1>
+<h1 align="center">🌻 This is <strong>Bloom</strong>! 🌻</h1>
 
 <div align=center><picture title="Bloom" width="250">
 	<source media="(prefers-color-scheme: dark) and (max-width: 700px)" srcset="assets/bloom-logo.png" alt="Bloom logo" width="250" height="250" />
@@ -23,7 +23,7 @@ Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="h
 <tr><td>
 
 > [!NOTE]
-> This project is still in very early stages and has slow progress.
+> **This project is still in very early stages and has slow progress.**
 </td></tr>
 </table>
 
@@ -31,20 +31,21 @@ Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="h
 
 <h2>✿ Setup</h2>
 
-Not definitive, but recommended.
+Not definitive, but recommended:
 
 - **Android**
-  - Java 21<br>
-    (e.g., for Codespaces, `sdk install java 21.0.8-ms` for the Microsoft version)
-  - Target Android version: 36
+  - OS version: 36
+  - Java version: 21<br>
+  <sub>For building using <a href="https://docs.github.com/en/codespaces/quickstart">Codespaces</a>, to list all versions you can use <b><code>sdk list java</code></b>.</sub><br>
+    <sup>To install: <b><code>sdk install java 21.0.8-ms</code></b> (i.e., for the Microsoft version).</sup>
 - **~~iOS~~**
-  - Swift unsupported, *for now*
+  - Swift is unsupported, *for now*
 
 When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
 > [!IMPORTANT]
 > <details>
-> <summary>Before building the app, you need to change the audio player plugin (with something else) because it's <strong>private</strong>.<br><sup>(Open here for more info)</sup></summary>
+> <summary>Before building the app you need to swap and re-program the audio player plugin, with something publicly available, because it's <strong>closed-source</strong>.<br><sup><b>[Open for more info]</b></sup></summary>
 > 
 > ---
 > 
