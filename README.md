@@ -56,3 +56,7 @@ Not definitive, but recommended:
 > 
 > I may reconsider this in the distant future, just maybe. Thanks for your understanding.
 > </details>
+
+<div align="right"><a href="https://github.com/orgs/gabi-group"><img width="151.16" height="56" alt="by Gabi Group" src="https://github.com/user-attachments/assets/6f966adf-889c-409a-ab40-c70fa73f8424" /></a></div>
+
+<div align="right"><small><br clear="right"></small></div>
