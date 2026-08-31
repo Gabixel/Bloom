@@ -24,7 +24,7 @@
 
 	let errorMessage = $state("");
 
-	let albumId = page.params.album_id;
+	let albumId: string | null = null;
 
 	let albumData: any = $state(null)!;
 	let albumArtistsTokenized = $derived.by(() => {
