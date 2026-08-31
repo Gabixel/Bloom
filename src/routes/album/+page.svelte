@@ -493,7 +493,7 @@
 
 		/*height: stretch;*/
 	}
-	.like-button svg {
+	.like-button :global(svg) {
 		width: 1.4rem;
 		height: 1.4rem;
 		fill: inherit;
