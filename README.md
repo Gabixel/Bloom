@@ -24,7 +24,6 @@ Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="h
 
 > [!NOTE]
 > This project is still in very early stages and has slow progress.
-
 </td></tr>
 </table>
 
@@ -38,7 +37,8 @@ Not definitive, but recommended.
   - Java 21<br>
     (e.g., for Codespaces, `sdk install java 21.0.8-ms` for the Microsoft version)
   - Target Android version: 36
-- **~~iOS/Swift~~** (unsupported, for now)
+- **~~iOS~~**
+  - Swift unsupported, *for now*
 
 When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
