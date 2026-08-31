@@ -33,15 +33,14 @@ Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="h
 
 Not definitive, but recommended:
 
-- **Android**
+- <picture title="Android logo" ><source media="(prefers-color-scheme: dark)" width="24" height="14" srcset="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" alt="Android logo" /> <source media="(prefers-color-scheme: light)" width="24" height="14" srcset="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" alt="Android logo" /> <img src="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" width="24" height="14" alt="Android logo" /></picture> **Android**
   - OS version: 36
   - Java version: 21<br>
-  <sub>For building using <a href="https://docs.github.com/en/codespaces/quickstart">Codespaces</a>, to list all versions you can use <b><code>sdk list java</code></b>.</sub><br>
+    <sub>For building using <a href="https://docs.github.com/en/codespaces/quickstart">Codespaces</a>, to list all versions you can use <b><code>sdk list java</code></b>.</sub><br>
     <sup>To install: <b><code>sdk install java 21.0.8-ms</code></b> (i.e., for the Microsoft version).</sup>
-- **~~iOS~~**
+  - When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
+- **~~<picture title="Apple logo" ><source media="(prefers-color-scheme: dark)" width="12" height="14" srcset="https://github.com/user-attachments/assets/ada70ca8-3ce8-454b-aab3-dcbfd80ddc41" alt="Apple logo" /> <source media="(prefers-color-scheme: light)" width="12" height="14" srcset="https://github.com/user-attachments/assets/b6468f57-760b-477d-9915-a9952a43ba3d" alt="Apple logo" /> <img src="https://github.com/user-attachments/assets/ada70ca8-3ce8-454b-aab3-dcbfd80ddc41" width="12" height="14" alt="Apple logo" /></picture> iOS~~**
   - Swift is unsupported, *for now*
-
-When your dev environment is ready, you can `npm run compile-debug` for generating a debug APK.
 
 > [!IMPORTANT]
 > <details>
