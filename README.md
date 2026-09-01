@@ -57,6 +57,12 @@ Not definitive, but recommended:
 > I may reconsider this in the distant future, just maybe. Thanks for your understanding.
 > </details>
 
-<div align="right"><a href="https://github.com/orgs/gabi-group"><img width="151.16" height="56" alt="by Gabi Group" src="https://github.com/user-attachments/assets/6f966adf-889c-409a-ab40-c70fa73f8424" /></a></div>
+<div align="right"><a href="https://github.com/gabi-group">
+	<picture title="Gabi Group" width="253.11">
+		<source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/47384d46-aff8-4ae3-a553-311ce3519b56" alt="by Gabi Group" width="253.11" height="84" />
+		<source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/a159eab5-5974-4f07-a07f-18448fe2c807" alt="by Gabi Group" width="253.11" height="84" />
+		<img src="https://github.com/user-attachments/assets/47384d46-aff8-4ae3-a553-311ce3519b56" alt="by Gabi Group" width="253.11" height="84" />
+	</picture>	
+</a></div>
 
 <div align="right"><small><br clear="right"></small></div>
