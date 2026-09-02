@@ -7,12 +7,15 @@
 	let searching = $state(false);
 
 	let results = $state({
-		album: [],
-		artist: [],
-		track: [],
-		station: [],
-		playlist: [],
+		album: [] as any[],
+		artist: [] as any[],
+		track: [] as any[],
+		station: [] as any[],
+		playlist: [] as any[],
+	} as {
+		[any: string]: any[];
 	});
+	let keys = Object.keys(results);
 
 	// TODO: clickable chips to filter the type of search?
 	async function runSearch() {
@@ -156,9 +159,20 @@
 
 		<!-- {#key `${results.album.length}${results.artist.length}${results.track.length}${results.station.length}${results.playlist.length}`}
 		{/key} -->
-		{JSON.stringify(results)}
+		<div
+			style="max-width: 100%;white-space: pre-line;word-break: break-word;"
+		>
+			{#each keys as r}
+				<p>
+					{r}:<br />
+					<span style="font-size: 0.8rem;font-family: monospace, monospace;">{JSON.stringify(results[r])}</span>
+				</p>
+			{/each}
+		</div>
 	</div>
 </div>
 
 <style>
+	body {
+	}
 </style>
