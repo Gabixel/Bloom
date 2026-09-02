@@ -372,11 +372,10 @@
 		>
 			Radios
 		</a>
-
 		<a
-			href="#/settings"
+			href="#/user-settings"
 			style="opacity:0.6"
-			aria-current={undefined}
+			aria-current={getAriaCurrentPage("/user-settings")}
 			draggable="false"
 		>
 			Settings
