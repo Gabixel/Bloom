@@ -1,8 +1,9 @@
 <script lang="ts">
-	let { style }: { style?: string } = $props();
+	let { style, delayFade = 0.75 }: { style?: string; delayFade?: number } =
+		$props();
 </script>
 
-<div {style}>
+<div {style} style:--delayFade={delayFade + "s"}>
 	<svg
 		width="320"
 		height="320"
@@ -101,7 +102,7 @@
 					animation-timing-function: linear;
 					opacity: 1;
 				}
-				61.12%{
+				61.12% {
 					opacity: 0;
 				}
 				100% {
@@ -244,7 +245,7 @@
 		max-width: 15vw;
 		opacity: 0;
 		margin-inline: auto;
-		--wait: 0.75s;
+		--wait: var(--delayFade, 0.75s);
 		animation: wait-for-fade 0.45s ease var(--wait) normal forwards;
 		/*TODO: second animation to slow down the other one(?) */
 	}
