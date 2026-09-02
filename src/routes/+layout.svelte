@@ -351,19 +351,19 @@
 			<span>Home</span>
 		</a>
 		<a
-			href="#/album"
-			aria-current={getAriaCurrentPage("/album")}
+			href="#/search"
+			style="opacity:0.6"
+			aria-current={getAriaCurrentPage("/search")}
 			draggable="false"
 		>
-			Albums
+			Search
 		</a>
 		<a
 			href="#/library"
-			style="opacity:0.6"
 			aria-current={getAriaCurrentPage("/library")}
 			draggable="false"
 		>
-			My Library
+			Library
 		</a>
 		<a
 			href="#/stations"
