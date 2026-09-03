@@ -35,11 +35,18 @@
 	});
 
 	function updateTrackData(newData: any) {
-		if (newData.currentTrack!.title != trackData.title) {
-			trackData.title = newData.currentTrack!.title!;
+		// TODO: check plugin, currentTrack seems to be null when pausing/resuming
+		if (
+			newData.currentTrack != null &&
+			newData.currentTrack.title != trackData.title
+		) {
+			trackData.title = newData.currentTrack.title;
 		}
-		if (newData.currentTrack!.artist != trackData.artist) {
-			trackData.artist = newData.currentTrack!.artist!;
+		if (
+			newData.currentTrack != null &&
+			newData.currentTrack.artist != trackData.artist
+		) {
+			trackData.artist = newData.currentTrack.artist;
 		}
 
 		if (newData.position != trackData.currentTime) {
