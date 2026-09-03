@@ -83,9 +83,9 @@
 			`&square=true`;
 
 		const hashedUrl = hashString(url);
-		console.warn(hashedUrl);
 
 		if (imageMap.has(hashedUrl)) {
+			cconsole.info("loading hashed image:", hashedUrl);
 			imageSrc = imageMap.get(hashedUrl)!;
 			return;
 		}
