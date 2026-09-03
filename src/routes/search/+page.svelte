@@ -165,14 +165,12 @@
 			{#each keys as r}
 				<p>
 					{r}:<br />
-					<span style="font-size: 0.8rem;font-family: monospace, monospace;">{JSON.stringify(results[r])}</span>
+					<span
+						style="font-size: 0.8rem;font-family: monospace, monospace;"
+						>{JSON.stringify(results[r])}</span
+					>
 				</p>
 			{/each}
 		</div>
 	</div>
 </div>
-
-<style>
-	body {
-	}
-</style>
