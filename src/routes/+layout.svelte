@@ -380,6 +380,14 @@
 		>
 			Settings
 		</a>
+		<a
+			href="#/tests"
+			style="color:orange"
+			aria-current={getAriaCurrentPage("/tests")}
+			draggable="false"
+		>
+			Tests
+		</a>
 	</nav>
 {/if}
 

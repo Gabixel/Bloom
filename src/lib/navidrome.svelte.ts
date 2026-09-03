@@ -172,6 +172,7 @@ export async function authFetch(
 ): Promise<Response | null> {
 	inputUrl = getSubsonicApiPath(inputUrl);
 
+	// TODO: also store somewhere?
 	const token = localStorage.getItem("nd_token");
 
 	const headers = new Headers(init.headers ?? {});
@@ -192,6 +193,19 @@ export async function authFetch(
 		headers,
 		...TEST_FETCH_TARGET_ADDRESS_SPACE,
 	});
+}
+
+export let sse: any = null;
+export function setSSE(eventStream: any) {
+	sse = eventStream;
+}
+export function testEvents() {
+	const token = localStorage.getItem("nd_token");
+	let inputUrl = getSubsonicApiPath("/api/events");
+
+	inputUrl += `?jwt=${token}`;
+
+	return inputUrl;
 }
 
 export function getSubsonicApiPath(input: RequestInfo) {
