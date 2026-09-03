@@ -33,7 +33,7 @@
 		};
 
 		es.addEventListener("keepAlive", (event) => {
-			cconsole.log("[SSE] KEEP ALIVE", event.data);
+			console.log("[SSE] KEEP ALIVE", event.data);
 		});
 		es.addEventListener("serverStart", (event) => {
 			cconsole.log("[SSE]", event.data);
