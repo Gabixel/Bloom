@@ -168,7 +168,7 @@ function doScrobble(trackPlayerIndex: number, trackId: string) {
 export async function getStatus() {
 	let status = await GGCAudio.getStatus();
 
-	cconsole.log("[GCCAudio] status:", status);
+	console.log("[GCCAudio] status:", status);
 
 	return status;
 }
