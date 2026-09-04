@@ -1,7 +1,5 @@
 <script lang="ts">
-    import LoadingIcon from "../../lib/layouts/ui/LoadingIcon.svelte";
-
-    
+	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
 </script>
 
 <div style="text-align: center; padding: 1ch">
@@ -15,6 +13,8 @@
 
 <div style="text-align: center; padding: 1ch">
 	<h1>My Library</h1>
+
+	<h2>Soon!</h2>
 
 	<LoadingIcon></LoadingIcon>
 </div>
