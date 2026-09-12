@@ -33,6 +33,7 @@ Built for mobile thanks to **[<img width="14" height="14" alt="Capacitor" src="h
 
 Not definitive, but recommended:
 
+- **Navidrome** version: [0.63.2](https://github.com/navidrome/navidrome/releases/tag/v0.63.2)
 - <picture title="Android logo" ><source media="(prefers-color-scheme: dark)" width="24" height="14" srcset="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" alt="Android logo" /> <source media="(prefers-color-scheme: light)" width="24" height="14" srcset="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" alt="Android logo" /> <img src="https://github.com/user-attachments/assets/ba16f36d-f56e-4eed-8b69-d1757224241d" width="24" height="14" alt="Android logo" /></picture> **Android**
   - SDK/OS version: **36**
   - Java version: **21**
