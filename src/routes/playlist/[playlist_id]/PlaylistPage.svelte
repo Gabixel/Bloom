@@ -75,7 +75,9 @@
 					// Get tracks
 					// TODO: unsure about the redundant id usage (from Navidrome)
 					// TODO: extend start/end range (virtual scroll?)
-					authFetch(`/api/playlist/${playlistId}/tracks?_start=0&_end=100&_order=ASC&_sort=id&playlist_id=${playlistId}`).then((response) => {
+					authFetch(
+						`/api/playlist/${playlistId}/tracks?_start=0&_end=100&_order=ASC&_sort=id&playlist_id=${playlistId}`,
+					).then((response) => {
 						if (page.params.playlist_id != playlistId) {
 							return;
 						}
@@ -87,7 +89,10 @@
 						response.json().then((data) => {
 							// playlistTracks = data;
 							songList = data;
-							console.log("playlist song list:", $state.snapshot(songList));
+							console.log(
+								"playlist song list:",
+								$state.snapshot(songList),
+							);
 						});
 					});
 				});
@@ -226,14 +231,13 @@
 
 		return format?.toUpperCase() ?? "Unknown";
 	}
-
 </script>
 
 <svelte:head>
 	{#if playlistData != null}
-		<title>Playlist "{playlistData.name}" &#183; Bloom</title>
+		<title>{playlistData.name} &#183; Playlist &#183; Bloom</title>
 	{:else}
-		<title>(Playlist loading) &#183; Bloom</title>
+		<title>(Playlist loading...) &#183; Bloom</title>
 	{/if}
 </svelte:head>
 
@@ -282,7 +286,11 @@
 				<span style="font-size:0.7em;color:#ffffff80"
 					>{#if songEntry.duration != null}
 						<!-- TODO: wtf is happening to duration here without rounding (same to playlist's total one) -->
-						<span>{formatDuration(Math.round(songEntry.duration))}</span>
+						<span
+							>{formatDuration(
+								Math.round(songEntry.duration),
+							)}</span
+						>
 					{/if}
 					<span>- {getAudioQuality(songEntry)}</span>
 				</span>

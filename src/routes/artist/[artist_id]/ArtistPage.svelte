@@ -74,6 +74,14 @@
 	}
 </script>
 
+<svelte:head>
+	{#if artistData != null}
+		<title>{artistData.name} &#183; Artist &#183; Bloom</title>
+	{:else}
+		<title>(Artist loading...) &#183; Bloom</title>
+	{/if}
+</svelte:head>
+
 {#if errorMessage != ""}
 	<p style="margin:1rem;text-align:center;">{errorMessage}</p>
 {:else if artistData == null}

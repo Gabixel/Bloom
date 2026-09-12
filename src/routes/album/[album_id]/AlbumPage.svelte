@@ -292,9 +292,9 @@
 
 <svelte:head>
 	{#if albumData != null}
-		<title>Album "{albumData.name}" &#183; Bloom</title>
+		<title>{albumData.name} &#183; Album &#183; Bloom</title>
 	{:else}
-		<title>(Album loading) &#183; Bloom</title>
+		<title>(Album loading...) &#183; Bloom</title>
 	{/if}
 </svelte:head>
 
