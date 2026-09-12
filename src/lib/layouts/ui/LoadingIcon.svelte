@@ -3,6 +3,7 @@
 		$props();
 </script>
 
+<!-- TODO: remake to improve it when mobile is lagging -->
 <div {style} style:--delayFade={delayFade + "s"}>
 	<svg
 		width="320"
