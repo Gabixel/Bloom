@@ -12,11 +12,12 @@
 	import { authData } from "$lib/auth.svelte";
 	import { playTrack } from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
-	// import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
-	// import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
+	import AlbumImage from "$lib/layouts/music/AlbumImage/AlbumImage.svelte";
+	import { AlbumIntersectionObserver } from "$lib/album-search.svelte";
 	import { Capacitor } from "@capacitor/core";
 	import LoadingIcon from "$lib/layouts/ui/LoadingIcon.svelte";
 	import { untrack } from "svelte";
+	import { SvelteDate } from "svelte/reactivity";
 
 	// let { data }: PageProps = $props();
 
@@ -34,6 +35,11 @@
 	// let highestTrackNumberOfDiscs = $state([]);
 
 	let isAnyTrackNumbered = $state(false);
+
+	let timestamps = {
+		created: null! as SvelteDate,
+		updated: null! as SvelteDate,
+	};
 
 	$effect.pre(() => {
 		if (playlistId == null || playlistId === "") {
@@ -70,6 +76,9 @@
 					}
 
 					// albumData = response["album"];
+
+					timestamps.created = new SvelteDate(response.createdAt);
+					timestamps.updated = new SvelteDate(response.updatedAt);
 					playlistData = response;
 
 					// Get tracks
@@ -241,12 +250,15 @@
 	{/if}
 </svelte:head>
 
-{#snippet albumDetails()}
+{#snippet playlistDetails()}
 	<h1 style="font-weight:bold;text-rendering:optimizeLegibility;">
 		{playlistData.name}
 	</h1>
 	<!-- TODO: display playlist author -->
 	<!-- TODO: display creation date? -->
+	<p>
+		{playlistData.songCount} song(s)
+	</p>
 	<p
 		style="display: flex; flex-direction: row; justify-content: center; gap: 0.5ch"
 	>
@@ -254,11 +266,21 @@
 			<span>{formatDuration(Math.round(playlistData.duration))}</span>
 		{/if}
 	</p>
+	<p>
+		Created: {timestamps.created.toLocaleDateString()}, {timestamps.created.toLocaleTimeString()}
+	</p>
+	<p>
+		Last update: {timestamps.updated.toLocaleDateString()}, {timestamps.updated.toLocaleTimeString()}
+	</p>
 	{#if playlistData.comment && playlistData.comment != ""}
 		<p style="font-size: 0.9em">
 			{playlistData.comment}
 		</p>
 	{/if}
+	<p style="font-size:0.8rem">
+		{playlistData.public === true ? "Public" : "Private"} playlist
+	</p>
+	<!-- TODO: allow liking playlists? (we need to upgrade target Navidrome version) -->
 {/snippet}
 
 {#snippet track(songEntry: any)}
@@ -335,19 +357,19 @@
 {#if playlistData != null}
 	<div>
 		<div class="album-details">
-			<!-- <AlbumImage
-				albumId={albumData.id}
-				albumName={albumData.name}
-				coverArtId={albumData.id}
+			<AlbumImage
+				albumId={playlistData.id}
+				albumName={"(Playlist) " + playlistData.name}
+				coverArtId={"pl-" + playlistData.id}
 				albumImageSize={null}
 				albumRequestSize={Math.min(
 					window.innerHeight,
 					window.innerWidth,
 				)}
 				intersectionObserver={AlbumIntersectionObserver}
-			></AlbumImage> -->
+			></AlbumImage>
 			<div style="margin: 0.5rem 0.5rem 0;">
-				{@render albumDetails()}
+				{@render playlistDetails()}
 			</div>
 		</div>
 
