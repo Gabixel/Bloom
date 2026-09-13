@@ -301,9 +301,9 @@
 			aria-label={`Play track: "${songEntry.title}"`}
 			onclick={() => {
 				playAudio(
-					songEntry.id,
+					songEntry.mediaFileId,
 					{
-						id: songEntry.id,
+						id: songEntry.mediaFileId,
 						title: songEntry.title,
 						artist: songEntry.artist,
 						albumTitle: songEntry.album,
