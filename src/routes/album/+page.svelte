@@ -277,7 +277,7 @@
 	<title>Album List &#183; Bloom</title>
 </svelte:head>
 
-<div>
+<div style="padding-bottom:1.5rem">
 	<div style="padding:1rem;padding-bottom:1.5rem">
 		<input
 			bind:this={searchBar}

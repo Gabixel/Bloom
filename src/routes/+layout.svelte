@@ -345,10 +345,10 @@
 	Toggle console
 </button>
 
-{#if credentialsMounted && authData.isLoggedIn()}
+{#if credentialsMounted && authData.isLoggedIn() && false}
 	<nav data-sveltekit-replacestate={!authData.isLoggedIn()}>
 		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
-			<span>Home</span>
+			Home
 		</a>
 		<a
 			href="#/search"
@@ -392,7 +392,7 @@
 {/if}
 
 {#if authData.isLoggedIn()}
-	<div id="main-inner">
+	<div id="main-inner" style="padding-bottom: var(--player-height, 0)">
 		{@render children()}
 	</div>
 
@@ -451,7 +451,7 @@
 </div>
 
 <style>
-	nav {
+	/*nav {
 		padding: 0.5rem;
 		font-weight: bold;
 
@@ -468,7 +468,7 @@
 	}
 	nav > a + a {
 		margin-left: 0.5rem;
-	}
+	}*/
 
 	.offline-banner {
 		color: #fff;

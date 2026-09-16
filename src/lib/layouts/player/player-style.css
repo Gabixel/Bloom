@@ -1,0 +1,1136 @@
+/* see https://codepen.io/gabixel/pen/Ggreeoa */
+
+body.dragging:not(.animation-was-playing).player-attached-top
+	.finished-bottom-threshold {
+	display: none;
+}
+body.dragging:not(.animation-was-playing).player-attached-bottom
+	.finished-top-threshold {
+	display: none;
+}
+
+:root {
+	/*--mini-player-bg: #303030;*/
+	/*--mini-player-bg: #3f3f88;*/
+	--mini-player-bg: var(--bloom-theme-dark);
+}
+
+.page-inner {
+	padding: 0.5rem;
+	padding-bottom: 1rem;
+}
+
+.page-inner > * {
+	content-visibility: auto;
+}
+
+.page-inner .ipsum {
+	contain-intrinsic-size: 1px 500px;
+}
+
+.page-inner p.kevin-credits {
+	font-size: 0.6rem;
+}
+
+.ipsum {
+	opacity: 0.2;
+}
+
+.hidden {
+	display: none;
+}
+
+.bottom-dock-container {
+	position: fixed;
+
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+
+	/*display: contents;*/
+
+	touch-action: none;
+	pointer-events: none;
+
+	perspective: 9999px;
+	/*backface-visibility: hidden;*/
+
+	/*transform: translate3d(0, 0, 0);*/
+
+	/*overflow: clip;*/
+
+	/*contain: layout paint;*/
+	contain: size layout style paint;
+	contain: strict;
+}
+body.animating .bottom-dock-container {
+	will-change: background-color;
+}
+
+.audio-player-overlay {
+	--t-calc: calc(-100dvh + 100% - 1px);
+	transform: translate(
+		0px,
+		calc(var(--t-calc) * var(--anim-progress-cubic, 0))
+	);
+}
+
+body.player-attached-top.anim-finished {
+	visibility: hidden;
+}
+body.player-attached-top {
+	touch-action: none;
+}
+body.player-attached-top.anim-finished .audio-player-overlay {
+	visibility: visible;
+}
+
+#app-navigation {
+	/* half a pixel just in case */
+	--t-calc: calc(100% + 0.5px);
+	transform: translate(
+		0px,
+		calc(var(--t-calc) * var(--anim-progress-cubic, 0))
+	);
+}
+
+.audio-player-overlay {
+	/*position: fixed;
+    bottom: 0;
+    width: 100%;*/
+
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+
+	/*height: 100%;*/
+
+	/*touch-action: auto;*/
+	/*touch-action: pan-y;*/
+	touch-action: none;
+	pointer-events: none;
+	overscroll-behavior: none;
+
+	/*overflow: clip;*/
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+
+	/*isolation: isolate;*/
+	contain: layout;
+
+	z-index: 3;
+
+	transform-style: flat;
+	/*backface-visibility: hidden;*/
+}
+/*body.animating .audio-player-overlay {
+	backface-visibility: hidden;
+}*/
+
+.mini-player {
+	width: auto; /* parent's align-items stretch */
+
+	/*background-color: #4a4af3;*/
+	/*background-color: #101010;*/
+	background: none;
+
+	/*background-clip: padding-box;
+    border: 1.5rem solid transparent;
+    border-top: 0;*/
+
+	user-select: none;
+	/*background-color: var(--mini-player-bg);*/
+
+	contain: layout;
+}
+/* clip extra backgrund (hopefully this improves performance) */
+body.player-attached-bottom.anim-finished .mini-player {
+	contain: layout paint;
+}
+
+body {
+	/* 1 - (1 / Math.sqrt(2)) is roughly 0.292893, not sure what's the source of this calculation */
+	--radius-magic-pad: 0.2929;
+}
+
+.mini-player > div.data-and-cover {
+	z-index: 20;
+	position: relative;
+
+	--pad-size: calc(20 * var(--radius-magic-pad));
+	--lowest: min(1dvh, 1vw);
+
+	--padding-final: calc(var(--lowest) * var(--pad-size));
+
+	padding: 1rem var(--padding-final);
+	margin-bottom: var(--nav-height, 0);
+
+	/*opacity: calc(1 - var(--scrubber-progress, 0));*/
+	/* opacity: 1; /* animated */
+	/*will-change: opacity;*/
+}
+.mini-player > div.data-and-cover > div.track-data {
+	position: relative;
+	z-index: 25;
+	pointer-events: none;
+}
+.mini-player > div.data-and-cover > div #player-state-button {
+	pointer-events: all;
+}
+
+body.player-attached-top.anim-finished .mini-player > div.data-and-cover {
+	content-visibility: hidden;
+}
+
+.mini-player > div.data-and-cover::before,
+.mini-player > div.data-and-cover::after {
+	content: "";
+	display: block;
+	position: absolute;
+
+	left: 0;
+	right: 0;
+
+	top: 0;
+	width: 100%;
+
+	pointer-events: none;
+}
+.mini-player > div.data-and-cover::before {
+	height: calc(var(--player-height, 100%) * 2);
+}
+body.player-attached-bottom.anim-finished
+	.mini-player
+	> div.data-and-cover::before {
+	height: var(--player-height, 100%);
+}
+
+.mini-player > div.data-and-cover::after,
+.mini-player > div.data-and-cover > .player-cover-dark-bg {
+	/* usual +1px gap clipping */
+	/*height: calc(var(--player-height, 100%) * 2 + 1px);*/
+	height: 100vh;
+	height: 100dvh;
+}
+/* the album cover */
+.mini-player > div.data-and-cover::before {
+	z-index: 16;
+	/*background-color: orange;*/
+
+	background-color: #000;
+	background-image: var(
+		--track-image,
+		linear-gradient(to bottom, transparent, transparent)
+	);
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+
+	--min-bg-size: max(100vw, calc(var(--player-height) * 2));
+	/*background-size: cover;*/
+	/*background-size: 100% auto;*/
+	background-size: var(--min-bg-size) var(--min-bg-size);
+
+	/*background-position: top 25% center;*/
+	background-position: top calc(var(--player-height, 100vw) * -0.25) center;
+
+	border-bottom: 1px solid transparent;
+	border-collapse: padding-box;
+}
+/* the gradient on top of the (darkened) cover */
+.mini-player > div.data-and-cover::after {
+	/*height: 100vh;*/
+	z-index: 19;
+
+	/*background: none;*/
+	/*--half-of-half-square-width: calc(100vw / 4);*/
+	/*background-image: linear-gradient(to bottom, transparent 50%, var(--mini-player-bg) 100%); */
+
+	background-color: var(--mini-player-bg);
+
+	--transparent-max-coord: calc(var(--player-height, 100%) + 1px);
+	/*background-image: linear-gradient(
+		to bottom,
+		transparent var(--transparent-max-coord),
+		var(--mini-player-bg),
+		var(--mini-player-bg) 100%
+	);*/
+
+	/* 50% or var(--player-height) */
+	/*mask-image: linear-gradient(to bottom, transparent 50%, black 100%);
+	-webkit-mask-image: linear-gradient(to bottom, transparent 50%, black 100%);*/
+
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent var(--transparent-max-coord),
+		black calc(var(--player-height) + var(--transparent-max-coord)),
+		black 100%
+	);
+	mask-image: linear-gradient(
+		in oklch to bottom,
+		transparent 0,
+		transparent var(--transparent-max-coord),
+		black calc(var(--player-height) + var(--transparent-max-coord)),
+		black 100%
+	);
+
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent var(--transparent-max-coord),
+		black calc(var(--player-height) + var(--transparent-max-coord)),
+		black 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		in oklch to bottom,
+		transparent 0,
+		transparent var(--transparent-max-coord),
+		black calc(var(--player-height) + var(--transparent-max-coord)),
+		black 100%
+	);
+}
+.mini-player > div.data-and-cover > .player-cover-dark-bg {
+	position: absolute;
+	z-index: 17;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	background-color: var(--mini-player-bg);
+	opacity: 0.75;
+
+	pointer-events: none;
+}
+
+.player-blurred-cover-progress {
+	position: absolute;
+	z-index: 18;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+
+	overflow: hidden;
+
+	height: calc(var(--player-height, 100%) * 2);
+
+	/*background-color: var(--mini-player-bg);*/
+	/*opacity: 0.75;*/
+
+	pointer-events: none;
+
+	border-bottom: 1px solid transparent;
+	/*border-collapse: padding-box;*/
+
+	/*--- handled by web animation */
+	/*clip-path: inset(0 100% 0 0);*/
+}
+
+.player-blurred-cover-progress > .progress-transform {
+	position: absolute;
+	z-index: 18;
+	/* to compensate the Z rotation for a smoother animation */
+	inset: -3px;
+
+	--container-t: calc(
+		-100% + (var(--track-last-time, 0) / var(--track-duration, 1) * 100%)
+	);
+	/* this is used when the animation is "paused" (deleted) as fallback */
+	transform: translateX(var(--container-t, -100%));
+	rotate: z 0.00001deg;
+	transform-style: flat;
+	/*transform-origin: top right;*/
+
+	overflow: hidden;
+
+	/* in case things go wrong */
+	background-color: #00f;
+
+	clip-path: inset(0 0 0 0);
+	contain: layout;
+}
+
+body.audio-running .player-blurred-cover-progress > .progress-transform {
+	--little-delay: 0.01s;
+	animation: test
+		calc(
+			((var(--track-duration, 1) - var(--track-last-time, 0)) * 1s) /
+				var(--track-rate, 1)
+		)
+		linear running both;
+	animation-delay: var(--little-delay);
+}
+body.audio-running
+	.player-blurred-cover-progress
+	> .progress-transform
+	> .blurred-image {
+	--little-delay: 0.01s;
+	animation: test2
+		calc(
+			((var(--track-duration, 1) - var(--track-last-time, 0)) * 1s) /
+				var(--track-rate, 1)
+		)
+		linear running both;
+	animation-delay: var(--little-delay);
+}
+
+.player-blurred-cover-progress > .progress-transform > .blurred-image {
+	position: absolute;
+	inset: 0;
+
+	z-index: 1;
+
+	background-color: #000;
+	background-image: var(
+		--track-image-blurred,
+		linear-gradient(to bottom, transparent, transparent)
+	);
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+
+	--min-bg-size: max(100vw, calc(var(--player-height) * 2));
+	/*background-size: cover;*/
+	/*background-size: 100% auto;*/
+	background-size: var(--min-bg-size) var(--min-bg-size);
+
+	/*background-position: top 25% center;*/
+	background-position: top calc(var(--player-height, 100vw) * -0.25) center;
+
+	--image-t: calc(
+		100% - (var(--track-last-time, 0) / var(--track-duration, 1) * 100%)
+	);
+	/* this is used when the animation is "paused" (deleted) as fallback */
+	transform: translateX(var(--image-t, -100%));
+	/*
+	wtf this helps fixing bleeding edges
+	(since the parent also has a Z rotation to improve animation smoothness)
+	*/
+	rotate: z 0.0001deg;
+	transform-style: flat;
+
+	clip-path: inset(0 0 0 0);
+	contain: layout;
+}
+body.player-attached-top.anim-finished .player-blurred-cover-progress {
+	visibility: hidden;
+}
+
+@keyframes test {
+	from {
+		transform: translateX(var(--container-t, -100%));
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+@keyframes test2 {
+	from {
+		transform: translateX(var(--image-t, 100%));
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+body:not(.player-attached-top.anim-finished).audio-running
+	.player-blurred-cover-progress
+	> .progress-transform,
+body:not(.player-attached-top.anim-finished).audio-running
+	.player-blurred-cover-progress
+	> .progress-transform
+	> .blurred-image {
+	will-change: transform;
+	/*backface-visibility: hidden;*/
+}
+
+.player-blurred-cover-progress > .progress-transform > .blurred-image::before {
+	content: "";
+	display: block;
+	position: absolute;
+	inset: 0;
+	background-color: var(--mini-player-bg);
+	opacity: 0.75;
+	z-index: 2;
+}
+.player-blurred-cover-progress > .progress-transform > .blurred-image::after {
+	content: "";
+	display: block;
+	position: absolute;
+	inset: 0;
+	background-color: #00000050;
+	z-index: 3;
+}
+
+.mini-player > div.data-and-cover .line-track {
+	/*overflow: clip;*/
+	white-space: nowrap;
+	text-wrap: nowrap;
+
+	line-break: loose;
+	word-break: nowrap;
+
+	line-height: 1.5;
+}
+body.animating .mini-player > div.data-and-cover .line-track {
+	perspective: 0;
+}
+.mini-player > div.data-and-cover .line-track p {
+	margin: 0;
+
+	contain: layout;
+
+	/*TODO: font-stretch?*/
+}
+/*body.animating .mini-player > div.data-and-cover .line-track p {
+	transform: translate3d(0, 0, 0.001px);
+	transform-style: flat;
+}*/
+/* feels like a shortcut, I hate it */
+.mini-player > div.data-and-cover .line-track br {
+	display: none !important;
+}
+/* keep rendering when paragraphs are empty */
+.mini-player > div.data-and-cover .line-track p::before {
+	content: "";
+	display: inline-block;
+	width: 0px;
+	visibility: hidden;
+}
+
+.mini-player > div.data-and-cover > .track-data {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+
+	gap: 1rem;
+}
+
+.mini-player > div.data-and-cover .track-text-lines {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+
+	flex-grow: 1;
+	flex-shrink: 1;
+
+	gap: 0.25rem;
+
+	/* this prevents overflow??? */
+	min-width: 0;
+	/*min-width: 100%;
+	max-width: 100%;*/
+
+	overflow: clip;
+}
+
+.mini-player::after {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+.player-shadow,
+.mini-player > div.data-and-cover::before,
+/*.mini-player > div.data-and-cover::after,*/
+.mini-player::after,
+.mini-player > div.data-and-cover > .player-cover-dark-bg,
+.mini-player > .player-bg,
+/*.mini-player, /* <- not sure */
+#app-navigation::before,
+.mini-player > div.data-and-cover > .player-blurred-cover-progress {
+	/*--size: 15;
+	--lowest: min(1dvh, 1vw);
+
+	--radius-1: calc(var(--lowest) * var(--size));
+	--radius-final: var(--radius-1);*/
+
+	/*unused*/
+	/*--radius-2: calc(var(--radius-1) * (1 - var(--scrubber-progress, 0)));*/
+
+	/*border-top-left-radius: var(--radius-final);
+	border-top-right-radius: var(--radius-final);*/
+
+	corner-shape: squircle squircle square square;
+
+	/* technically, the navigation bar has lower height, and luckily this formula covers that anyway. */
+	/* 5/3 = 1.666666..., which seems to be the max corner radius we can have (when dock is closed). */
+	/* 50vh is just in case of weird stuff happening during startup. */
+	/* I also think that I've read somewhere that using the radius on all corners optimizes a little bit and prevents weird glitches (on Chrome) in some rare occasions. */
+	--large-radius: calc(var(--player-height, 50vh) / (5 / 3));
+
+	/* 9vw instead of 10vw, so a bit lower than ~16.666666... */
+	--low-radius: calc((5 / 3) * 9vw);
+
+	border-radius: min(var(--large-radius), var(--low-radius));
+
+	/* this improves corner radius ugliness somehow */
+	background-clip: content-box;
+
+	/*background-clip: padding-box;*/
+
+	/*will-change: border-top-left-radius, border-top-right-radius;*/
+}
+@supports not (corner-shape: squircle) {
+	/*TODO*/
+}
+
+/*.player-shadow,*/
+.mini-player::after,
+.mini-player > div.data-and-cover > .player-cover-dark-bg,
+.mini-player > .player-bg {
+	transform: scaleX(calc(1 + 0.3 * var(--anim-progress-cubic, 0)));
+	transform-style: flat;
+	transform-origin: top center;
+}
+#app-navigation::before {
+	transform: scaleX(calc(1 + 0.3 * var(--anim-progress-cubic, 0)));
+	transform-style: flat;
+	transform-origin: top center;
+}
+.mini-player > div.data-and-cover::before,
+.mini-player > div.data-and-cover > .player-blurred-cover-progress {
+	/* both axis */
+	transform: scale(calc(1 + 0.3 * var(--anim-progress-cubic, 0)));
+	transform-style: flat;
+	transform-origin: top center;
+}
+/*body.animating .player-shadow,*/
+body.animating .mini-player::after,
+body.animating .mini-player > div.data-and-cover > .player-cover-dark-bg,
+body.animating .mini-player > .player-bg,
+body.animating #app-navigation::before,
+body.animating .mini-player > div.data-and-cover::before {
+	will-change: transform;
+	backface-visibility: hidden;
+}
+
+/*body.dock-was-fully-open .mini-player > div.data-and-cover::before,
+body.dock-was-fully-open .mini-player > div.data-and-cover::after,*/
+/*.player-shadow,*/
+/*body.dock-was-fully-open .mini-player::after*/
+/*body.dock-was-fully-open .mini-player > div.data-and-cover > .player-cover-dark-bg,
+body.dock-was-fully-open .mini-player > .player-bg*/ /*{
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}*/
+/*
+body.dock-was-fully-open .mini-player > div.data-and-cover::before,
+body.dock-was-fully-open .mini-player > div.data-and-cover::after,
+/*body.dock-was-fully-open .player-shadow,* /
+body.dock-was-fully-open .mini-player::after,
+body.dock-was-fully-open .mini-player > div.data-and-cover > .player-cover-dark-bg,
+body.dock-was-fully-open .mini-player > .player-bg {
+	corner-shape: square;
+}*/
+
+/*body.animating .mini-player > div.data-and-cover::before,
+body.animating .mini-player > div.data-and-cover::after,* /
+body.animating .mini-player::after
+/*body.animating .mini-player > div.data-and-cover > .player-cover-dark-bg,
+body.animating .mini-player > .player-bg* / {
+	/*will-change: border-top-left-radius, border-top-right-radius, corner-shape;* /
+	/*will-change: border-top-left-radius, border-top-right-radius;* /
+	will-change: corner-shape;
+}*/
+
+/* ---- */
+
+/*body:not(.player-attached-bottom) .player-shadow,
+body.dragging.dragged-a-lot .player-shadow,
+body.player-attached-bottom.anim-finishing .player-shadow{
+	/*visibility: hidden;* /
+	opacity: 0 !important;
+	/*filter: drop-shadow(0 0 0 #101010);* /
+	background-color: transparent;
+	transition: none;
+}*/
+/*.player-shadow {
+	/ *filter: drop-shadow(0 0 0 #101010);* /
+	opacity: 0;
+	transition: opacity 0.25s ease-out;
+	background-color: transparent;
+}*/
+/*body.player-attached-bottom:not(.anim-finishing) .player-shadow {
+	opacity: 1;
+	/ *filter: drop-shadow(0 0.65rem 2rem #101010);* /
+	background-color: #000;
+}*/
+/* the player shadow */
+/* prev. `.mini-player::before` */
+.player-shadow {
+	/*width: 100vw;*/
+	/*height: 100%;*/
+	/*width: 100%;*/
+	height: calc(var(--player-height) - 1px);
+
+	/*z-index: 13;*/
+	z-index: 1;
+
+	box-shadow: 0 0.65rem 2rem 0.5rem #101010;
+	/*filter: drop-shadow(0 0.45rem 1.5rem #101010);*/
+	background-color: #000;
+	border-top: 1px solid transparent;
+
+	will-change: auto;
+
+	/*background-clip: content-box;*/
+	contain: strict;
+
+	background-clip: padding-box;
+}
+.player-shadow {
+	content: "";
+	/*container-type: size;*/
+	/*position: fixed;*/
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+/*body.animating .player-shadow {
+	/* we don't need to change border radius, we're cheating by making it invisible */
+/*will-change: visibility, transition, opacity, filter;*/
+/*will-change: background-color, opacity;* /
+	will-change: background-color, opacity;
+}*/
+
+.mini-player > .player-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	width: 100vw;
+	height: 100dvh;
+
+	z-index: 14;
+
+	background-color: var(--mini-player-bg);
+}
+body.player-attached-bottom.anim-finished .mini-player > .player-bg {
+	height: var(--player-height, 100%);
+}
+/*
+body.player-attached-top.anim-finished .mini-player > .player-bg {
+	content-visibility: hidden;
+}*/
+
+/* the "aftermath" of the drag animation: the appearing background for the fullscreen player */
+.mini-player::after {
+	z-index: 27;
+	/*background-color: darkorange;*/
+	background-color: rebeccapurple;
+	background-image: linear-gradient(
+		to bottom,
+		transparent,
+		var(--mini-player-bg)
+	);
+	background-image: linear-gradient(
+		in oklch to bottom,
+		transparent,
+		var(--mini-player-bg)
+	);
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+	/*background-size: cover;*/
+	background-size: cover;
+
+	width: 100vw;
+	height: 100dvh;
+
+	/*opacity: calc(var(--scrubber-progress, 0));*/
+	opacity: 0; /* animated */
+
+	pointer-events: none;
+}
+/*body.animating .mini-player::after {
+	will-change: border-top-left-radius, border-top-right-radius, opacity;
+}*/
+
+/* stopping JS web animation promoting to GPU */
+body.player-attached-top.anim-finished .mini-player::after {
+	opacity: 1 !important;
+}
+body.player-attached-bottom.anim-finished .mini-player::after {
+	opacity: 0 !important;
+	/*visibility: hidden;*/
+	content-visibility: hidden;
+	/*background-image: none;*/
+}
+
+/*body.player-attached-top .mini-player::after {
+    pointer-events: all;
+}*/
+
+/*.audio-player-overlay .mini-player-background {
+    background-color: darkblue;
+}*/
+
+.audio-player-overlay div.inner {
+	z-index: 50;
+
+	/* overflow shenanigans */
+	--inner-h: calc(100dvh + 0.5px);
+
+	min-width: 100vw;
+	/*min-height: var(--inner-h);*/
+	max-width: 100vw;
+	max-height: var(--inner-h);
+	width: 100vw;
+	height: var(--inner-h);
+
+	position: absolute;
+	top: 0;
+
+	/*overflow-y: scroll;*/
+	/*overflow-x: hidden;*/
+
+	/*overflow: hidden;*/
+
+	/*background-color: darkorange;*/
+
+	/*pointer-events: all;*/
+	user-select: none;
+	/*touch-action: pan-y;*/
+	/*touch-action: pan-down;*/
+	touch-action: none;
+
+	isolation: isolate;
+	contain: layout paint;
+
+	/*content-visibility: auto;*/
+
+	/* !!! */
+	/* NOTE: iOS may suffer and lose the elastic effect,
+     * but I guess it's actually fine this way
+     */
+	/*overscroll-behavior: none;*/
+
+	overscroll-behavior: contain;
+
+	-webkit-overflow-scrolling: auto;
+}
+body.player-attached-top .audio-player-overlay div.inner {
+	-webkit-overflow-scrolling: scroll;
+	overflow-y: auto;
+	/* promote to GPU when open */
+	backface-visibility: hidden;
+}
+
+/*body.player-attached-bottom.anim-finishing .audio-player-overlay div.inner {
+	will-change: scroll-position;
+}*/
+/*body.player-attached-top .audio-player-overlay div.inner {
+	backface-visibility: hidden;
+}*/
+
+body.animating .audio-player-overlay {
+	will-change: transform;
+	/*backface-visibility: hidden;*/
+}
+
+.audio-player-overlay .mini-player {
+	pointer-events: auto;
+	border-top: 1px solid transparent;
+
+	touch-action: pan-y;
+}
+body.animating .audio-player-overlay .mini-player {
+	will-change: border-top-left-radius, border-top-right-radius;
+}
+
+.touch-proxy {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: calc(100dvh + 0.5px);
+	background: #000;
+	opacity: 0;
+
+	user-select: none;
+	/*pointer-events: none;*/
+	pointer-events: inherit;
+	/*touch-action: none;*/
+	touch-action: pan-y;
+
+	z-index: -1;
+
+	/*overscroll-behavior: none;*/
+}
+
+/*.audio-player-overlay.sleep div.inner {
+    pointer-events: none;
+    
+    overflow: hidden;
+}*/
+
+body:not(.player-attached-bottom.anim-finished)
+	.audio-player-overlay
+	div.inner {
+	content-visibility: visible;
+}
+
+/*.audio-player-overlay div.inner .more-stuff {
+	content-visibility: auto;
+}*/
+
+body.player-attached-bottom.anim-finished .audio-player-overlay div.inner {
+	/*display: none !important;*/
+	/*visibility: hidden;*/
+	content-visibility: hidden;
+	height: var(--player-height, var(--inner-h));
+}
+
+/* stopping GPU layer promoted by JS Web Animation */
+body.player-attached-bottom.anim-finished .audio-player-overlay div.inner {
+	opacity: 0 !important;
+}
+body.player-attached-top.anim-finished .audio-player-overlay div.inner {
+	opacity: 1 !important;
+}
+body.player-attached-bottom.anim-finished .audio-player-overlay {
+	overflow: clip;
+}
+
+.audio-player-overlay div.inner {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+
+	justify-content: flex-start;
+	align-items: stretch;
+
+	/*opacity: var(--scrubber-progress, 0);*/
+	/*opacity: 0; /* animated */
+	/*will-change: opacity;*/
+
+	/* Not a problem for the touch proxy since it's absolute */
+	/* But let's ignore it here */
+	/*padding: 1rem;*/
+}
+
+.audio-player-overlay div.inner .fullscreen-player {
+	flex-basis: 95vh;
+	flex-basis: 95dvh;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	flex-grow: 1;
+	flex-shrink: 0;
+
+	padding: 1rem;
+}
+
+.audio-player-overlay div.inner > div:not(.touch-proxy) {
+	/*z-index: 20;*/
+
+	pointer-events: none;
+}
+.audio-player-overlay div.inner .player-inner-interactible {
+	pointer-events: all;
+}
+
+.audio-player-overlay div.inner .fullscreen-player .player-timeline {
+	color: inherit;
+	accent-color: currentColor;
+}
+
+.audio-player-overlay div.inner .more-stuff {
+	/* background-color: #202020; */
+
+	padding: 2rem;
+	padding-top: 0;
+}
+
+.audio-player-overlay div.inner .more-stuff .card {
+	background-color: #1d1f20;
+
+	border-radius: 2rem;
+	padding: 2rem;
+	text-align: center;
+
+	box-shadow: 0 0.3rem 0.7rem 0.3rem #1d1f20dd;
+}
+
+#player-state-button {
+	/*position: absolute;
+	right: 1rem;
+	top: 50%;
+	transform: translateY(-50%);*/
+
+	color: #fff;
+
+	appearance: none;
+	background-color: transparent;
+	border: 2px solid white;
+	padding: 0.5rem;
+
+	border-radius: 0.1em;
+
+	z-index: 40;
+
+	cursor: pointer;
+	position: relative;
+}
+#player-state-button:hover,
+#player-state-button:active,
+#player-state-button:focus-visible {
+	outline: 3px solid red;
+}
+#player-state-button * {
+	pointer-events: none;
+}
+
+#player-state-button > div {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	transform-style: flat;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+#app-navigation {
+	isolation: isolate;
+	position: relative;
+
+	pointer-events: all;
+
+	/*position: fixed;*/
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	/*--pos: calc(100% * var(--scrubber-progress, 0));
+    transform: translateY(var(--pos));*/
+
+	width: 100vw;
+
+	z-index: 100;
+
+	user-select: none;
+
+	--pad-size: calc(20 * var(--radius-magic-pad));
+	--lowest: min(1dvh, 1vw);
+
+	--padding-final: calc(var(--lowest) * var(--pad-size));
+
+	padding: 1.5rem calc(var(--padding-final) + 0.75rem);
+
+	transform-style: flat;
+	/*backface-visibility: hidden;*/
+}
+body.animating #app-navigation {
+	/*will-change: border-top-left-radius, border-top-right-radius, transform;*/
+	will-change: transform;
+	/*backface-visibility: hidden;*/
+}
+
+#app-navigation::before {
+	content: "";
+	display: block;
+	position: absolute;
+
+	inset: 0;
+	background-color: #000;
+}
+
+#app-navigation {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
+}
+#app-navigation .navigation-btn {
+	color: inherit;
+	text-decoration: none;
+	padding: 0.35rem;
+	/*background: orange;*/
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 0.25rem;
+
+	-webkit-user-drag: none;
+}
+#app-navigation .navigation-btn span {
+	display: inline-block;
+	text-align: center;
+	font-size: 0.8rem;
+	text-transform: capitalize;
+
+	font-weight: 300;
+	letter-spacing: 0.5px;
+}
+
+/* better text rendering? */
+/*.mini-player > div.data-and-cover .line-track p,*/
+#app-navigation .navigation-btn {
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	font-smooth: always;
+	-webkit-font-smoothing: subpixel-antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/*background-clip: content-box;*/
+}
+
+/*#app-navigation .navigation-btn svg {
+	height: 1.1rem;
+	margin: -0.2rem 0 -0.5rem 0;
+	overflow: visible;
+	letter-spacing: 0.5rem;
+}*/
+
+i.material-symbols-outlined {
+	/*display: block;*/
+	/*overflow: auto;*/
+	line-height: 1em;
+}
+
+i.material-symbols-outlined {
+	user-select: none;
+	font-variation-settings:
+		"FILL" 0,
+		"wght" 400,
+		"GRAD" 0,
+		"opsz" 24;
+}
+
+i.material-symbols-outlined.fill {
+	font-variation-settings:
+		"FILL" 1,
+		"wght" 400,
+		"GRAD" 0,
+		"opsz" 24;
+}
+
+#app-navigation .navigation-btn i.material-symbols-outlined {
+	font-variation-settings: "wght" 200;
+
+	font-size: 2rem;
+	content-visibility: auto;
+	contain-intrinsic-size: 2rem 2rem;
+}
+
+#app-navigation .navigation-btn.active i.material-symbols-outlined {
+	font-variation-settings: "FILL" 1;
+}
