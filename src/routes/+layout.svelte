@@ -406,8 +406,8 @@
 		{#key page.route.id}
 			<!-- TODO: luckily the timings are fast, but this doesn't work very well on large numbers -->
 			<div
-				in:pageFade={{ duration: 150, isLeaving: false }}
-				out:pageFade={{ duration: 335, easing: cubicOut }}
+				in:pageFade={{ duration: 150, delay: 116, isLeaving: false }}
+				out:pageFade={{ duration: 332, easing: cubicOut }}
 			>
 				{@render children()}
 			</div>
