@@ -378,9 +378,9 @@
 			Radios
 		</a>
 		<a
-			href="#/user-settings"
+			href="#/settings"
 			style="opacity:0.6"
-			aria-current={getAriaCurrentPage("/user-settings")}
+			aria-current={getAriaCurrentPage("/settings")}
 			draggable="false"
 		>
 			Settings
