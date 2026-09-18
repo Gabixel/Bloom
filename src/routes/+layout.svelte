@@ -379,19 +379,10 @@
 		</a>
 		<a
 			href="#/settings"
-			style="opacity:0.6"
 			aria-current={getAriaCurrentPage("/settings")}
 			draggable="false"
 		>
 			Settings
-		</a>
-		<a
-			href="#/tests"
-			style="color:orange"
-			aria-current={getAriaCurrentPage("/tests")}
-			draggable="false"
-		>
-			Tests
 		</a>
 	</nav>
 {/if}
