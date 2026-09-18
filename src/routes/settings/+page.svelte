@@ -42,7 +42,7 @@
 		{/if}
 	</fieldset>
 
-	<hr />
+	<hr style="margin-top: 3rem" />
 
 	<a href="#/settings/tests" draggable="false">Go to tests &rarr;</a>
 </div>
