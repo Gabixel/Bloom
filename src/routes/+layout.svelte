@@ -348,7 +348,10 @@
 </button>
 
 {#if credentialsMounted && authData.isLoggedIn()}
-	<nav data-sveltekit-replacestate={!authData.isLoggedIn()}>
+	<nav
+		data-sveltekit-replacestate={!authData.isLoggedIn()}
+		data-sveltekit-preload-code="eager"
+	>
 		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
 			<span>Home</span>
 		</a>
