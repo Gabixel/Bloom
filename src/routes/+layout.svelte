@@ -27,6 +27,8 @@
 	import { Keyboard } from "@capacitor/keyboard";
 	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
 	import { derived } from "svelte/store";
+	import { cubicOut } from "svelte/easing";
+	import { pageFade } from "$lib/transitions/absolute-ease.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
@@ -392,8 +394,16 @@
 {/if}
 
 {#if authData.isLoggedIn()}
-	<div id="main-inner">
-		{@render children()}
+	<div id="main-inner" style="padding-bottom: var(--player-height, 0)">
+		{#key page.route.id}
+			<!-- TODO: luckily the timings are fast, but this doesn't work very well on large numbers -->
+			<div
+				in:pageFade={{ duration: 150, isLeaving: false }}
+				out:pageFade={{ duration: 335, easing: cubicOut }}
+			>
+				{@render children()}
+			</div>
+		{/key}
 	</div>
 
 	<UIPlayer audioPlayer={null}></UIPlayer>
@@ -451,6 +461,16 @@
 </div>
 
 <style>
+	#main-inner {
+		position: relative;
+	}
+	#main-inner > :global(.leaving-page) {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+	}
+
 	nav {
 		padding: 0.5rem;
 		font-weight: bold;
