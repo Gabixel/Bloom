@@ -13,3 +13,5 @@ export const settingsData = {
 		return settings[name];
 	},
 };
+
+// TODO: store settings
