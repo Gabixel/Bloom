@@ -29,6 +29,7 @@
 	import { derived } from "svelte/store";
 	import { cubicOut } from "svelte/easing";
 	import { pageFade } from "$lib/transitions/absolute-ease.svelte";
+	import { settingsData } from "$lib/settings-data.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
@@ -293,6 +294,19 @@
 		});
 	});
 
+	$effect(() => {
+		let dimmedLightsSetting = settingsData.getSetting("dimmed_lights");
+
+		if (dimmedLightsSetting.enabled) {
+			document.body.style.setProperty(
+				"--dim",
+				dimmedLightsSetting.value.toString(),
+			);
+		}
+
+		document.body.classList.toggle("dimmed", dimmedLightsSetting.enabled);
+	});
+
 	//#region mca Dolby Immersive Capability
 	// https://webapi.streaming.dolby.com/v0_9/help_files/topics/checking_immersive_capability.html
 	async function Mca() {
@@ -463,6 +477,10 @@
 		top: 0;
 		left: 0;
 		right: 0;
+	}
+
+	:global(body.dimmed) {
+		filter: brightness(var(--dim, 1));
 	}
 
 	nav {
