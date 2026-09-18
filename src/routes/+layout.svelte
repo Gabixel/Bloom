@@ -28,7 +28,7 @@
 	import UIPlayer from "$lib/layouts/player/UIPlayer.svelte";
 	import { derived } from "svelte/store";
 	import { cubicOut } from "svelte/easing";
-	import { pageFade } from "$lib/transitions/absolute-ease.svelte";
+	import { pageFade } from "$lib/transitions/page-fade.svelte";
 	import { settingsData } from "$lib/settings-data.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
