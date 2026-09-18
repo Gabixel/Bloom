@@ -103,10 +103,10 @@
 			autocomplete="current-password webauthn"
 			spellcheck="false"
 		/>
-		<label
-			><input type="checkbox" bind:checked={showPsw} />
-			<span>Show password</span></label
-		>
+		<label>
+			<input type="checkbox" bind:checked={showPsw} />
+			<span>Show password</span>
+		</label>
 
 		<input
 			class="txt"
