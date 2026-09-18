@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setSSE, sse, testEvents } from "$lib/navidrome.svelte";
+	import { placeholder_sse, getEventsUrl } from "$lib/navidrome.svelte";
 	import {
 		SystemBars,
 		SystemBarsStyle,
@@ -12,15 +12,17 @@
 		cconsole.log(SystemBars);
 		cconsole.log(SystemBarsStyle);
 		cconsole.log(SystemBarType);
+	});
 
-		if (sse != null) {
+	function testServerSentEvents() {
+		if (placeholder_sse.getValue() != null) {
 			return;
 		}
 
-		let eventsUrl = testEvents();
+		let eventsUrl = getEventsUrl();
 		const es = new EventSource(eventsUrl);
 
-		setSSE(es);
+		placeholder_sse.setValue(es);
 
 		es.onopen = () => {
 			cconsole.log("[SSE] OPEN");
@@ -51,7 +53,16 @@
 				return;
 			}
 		});
-	});
+	}
 </script>
 
-<div>test</div>
+<button onclick={testServerSentEvents}> Test Server-Sent Events stream </button>
+
+{#if placeholder_sse.getValue() != null}
+	<button
+		onclick={() => {
+			placeholder_sse.getValue()!.close();
+			placeholder_sse.setValue(null);
+		}}>Close server events</button
+	>
+{/if}

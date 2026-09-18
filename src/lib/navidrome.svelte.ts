@@ -195,11 +195,17 @@ export async function authFetch(
 	});
 }
 
-export let sse: any = null;
-export function setSSE(eventStream: any) {
-	sse = eventStream;
-}
-export function testEvents() {
+// more here: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+export let placeholder_sse = {
+	getValue() {
+		return sse;
+	},
+	setValue(val: typeof sse) {
+		sse = val;
+	},
+};
+let sse = $state.raw(null) as EventSource | null;
+export function getEventsUrl() {
 	const token = localStorage.getItem("nd_token");
 	let inputUrl = getSubsonicApiPath("/api/events");
 
