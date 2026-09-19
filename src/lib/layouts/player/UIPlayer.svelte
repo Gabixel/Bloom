@@ -26,12 +26,10 @@
 		artist: "",
 		currentTime: 0,
 		duration: 0,
+		status: null as any,
 	});
-	let cachedData: typeof trackData & {
-		status: any;
-	} = $state({
+	let cachedData: typeof trackData = $state({
 		...$state.snapshot(trackData),
-		status: null,
 	});
 
 	let dockState: {
@@ -50,13 +48,6 @@
 
 		GGCAudio.addListener("playbackStateChange", (status) => {
 			updateTrackData(status);
-
-			if (isDockOpen) {
-				cachedData = {
-					...$state.snapshot(trackData),
-					status: status,
-				};
-			}
 		});
 	});
 
@@ -73,29 +64,37 @@
 		});
 	});
 
+	$effect(() => {
+		if (trackData == null) {
+			return;
+		}
+
+		if (!isDockOpen) {
+			return;
+		}
+
+		untrack(() => {
+			updateCachedData();
+		});
+	});
+
 	function updateTrackData(newData: any) {
 		// TODO: check plugin, currentTrack seems to be null when pausing/resuming
-		if (
-			newData.currentTrack != null &&
-			newData.currentTrack.title != trackData.title
-		) {
-			trackData.title = newData.currentTrack.title;
-		}
-		if (
-			newData.currentTrack != null &&
-			newData.currentTrack.artist != trackData.artist
-		) {
-			trackData.artist = newData.currentTrack.artist;
-		}
 
-		if (newData.position != trackData.currentTime) {
-			trackData.currentTime = newData.position;
-		}
-		if (newData.duration != trackData.duration) {
-			trackData.duration = newData.duration;
-		}
+		trackData.title = newData.currentTrack?.title || "";
+
+		trackData.artist = newData.currentTrack?.artist || "";
+
+		trackData.currentTime = newData.position;
+		trackData.duration = newData.duration;
 
 		trackState = newData.playbackState;
+
+		trackData.status = newData;
+	}
+
+	function updateCachedData() {
+		cachedData = $state.snapshot(trackData);
 	}
 
 	function getAriaCurrentPage(path: typeof page.route.id) {
@@ -103,11 +102,27 @@
 	}
 </script>
 
-<div class={["player-shadow", trackState == "unknown" && "no-track"]}></div>
-<div class={["player-screen-dim", trackState == "unknown" && "no-track"]}></div>
+<div
+	class={[
+		"player-shadow",
+		"transition-visibility",
+		trackState == "unknown" && "no-track",
+	]}
+></div>
+<div
+	class={[
+		"player-screen-dim",
+		"transition-visibility",
+		trackState == "unknown" && "no-track",
+	]}
+></div>
 <div class="bottom-dock-container">
 	<aside
-		class={["audio-player-overlay", trackState == "unknown" && "no-track"]}
+		class={[
+			"audio-player-overlay",
+			"transition-visibility",
+			trackState == "unknown" && "no-track",
+		]}
 	>
 		<footer class="mini-player">
 			<div class="player-bg"></div>
@@ -133,8 +148,6 @@
 						</div>
 					</div>
 					<button
-						disabled={trackState != "paused" &&
-							trackState != "playing"}
 						id="player-state-button"
 						class="player-block-switch-drag"
 						onclick={() => {
@@ -144,7 +157,7 @@
 										updateTrackData(getStatus());
 									});
 									break;
-								case "paused":
+								default:
 									resumeTrack().then(() => {
 										updateTrackData(getStatus());
 									});
@@ -190,9 +203,9 @@
 				<div class="card" style="margin-top: 1rem;">
 					<p>Player state:</p>
 					<p
-						style="font-family: monospace, monospace; word-break: break-all;"
+						style="font-family: monospace, monospace; word-break: break-all; font-size: 0.8rem; white-space: pre"
 					>
-						{JSON.stringify(cachedData.status)}
+						{JSON.stringify(cachedData.status, null, 2)}
 					</p>
 				</div>
 				<!-- <div class="card">
@@ -284,7 +297,16 @@
 </div>
 
 <style>
-	.no-track {
+	.transition-visibility {
+		transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+	}
+
+	:global(body:not(.player-attached-bottom.anim-finished)) .transition-visibility {
+		transition: none;
+	}
+	
+	.transition-visibility.no-track {
 		visibility: hidden;
+		transform: translateY(100%);
 	}
 </style>
