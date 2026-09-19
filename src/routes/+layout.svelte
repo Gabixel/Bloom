@@ -361,7 +361,7 @@
 	Toggle console
 </button>
 
-{#if credentialsMounted && authData.isLoggedIn()}
+{#if credentialsMounted && authData.isLoggedIn() && false}
 	<nav
 		data-sveltekit-replacestate={!authData.isLoggedIn()}
 		data-sveltekit-preload-code="eager"
