@@ -9,7 +9,7 @@
 	} from "$lib/audio-player.svelte";
 	import { cconsole } from "$lib/logger.svelte";
 	import { GGCAudio } from "@gabigroup/capacitor-audio-player";
-	import { onMount } from "svelte";
+	import { onMount, untrack } from "svelte";
 	import { authData } from "$lib/auth.svelte";
 	import { page } from "$app/state";
 
@@ -27,12 +27,36 @@
 		currentTime: 0,
 		duration: 0,
 	});
+	let cachedData: typeof trackData & {
+		status: any;
+	} = $state({
+		...$state.snapshot(trackData),
+		status: null,
+	});
+
+	let dockState: {
+		isOpen: () => boolean;
+		isAnimating: () => boolean;
+	} | null = $state(null);
+
+	let isDockOpen = $derived.by(
+		() =>
+			dockState != null &&
+			(dockState.isOpen() || dockState.isAnimating()),
+	);
 
 	onMount(() => {
 		listenAudioEvents();
 
 		GGCAudio.addListener("playbackStateChange", (status) => {
 			updateTrackData(status);
+
+			if (isDockOpen) {
+				cachedData = {
+					...$state.snapshot(trackData),
+					status: status,
+				};
+			}
 		});
 	});
 
@@ -43,6 +67,8 @@
 					await import("$lib/layouts/player/ui-player.svelte");
 
 				stuff.onMount();
+
+				dockState = stuff.dockState;
 			})();
 		});
 	});
@@ -77,10 +103,12 @@
 	}
 </script>
 
-<div class="player-shadow"></div>
-<div class="player-screen-dim"></div>
+<div class={["player-shadow", trackState == "unknown" && "no-track"]}></div>
+<div class={["player-screen-dim", trackState == "unknown" && "no-track"]}></div>
 <div class="bottom-dock-container">
-	<aside class="audio-player-overlay">
+	<aside
+		class={["audio-player-overlay", trackState == "unknown" && "no-track"]}
+	>
 		<footer class="mini-player">
 			<div class="player-bg"></div>
 			<div class="data-and-cover">
@@ -98,21 +126,40 @@
 				<div class="track-data">
 					<div class="track-text-lines">
 						<div class="line-track">
-							<p class="track-name"></p>
+							<p class="track-name">{trackData.title}</p>
 						</div>
 						<div class="line-track">
-							<p class="track-artist"></p>
+							<p class="track-artist">{trackData.artist}</p>
 						</div>
 					</div>
 					<button
+						disabled={trackState != "paused" &&
+							trackState != "playing"}
 						id="player-state-button"
 						class="player-block-switch-drag"
+						onclick={() => {
+							switch (trackState) {
+								case "playing":
+									pauseTrack().then(() => {
+										updateTrackData(getStatus());
+									});
+									break;
+								case "paused":
+									resumeTrack().then(() => {
+										updateTrackData(getStatus());
+									});
+									break;
+							}
+						}}
 					>
 						<div>
-							<!-- <i class="material-symbols-outlined fill"
-								>play_arrow</i
-							> -->
-							{@html `<svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 -960 960 960" fill="#e3e3e3" ><path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" /></svg>`}
+							{#if trackState != "playing"}
+								<!-- Play -->
+								{@html `<svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 -960 960 960" fill="#e3e3e3" ><path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" /></svg>`}
+							{:else}
+								<!-- Pause -->
+								{@html `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M520-200v-560h240v560H520Zm-320 0v-560h240v560H200Zm400-80h80v-400h-80v400Zm-320 0h80v-400h-80v400Zm0-400v400-400Zm320 0v400-400Z"/></svg>`}
+							{/if}
 						</div>
 					</button>
 				</div>
@@ -123,8 +170,8 @@
 
 		<div class="inner">
 			<div class="fullscreen-player">
-				<p>Track title</p>
-				<p>Track artist</p>
+				<p>{cachedData.title}</p>
+				<p>{cachedData.artist}</p>
 
 				<!--<input
 		          type="range"
@@ -133,14 +180,22 @@
 		          step="1"
 		          class="player-inner-interactible player-timeline"
 		        />-->
-				<div
+				<!-- <div
 					id="range-slider-1"
 					class="player-inner-interactible"
-				></div>
+				></div> -->
 			</div>
 
 			<div class="more-stuff">
-				<div class="card">
+				<div class="card" style="margin-top: 1rem;">
+					<p>Player state:</p>
+					<p
+						style="font-family: monospace, monospace; word-break: break-all;"
+					>
+						{JSON.stringify(cachedData.status)}
+					</p>
+				</div>
+				<!-- <div class="card">
 					<div>Lorem ipsum</div>
 					<div>Dolor sit amet</div>
 					<div>
@@ -157,7 +212,7 @@
 						various fonts of a typeface without meaningful text that
 						could be distracting.
 					</div>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="touch-proxy"></div>
@@ -229,4 +284,7 @@
 </div>
 
 <style>
+	.no-track {
+		visibility: hidden;
+	}
 </style>

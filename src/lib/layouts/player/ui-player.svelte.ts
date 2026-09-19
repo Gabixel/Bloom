@@ -9,15 +9,25 @@ const ANIMATION_DURATION = 450;
 let dragAnimation: Animation = null!;
 let allDragAnimations: Animation[] = [];
 let animationsReady = false;
-let animationRunning = false;
+
+let animationRunning = $state(false);
 
 let dragAnimationFrameFuncId: ReturnType<typeof requestAnimationFrame> | null =
 	null;
 
 /** when it's open (attached) or attaching to top */
-let isDockOpen = false; //isPanelOpen
+let isDockOpen = $state(false); //isPanelOpen
 /** when the inner player page has a `scrollTop` value of zero */
 let hasPlayerPageNoScroll = true;
+
+export const dockState = {
+	isOpen() {
+		return isDockOpen;
+	},
+	isAnimating() {
+		return animationRunning;
+	}
+};
 
 let audioReady = false;
 let audioPlayPromise: Promise<any> | null = null;
