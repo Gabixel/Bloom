@@ -19,29 +19,22 @@
 		audioPlayer: AudioPlayer | null;
 	} = $props();
 
-	let trackState = $state("unknown");
-
 	let trackData = $state({
+		state: "unknown",
 		title: "",
 		artist: "",
 		currentTime: 0,
 		duration: 0,
 		status: null as any,
 	});
-	let cachedData: typeof trackData = $state({
-		...$state.snapshot(trackData),
-	});
+	let cachedData: typeof trackData = $state($state.snapshot(trackData));
 
 	let dockState: {
 		isOpen: () => boolean;
 		isAnimating: () => boolean;
 	} | null = $state(null);
 
-	let isDockOpen = $derived.by(
-		() =>
-			dockState != null &&
-			(dockState.isOpen() || dockState.isAnimating()),
-	);
+	let isDockOpen = $derived.by(() => dockState != null && dockState.isOpen());
 
 	onMount(() => {
 		listenAudioEvents();
@@ -81,6 +74,10 @@
 	function updateTrackData(newData: any) {
 		// TODO: check plugin, currentTrack seems to be null when pausing/resuming
 
+		if (cachedData.status != newData.playbackState) {
+			cconsole.log(newData);
+		}
+
 		trackData.title = newData.currentTrack?.title || "";
 
 		trackData.artist = newData.currentTrack?.artist || "";
@@ -88,9 +85,13 @@
 		trackData.currentTime = newData.position;
 		trackData.duration = newData.duration;
 
-		trackState = newData.playbackState;
+		trackData.state = newData.playbackState;
 
 		trackData.status = newData;
+
+		if (isDockOpen) {
+			updateCachedData();
+		}
 	}
 
 	function updateCachedData() {
@@ -106,14 +107,14 @@
 	class={[
 		"player-shadow",
 		"transition-visibility",
-		trackState == "unknown" && "no-track",
+		trackData.state == "unknown" && "no-track",
 	]}
 ></div>
 <div
 	class={[
 		"player-screen-dim",
 		"transition-visibility",
-		trackState == "unknown" && "no-track",
+		trackData.state == "unknown" && "no-track",
 	]}
 ></div>
 <div class="bottom-dock-container">
@@ -121,7 +122,7 @@
 		class={[
 			"audio-player-overlay",
 			"transition-visibility",
-			trackState == "unknown" && "no-track",
+			trackData.state == "unknown" && "no-track",
 		]}
 	>
 		<footer class="mini-player">
@@ -151,11 +152,13 @@
 						id="player-state-button"
 						class="player-block-switch-drag"
 						onclick={() => {
-							switch (trackState) {
+							switch (trackData.state) {
 								case "playing":
 									pauseTrack().then(() => {
 										updateTrackData(getStatus());
 									});
+									break;
+								case "unknown":
 									break;
 								default:
 									resumeTrack().then(() => {
@@ -166,7 +169,7 @@
 						}}
 					>
 						<div>
-							{#if trackState != "playing"}
+							{#if trackData.state != "playing"}
 								<!-- Play -->
 								{@html `<svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 -960 960 960" fill="#e3e3e3" ><path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" /></svg>`}
 							{:else}
@@ -201,11 +204,12 @@
 
 			<div class="more-stuff">
 				<div class="card" style="margin-top: 1rem;">
-					<p>Player state:</p>
+					<p>Player data:</p>
 					<p
-						style="font-family: monospace, monospace; word-break: break-all; font-size: 0.8rem; white-space: pre"
+						style="font-family: monospace, monospace; text-align: left; word-break: break-all; font-size: 0.8rem; white-space: pre; text-wrap: auto;"
 					>
-						{JSON.stringify(cachedData.status, null, 2)}
+						{JSON.stringify(cachedData.status, null, 2)}<br/><br/>
+						<span>[state: "{cachedData.state}"]</span>
 					</p>
 				</div>
 				<!-- <div class="card">
@@ -301,10 +305,11 @@
 		transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 	}
 
-	:global(body:not(.player-attached-bottom.anim-finished)) .transition-visibility {
+	:global(body:not(.player-attached-bottom.anim-finished))
+		.transition-visibility {
 		transition: none;
 	}
-	
+
 	.transition-visibility.no-track {
 		visibility: hidden;
 		transform: translateY(100%);
