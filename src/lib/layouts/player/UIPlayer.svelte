@@ -36,6 +36,9 @@
 
 	let isDockOpen = $derived.by(() => dockState != null && dockState.isOpen());
 
+	// TODO: future
+	let isDockAlreadyOpen = $state(false);
+
 	onMount(() => {
 		listenAudioEvents();
 
@@ -208,7 +211,7 @@
 					<p
 						style="font-family: monospace, monospace; text-align: left; word-break: break-all; font-size: 0.8rem; white-space: pre; text-wrap: auto;"
 					>
-						{JSON.stringify(cachedData.status, null, 2)}<br/><br/>
+						{JSON.stringify(cachedData.status, null, 2)}<br /><br />
 						<span>[state: "{cachedData.state}"]</span>
 					</p>
 				</div>
