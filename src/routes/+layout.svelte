@@ -298,13 +298,13 @@
 		let dimmedLightsSetting = settingsData.getSetting("dimmed_lights");
 
 		if (dimmedLightsSetting.enabled) {
-			document.body.style.setProperty(
+			document.documentElement.style.setProperty(
 				"--dim",
 				dimmedLightsSetting.value.toString(),
 			);
 		}
 
-		document.body.classList.toggle("dimmed", dimmedLightsSetting.enabled);
+		document.documentElement.classList.toggle("dimmed", dimmedLightsSetting.enabled);
 	});
 
 	//#region mca Dolby Immersive Capability
@@ -479,7 +479,7 @@
 		right: 0;
 	}
 
-	:global(body.dimmed) {
+	:global(html.dimmed) {
 		filter: brightness(var(--dim, 1));
 	}
 
