@@ -15,8 +15,11 @@
 
 	let {
 		audioPlayer,
+		// unused
+		visible = true
 	}: {
 		audioPlayer: AudioPlayer | null;
+		visible?: boolean
 	} = $props();
 
 	let trackData = $state({

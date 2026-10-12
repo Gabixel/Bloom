@@ -414,12 +414,15 @@
 		{/key}
 	</div>
 
-	<UIPlayer audioPlayer={null}></UIPlayer>
 {:else if credentialsMounted}
 	<LoginLayout></LoginLayout>
 {:else}
 	<div></div>
 {/if}
+
+<div style={`visibility:${credentialsMounted && authData.isLoggedIn() ? 'visible' : 'hidden'}`}>
+	<UIPlayer audioPlayer={null} visible={credentialsMounted && authData.isLoggedIn()}></UIPlayer>
+</div>
 
 <div
 	class={["offline-banner", !isBrowserOnline && "visible"]}
