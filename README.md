@@ -41,8 +41,6 @@ Not definitive, but recommended:
     - When your dev environment is ready, you can execute **`npm run compile-debug`** to generate a debug APK.
 - **~~<picture title="Apple logo" ><source media="(prefers-color-scheme: dark)" width="12" height="14" srcset="https://github.com/user-attachments/assets/ada70ca8-3ce8-454b-aab3-dcbfd80ddc41" alt="Apple logo" /> <source media="(prefers-color-scheme: light)" width="12" height="14" srcset="https://github.com/user-attachments/assets/b6468f57-760b-477d-9915-a9952a43ba3d" alt="Apple logo" /> <img src="https://github.com/user-attachments/assets/ada70ca8-3ce8-454b-aab3-dcbfd80ddc41" width="12" height="14" alt="Apple logo" /></picture> iOS~~**
   - Swift is unsupported, *for now*
-- Web
-  - *Technically* usable (except audio, for now), since we're using Android's [`WebView`](https://developer.android.com/reference/android/webkit/WebView), but browser support isn't the current focus.
 
 > [!IMPORTANT]
 > <details>
