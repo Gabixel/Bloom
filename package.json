@@ -38,6 +38,7 @@
     "@capacitor/ios": "^8.5.0",
     "@capacitor/keyboard": "^8.0.5",
     "@capacitor/splash-screen": "^8.0.2",
-    "@gabigroup/capacitor-audio-player": "file:env_audio-plugin/0.0.21/capacitor-audio-player-0.0.21.tgz"
+    "@gabigroup/capacitor-audio-player": "file:env_audio-plugin/0.0.21/capacitor-audio-player-0.0.21.tgz",
+    "gsap": "^3.15.0"
   }
 }
