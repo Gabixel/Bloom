@@ -158,7 +158,7 @@
 			// }
 		}
 
-		let gsapCtx: gsap.Context = $state.raw()!;
+		let gsapCtx: gsap.Context = null!;
 		gsapCtx = gsap.context(() => {
 			slideAnimationTimeline = gsap
 				.timeline({

@@ -1,13 +1,7 @@
 // import { Capacitor } from "@capacitor/core";
 import { cconsole } from "$lib/logger.svelte";
-import { gsap } from "gsap";
-import { Draggable } from "gsap/Draggable";
 
 cconsole.log("Hello from page.ts");
-
-gsap.ticker.lagSmoothing(false);
-
-gsap.registerPlugin(Draggable);
 
 // // https://capacitorjs.com/docs/basics/utilities
 // if (Capacitor.getPlatform() === "ios") {
