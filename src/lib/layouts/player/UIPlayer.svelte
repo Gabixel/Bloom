@@ -303,7 +303,7 @@
 
 <div
 	id="ui-player-fixed"
-	role="button"
+	role="complementary"
 	tabindex="-1"
 	bind:this={uielement}
 	class={[isOpen && "is-open"]}
