@@ -404,7 +404,8 @@
 		min-width: 100%;
 		max-width: 100%;
 
-		background-color: #4a4af390;
+		/*background-color: #4a4af390;*/
+		background-color: #46399d;
 
 		user-select: none;
 
