@@ -356,7 +356,7 @@
 						id="audio-toggle-button"
 						data-clickable="true"
 						data-no-drag="true"
-						style="min-width: 0; min-height: 0; font-size: 4em;"
+						style="min-width: 0; min-height: 0; font-size: 4em; cursor: pointer"
 						onclick={() => {
 							switch (trackState) {
 								case "playing":
