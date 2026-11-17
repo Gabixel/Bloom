@@ -66,7 +66,8 @@
 	let fullpanel = $state(null!) as HTMLElement;
 	let isFullpanelScrolled = $state(false);
 	let uiproxy = $state(null!) as HTMLDivElement;
-	// let isOpen = $state(false);
+
+	let isOpen = $state(false);
 
 	const clamp = gsap.utils.clamp(0, 1);
 
@@ -86,8 +87,10 @@
 	function snap(open: boolean) {
 		settleAnimation?.kill();
 
-		const target = open ? 1 : 0;
+		const target = open ? 1 : 0; // 1 = going to open, 0 = going to close
 		// const distance = Math.abs(target - slideAnimationTimeline!.progress());
+
+		isOpen = open;
 
 		gsap.set(fullpanel, { visibility: "visible" });
 
@@ -158,7 +161,20 @@
 		let gsapCtx: gsap.Context = $state.raw()!;
 		gsapCtx = gsap.context(() => {
 			slideAnimationTimeline = gsap
-				.timeline({ paused: true })
+				.timeline({
+					paused: true,
+					// onComplete() {
+					// 	isOpen = true;
+					// 	console.log("complete!");
+					// },
+					// onStart() {
+					// 	console.log("started!");
+					// },
+					// onReverseComplete() {
+					// 	isOpen = false;
+					// 	console.log("reverse complete!");
+					// },
+				})
 				// dock movement
 				.fromTo(
 					uielement,
@@ -203,6 +219,15 @@
 				// allow scrolling fullscreen panel
 				allowNativeTouchScrolling: true,
 
+				allowEventDefault: false,
+				force3D: true,
+				lockAxis: false,
+
+				zIndexBoost: false,
+
+				// TODO
+				// inertia: true,
+
 				// Prevent trigger on browser interactible areas
 				clickableTest: (el) =>
 					el instanceof Element &&
@@ -228,6 +253,7 @@
 
 				onDragStart() {
 					moved = true;
+					// console.log("drag start!")
 				},
 
 				onDrag() {
@@ -239,12 +265,19 @@
 				},
 
 				onDragEnd() {
+					console.log("drag ended");
 					if (moved) {
 						snap(slideAnimationTimeline!.progress() >= 0.5);
 					}
+					// moved = false;
 				},
 
 				onClick() {
+					if (isOpen) {
+						return;
+					}
+
+					// TODO: improve drags and clicks (plus, use inertia plugin)
 					snap(slideAnimationTimeline!.progress() < 0.5);
 				},
 			})[0];
@@ -266,14 +299,23 @@
 	// });
 </script>
 
-<div id="ui-player-fixed" role="button" tabindex="-1" bind:this={uielement}>
+<div
+	id="ui-player-fixed"
+	role="button"
+	tabindex="-1"
+	bind:this={uielement}
+	class={[isOpen && "is-open"]}
+>
 	<aside>
 		<div>
-			<section class={["fullscreen-view", isFullpanelScrolled && "scrolled"]} bind:this={fullpanel}>
-				<div style="height: 90vh; background-color: orange;">
-					test
-				</div>
-				<div style="height: 20rem; background-color: midnightblue; color: #fff">
+			<section
+				class={["fullscreen-view", isFullpanelScrolled && "scrolled"]}
+				bind:this={fullpanel}
+			>
+				<div style="height: 90vh; background-color: orange;">test</div>
+				<div
+					style="height: 20rem; background-color: midnightblue; color: #fff"
+				>
 					hello
 				</div>
 			</section>
@@ -354,14 +396,18 @@
 		justify-content: center;
 		align-items: center;*/
 	}
-	
+
+	#ui-player-fixed:not(.is-open) {
+		touch-action: none !important;
+	}
+
 	.fullscreen-view:not(.scrolled) {
-		touch-action: pan-down!important;
+		touch-action: pan-down !important;
 	}
 	.fullscreen-view.scrolled {
-		touch-action: pan-y!important;
+		touch-action: pan-y !important;
 	}
-	
+
 	.proxy {
 		position: absolute;
 		top: 0;
