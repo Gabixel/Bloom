@@ -406,6 +406,8 @@
 
 		background-color: #4a4af390;
 
+		user-select: none;
+
 		/*transform: translateY(0);*/
 	}
 	#ui-player-fixed {
