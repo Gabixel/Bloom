@@ -211,6 +211,15 @@
 
 			gsap.set(fullpanel, { visibility: "hidden" });
 
+			function isElementClickable(e: any) {
+				return (
+					e instanceof Element &&
+					e.closest(
+						"[data-no-drag], .scrollable, button, a, input, textarea, select",
+					) !== null
+				);
+			}
+
 			dragger = Draggable.create(uiproxy, {
 				type: "y",
 				trigger: uielement,
@@ -228,18 +237,20 @@
 				// TODO
 				// inertia: true,
 
+				dragClickables: false,
+
 				// Prevent trigger on browser interactible areas
-				clickableTest: (el) =>
-					el instanceof Element &&
-					el.closest(
-						"[data-no-drag], .scrollable, button, a, input, textarea, select",
-					) !== null,
+				clickableTest: (el) => isElementClickable(el),
 
 				onPressInit() {
 					gsap.set(uiproxy, { y: 0 });
 				},
 
-				onPress() {
+				onPress(e) {
+					if (isElementClickable(e.target)) {
+						return;
+					}
+
 					settleAnimation?.kill();
 					slideAnimationTimeline!.pause();
 
@@ -272,8 +283,11 @@
 					// moved = false;
 				},
 
-				onClick() {
+				onClick(e) {
 					if (isOpen) {
+						return;
+					}
+					if (isElementClickable(e.target)) {
 						return;
 					}
 
@@ -325,9 +339,49 @@
 				<div
 					style="width: 4rem; aspect-ratio: 1/1; background: #00000060"
 				></div>
-				<div style="display: flex; flex-direction: column;">
-					<div>{trackData.title || "<No title>"}</div>
-					<div>{trackData.artist || "<No artist>"}</div>
+				<div
+					style="display: flex; flex-direction: column; flex-grow: 1"
+				>
+					<div>
+						<!-- TODO: absolute position to allow scrolling -->
+						{trackData.title || "<No title>"}
+					</div>
+					<div>
+						<!-- TODO: absolute position to allow scrolling -->
+						{trackData.artist || "<No artist>"}
+					</div>
+				</div>
+				<div>
+					<button
+						id="audio-toggle-button"
+						data-clickable="true"
+						data-no-drag="true"
+						style="min-width: 0; min-height: 0; font-size: 4em;"
+						onclick={() => {
+							switch (trackState) {
+								case "playing":
+									pauseTrack().then(() => {
+										updateTrackData(getStatus());
+									});
+									break;
+								case "unknown":
+									break;
+								default:
+									resumeTrack().then(() => {
+										updateTrackData(getStatus());
+									});
+									break;
+							}
+						}}
+					>
+						{#if trackState != "playing"}
+							<!-- Play -->
+							{@html `<svg xmlns="http://www.w3.org/2000/svg" height="48px" width="48px" viewBox="0 -960 960 960" fill="#e3e3e3" ><path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" /></svg>`}
+						{:else}
+							<!-- Pause -->
+							{@html `<svg xmlns="http://www.w3.org/2000/svg" height="48px" width="48px" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="M520-200v-560h240v560H520Zm-320 0v-560h240v560H200Zm400-80h80v-400h-80v400Zm-320 0h80v-400h-80v400Zm0-400v400-400Zm320 0v400-400Z"/></svg>`}
+						{/if}
+					</button>
 				</div>
 			</div>
 		</div>
@@ -364,13 +418,14 @@
 	}*/
 
 	.mini-view {
+		position: relative;
+		z-index: 10;
+
 		display: flex;
 		flex-direction: row;
 		padding: 0.45rem;
 		gap: 0.45rem;
-
-		position: relative;
-		z-index: 10;
+		justify-content: flex-start;
 	}
 
 	.fullscreen-view {
