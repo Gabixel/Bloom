@@ -287,6 +287,8 @@
 			settleAnimation?.kill();
 			dragger?.kill();
 			gsapCtx.revert();
+			isOpen = false;
+			moved = false;
 		};
 	});
 
