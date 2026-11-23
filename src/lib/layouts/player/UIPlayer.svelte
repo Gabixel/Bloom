@@ -287,7 +287,6 @@
 
 				onDragStart() {
 					moved = true;
-					// console.log("drag start!")
 				},
 
 				onDrag() {
@@ -299,12 +298,9 @@
 				},
 
 				onDragEnd() {
-					console.log("drag ended");
-
 					if (moved) {
 						snap(slideAnimationTimeline!.progress() >= 0.5);
 					}
-					// moved = false;
 				},
 
 				onClick(e) {
