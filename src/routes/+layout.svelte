@@ -30,6 +30,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { pageFade } from "$lib/transitions/page-fade.svelte";
 	import { settingsData } from "$lib/settings-data.svelte";
+    import NavigationDock from "$lib/layouts/player/NavigationDock.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
@@ -46,6 +47,8 @@
 	}
 
 	let { data, children }: { data: LayoutData; children: Snippet } = $props();
+
+	let navigationDock: HTMLElement = $state(null)!;
 
 	cconsole.log("Hello from layout.svelte");
 
@@ -414,7 +417,8 @@
 		{/key}
 	</div>
 
-	<UIPlayer audioPlayer={null}></UIPlayer>
+	<UIPlayer audioPlayer={null} navigationDock={navigationDock}></UIPlayer>
+	<NavigationDock height={4} bind:navigationDock={navigationDock}></NavigationDock>
 {:else if credentialsMounted}
 	<LoginLayout></LoginLayout>
 {:else}

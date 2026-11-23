@@ -16,8 +16,10 @@
 
 	let {
 		audioPlayer,
+		navigationDock,
 	}: {
 		audioPlayer: AudioPlayer | null;
+		navigationDock: HTMLElement;
 	} = $props();
 
 	let trackState = $state("unknown");
@@ -74,6 +76,14 @@
 
 	// in seconds
 	const wholeDuration = 0.45;
+
+	let dockNavigationHeight = $derived.by(() => {
+		if (!navigationDock) {
+			return "0em";
+		} else {
+			return gsap.getProperty(navigationDock, "clientHeight", "em");
+		}
+	});
 
 	/**
 	 * When we release the pointer, it settles ("anchors") by itself to the top or the bottom of the view.
@@ -189,7 +199,10 @@
 						y: 0,
 					},
 					{
-						y: () => -window.innerHeight + minipanel.clientHeight,
+						y: () =>
+							-window.innerHeight +
+							minipanel.clientHeight +
+							(navigationDock?.clientHeight ?? 0),
 
 						// ease: "sine.inOut",
 						ease: "power1.inOut",
@@ -373,6 +386,7 @@
 	tabindex="-1"
 	bind:this={uielement}
 	class={[isOpen && "is-open"]}
+	style:--dock-height={dockNavigationHeight}
 >
 	<aside>
 		<div>
@@ -380,7 +394,7 @@
 				class={["fullscreen-view", isFullpanelScrolled && "scrolled"]}
 				bind:this={fullpanel}
 			>
-				<div style="height: 90vh; background-color: orange;">test</div>
+				<div class="fullscreen-front-panel">test</div>
 				<div
 					style="height: 20rem; background-color: midnightblue; color: #fff"
 				>
@@ -447,9 +461,10 @@
 	#ui-player-fixed {
 		position: fixed;
 
-		z-index: 999;
+		z-index: 800;
 
-		bottom: 0;
+		/*bottom: 0;*/
+		bottom: var(--dock-height);
 		left: 0;
 		right: 0;
 
@@ -483,6 +498,7 @@
 		padding: 0.45rem;
 		gap: 0.45rem;
 		justify-content: flex-start;
+		/*bottom: var(--dock-height);*/
 	}
 
 	.fullscreen-view {
@@ -502,6 +518,12 @@
 
 	.fullscreen-view {
 		contain: strict;
+	}
+
+	.fullscreen-view .fullscreen-front-panel {
+		/*height: calc(90vh - var(--dock-height));*/
+		height: 90vh;
+		background-color: orange;
 	}
 
 	.fullscreen-view {
