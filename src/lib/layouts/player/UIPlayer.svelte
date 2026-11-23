@@ -72,6 +72,9 @@
 
 	const clamp = gsap.utils.clamp(0, 1);
 
+	// in seconds
+	const wholeDuration = 0.45;
+
 	/**
 	 * When we release the pointer, it settles ("anchors") by itself to the top or the bottom of the view.
 	 */
@@ -84,6 +87,7 @@
 	let startY = 0;
 	let dragHeight = 1;
 	let moved = false;
+	let clickableInteractedOnPress = false;
 
 	function snap(open: boolean) {
 		settleAnimation?.kill();
@@ -121,7 +125,6 @@
 		// uielement.addEventListener("click", () => {
 		// 	isOpen = !isOpen;
 		// });
-		const wholeDuration = 0.45;
 
 		updateFullpanelScrollBehaviour();
 		fullpanel.addEventListener(
@@ -160,6 +163,7 @@
 		}
 
 		let gsapCtx: gsap.Context = null!;
+
 		gsapCtx = gsap.context(() => {
 			slideAnimationTimeline = gsap
 				.timeline({
@@ -247,6 +251,11 @@
 				},
 
 				onRelease(e) {
+					if (clickableInteractedOnPress) {
+						clickableInteractedOnPress = false;
+						return;
+					}
+
 					if (moved) {
 						return;
 					}
@@ -261,6 +270,7 @@
 
 				onPress(e) {
 					if (isElementClickable(e.target)) {
+						clickableInteractedOnPress = true;
 						return;
 					}
 
@@ -290,6 +300,7 @@
 
 				onDragEnd() {
 					console.log("drag ended");
+
 					if (moved) {
 						snap(slideAnimationTimeline!.progress() >= 0.5);
 					}
@@ -300,7 +311,12 @@
 					if (isOpen) {
 						return;
 					}
-					if (isElementClickable(e.target)) {
+
+					if (
+						clickableInteractedOnPress ||
+						isElementClickable(e.target)
+					) {
+						clickableInteractedOnPress = false;
 						return;
 					}
 
@@ -316,6 +332,7 @@
 			gsapCtx.revert();
 			isOpen = false;
 			moved = false;
+			clickableInteractedOnPress = false;
 		};
 	});
 
