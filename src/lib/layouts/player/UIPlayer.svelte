@@ -164,6 +164,7 @@
 
 		let gsapCtx: gsap.Context = null!;
 
+		// TODO: the drag/swipe UX still sucks, but we're slowly getting somewhere
 		gsapCtx = gsap.context(() => {
 			slideAnimationTimeline = gsap
 				.timeline({
