@@ -16,7 +16,9 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "compile-debug": "npm run build && npx cap sync && cd ./android && ./gradlew assembleDebug",
-    "build-debug-gradle": "npx cap sync && cd ./android && ./gradlew assembleDebug"
+    "compile-release": "npm run build && npx cap sync && cd ./android && ./gradlew assembleRelease",
+    "build-debug-gradle": "npx cap sync && cd ./android && ./gradlew assembleDebug",
+    "bundle-release": "npm run build && npx cap sync && cd ./android && ./gradlew bundleRelease"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
