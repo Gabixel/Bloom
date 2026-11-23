@@ -30,7 +30,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { pageFade } from "$lib/transitions/page-fade.svelte";
 	import { settingsData } from "$lib/settings-data.svelte";
-    import NavigationDock from "$lib/layouts/player/NavigationDock.svelte";
+	import NavigationDock from "$lib/layouts/player/NavigationDock.svelte";
 
 	CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 		if (!canGoBack) {
@@ -307,7 +307,10 @@
 			);
 		}
 
-		document.documentElement.classList.toggle("dimmed", dimmedLightsSetting.enabled);
+		document.documentElement.classList.toggle(
+			"dimmed",
+			dimmedLightsSetting.enabled,
+		);
 	});
 
 	//#region mca Dolby Immersive Capability
@@ -364,46 +367,6 @@
 	Toggle console
 </button>
 
-{#if credentialsMounted && authData.isLoggedIn()}
-	<nav
-		data-sveltekit-replacestate={!authData.isLoggedIn()}
-		data-sveltekit-preload-code="eager"
-	>
-		<a href="/" aria-current={getAriaCurrentPage("/")} draggable="false">
-			<span>Home</span>
-		</a>
-		<a
-			href="#/search"
-			style="opacity:0.6"
-			aria-current={getAriaCurrentPage("/search")}
-			draggable="false"
-		>
-			Search
-		</a>
-		<a
-			href="#/library"
-			aria-current={getAriaCurrentPage("/library")}
-			draggable="false"
-		>
-			Library
-		</a>
-		<a
-			href="#/stations"
-			aria-current={getAriaCurrentPage("/stations")}
-			draggable="false"
-		>
-			Radios
-		</a>
-		<a
-			href="#/settings"
-			aria-current={getAriaCurrentPage("/settings")}
-			draggable="false"
-		>
-			Settings
-		</a>
-	</nav>
-{/if}
-
 {#if authData.isLoggedIn()}
 	<div id="main-inner" style="padding-bottom: var(--player-height, 0)">
 		{#key page.route.id}
@@ -417,8 +380,10 @@
 		{/key}
 	</div>
 
-	<UIPlayer audioPlayer={null} navigationDock={navigationDock}></UIPlayer>
-	<NavigationDock bind:navigationDock={navigationDock}></NavigationDock>
+	<UIPlayer audioPlayer={null} {navigationDock}></UIPlayer>
+	{#if credentialsMounted}
+		<NavigationDock bind:navigationDock></NavigationDock>
+	{/if}
 {:else if credentialsMounted}
 	<LoginLayout></LoginLayout>
 {:else}
@@ -458,8 +423,8 @@
 				return log.match(/^[^,]*/)![0];
 			})()}
 		>
-			<span style="white-space: pre;"
-				>[{log.match(/^[^,]*/)![0].toUpperCase()}]
+			<span style="white-space: pre;">
+				[{log.match(/^[^,]*/)![0].toUpperCase()}]
 			</span>
 			{(() => {
 				/* remove everything before first comma */
