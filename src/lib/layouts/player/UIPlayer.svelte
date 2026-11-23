@@ -314,9 +314,17 @@
 				return;
 			}
 
+			const time = slideAnimationTimeline.time();
+
 			dragHeight = Math.max(1, fullpanel.clientHeight);
-			const time = slideAnimationTimeline.rawTime();
-			slideAnimationTimeline.invalidate().restart().time(time);
+
+			slideAnimationTimeline.invalidate();
+
+			if (slideAnimationTimeline.paused() && time === 0) {
+				return;
+			}
+
+			slideAnimationTimeline.restart().time(time);
 		},
 		{
 			passive: true,
