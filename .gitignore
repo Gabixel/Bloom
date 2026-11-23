@@ -1,3 +1,10 @@
+### ---- Android key management ----
+
+android/keystore.properties
+release-key.jks
+
+### ---- Env stuff ----
+
 **/env_*.*
 **/env_*/
 
