@@ -452,25 +452,6 @@
 		filter: brightness(var(--dim, 1));
 	}
 
-	nav {
-		padding: 0.5rem;
-		font-weight: bold;
-
-		text-align: center;
-
-		position: sticky;
-		top: 0;
-
-		z-index: 50;
-
-		background-color: var(--app-bg);
-
-		text-rendering: optimizeLegibility;
-	}
-	nav > a + a {
-		margin-left: 0.5rem;
-	}
-
 	.offline-banner {
 		color: #fff;
 		font-weight: bold;
