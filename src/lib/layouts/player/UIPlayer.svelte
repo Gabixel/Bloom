@@ -64,6 +64,7 @@
 
 	let uielement = $state(null!) as HTMLDivElement;
 	let fullpanel = $state(null!) as HTMLElement;
+	let minipanel = $state(null!) as HTMLElement;
 	let isFullpanelScrolled = $state(false);
 	let uiproxy = $state(null!) as HTMLDivElement;
 
@@ -183,8 +184,7 @@
 						y: 0,
 					},
 					{
-						yPercent: 100,
-						y: -window.innerHeight,
+						y: () => -window.innerHeight + minipanel.clientHeight,
 
 						// ease: "sine.inOut",
 						ease: "power1.inOut",
@@ -306,6 +306,23 @@
 		};
 	});
 
+	// TODO: organize event lifetime
+	window.addEventListener(
+		"resize",
+		() => {
+			if (slideAnimationTimeline == null) {
+				return;
+			}
+
+			dragHeight = Math.max(1, fullpanel.clientHeight);
+			const time = slideAnimationTimeline.rawTime();
+			slideAnimationTimeline.invalidate().restart().time(time);
+		},
+		{
+			passive: true,
+		},
+	);
+
 	// $effect(() => {
 	// 	if (isOpen) {
 	// 		slideAnimationTimeline?.play();
@@ -335,10 +352,12 @@
 					hello
 				</div>
 			</section>
-			<div class="mini-view">
+			<div class="mini-view" bind:this={minipanel}>
 				<div
 					style="width: 4rem; aspect-ratio: 1/1; background: #00000060"
-				></div>
+				>
+					<!-- TODO: song cover art -->
+				</div>
 				<div
 					style="display: flex; flex-direction: column; flex-grow: 1"
 				>
