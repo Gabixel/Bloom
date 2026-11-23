@@ -246,6 +246,19 @@
 					gsap.set(uiproxy, { y: 0 });
 				},
 
+				onRelease(e) {
+					if (moved) {
+						return;
+					}
+
+					if (
+						slideAnimationTimeline!.progress() > 0 &&
+						slideAnimationTimeline!.progress() < 1
+					) {
+						snap(slideAnimationTimeline!.progress() >= 0.5);
+					}
+				},
+
 				onPress(e) {
 					if (isElementClickable(e.target)) {
 						return;
