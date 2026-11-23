@@ -418,7 +418,7 @@
 	</div>
 
 	<UIPlayer audioPlayer={null} navigationDock={navigationDock}></UIPlayer>
-	<NavigationDock height={4} bind:navigationDock={navigationDock}></NavigationDock>
+	<NavigationDock bind:navigationDock={navigationDock}></NavigationDock>
 {:else if credentialsMounted}
 	<LoginLayout></LoginLayout>
 {:else}

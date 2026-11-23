@@ -1,15 +1,12 @@
 <script lang="ts">
 	let {
 		navigationDock = $bindable(null),
-		height,
 	}: {
 		navigationDock: HTMLElement | null;
-		/** in `em`s */
-		height: number;
 	} = $props();
 </script>
 
-<nav id="app-navigation" bind:this={navigationDock} style:--height={height + "em"}>test</nav>
+<nav id="app-navigation" bind:this={navigationDock}>test</nav>
 
 <style>
 	#app-navigation {
@@ -25,6 +22,7 @@
 		contain: layout;
 		isolation: isolate;
 
+		--height: 4em;
 		min-height: var(--height);
 		height: var(--height);
 		max-height: var(--height);
