@@ -190,6 +190,19 @@
 					// 	isOpen = false;
 					// 	console.log("reverse complete!");
 					// },
+					onUpdate() {
+						let progress: number =
+							slideAnimationTimeline!.progress();
+
+						document.body.classList.toggle(
+							"ui-player-closed",
+							progress === 0,
+						);
+
+						gsap.set(document.documentElement, {
+							"--ui-player-progress": progress,
+						});
+					},
 				})
 				// dock movement
 				.fromTo(

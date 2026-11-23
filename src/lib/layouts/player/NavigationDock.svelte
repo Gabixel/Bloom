@@ -27,6 +27,10 @@
 		height: var(--height);
 		max-height: var(--height);
 
-		background-color: cornflowerblue;
+		background-color: #222222;
+	}
+
+	:global(body:not(.ui-player-closed)) #app-navigation {
+		transform: translateY(calc(100% * var(--ui-player-progress)));
 	}
 </style>
